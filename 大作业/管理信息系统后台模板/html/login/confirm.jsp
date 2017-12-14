@@ -13,7 +13,6 @@
           Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/Javaweb","root","Xsydx886.");
           Statement stat=conn.createStatement();
           String sql = "SELECT * FROM users WHERE username = '" + username + "';";
-          out.println(sql);
           ResultSet rs = stat.executeQuery(sql);
           while(rs.next())
           {

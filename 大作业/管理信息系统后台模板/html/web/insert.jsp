@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.io.*,java.util.*"%>
+<%@ page import="java.io.*,java.util.*,java.text.*"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -58,10 +58,11 @@ body {
 <%
 Date date = new Date();
 out.print( "<p>" +date.toString()+"<p>");
+DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 %>
       <form action="insertconfirm.jsp">
         操作用户<lable><input type="text" id ="user" name="user"></lable><br>
-        操作时间<lable><input type="text" id ="time" name="time"></lable><br>
+        操作时间<lable><input type="text" id ="time" name="time" VALUE="<%= format1.format(date) %>"></lable><br>
         操作名称<lable><input type="text" id ="name" name="name"></lable><br>
         操作对象<lable><input type="text" id ="object" name="object"></lable><br>
         <label><input type="submit" name="submit" value="确认" onclick="return validate()"></label>

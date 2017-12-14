@@ -43,7 +43,7 @@ body {
               <td width="60"><table width="90%" border="0" cellpadding="0" cellspacing="0">
                   <tr>
                     <td class="STYLE1"><div align="center"><img src="images/114.gif" width="14" height="14" /></div></td>
-                    <td class="STYLE1"><div align="center">修改</div></td>
+                    <td class="STYLE1"><div align="center"><a href="motify.jsp">修改</a></div></td>
                   </tr>
               </table></td>
               <td width="52"><table width="88%" border="0" cellpadding="0" cellspacing="0">

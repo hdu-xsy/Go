@@ -26,7 +26,7 @@ body {
 		 sql = "SELECT * FROM log order by opertime desc";
 		 ResultSet rs = stat.executeQuery(sql);
  %>
-
+<form action="deleteconfirm.jsp">
 <tr>
 	<td><table width="100%" border="0" cellpadding="0" cellspacing="1" bgcolor="#c9c9c9">
 		<tr>
@@ -37,7 +37,6 @@ body {
 			<td height="22" bgcolor="#FFFFFF"><div align="center"><strong><span class="STYLE1">操作对象</span></strong></div></td>
 			<td height="22" bgcolor="#FFFFFF"><div align="center"><strong><span class="STYLE1">明细</span></strong></div></td>
 		</tr>
-
 		<%
 		while(rs.next() && count <9){
 		String rsoperuser = rs.getString("operuser");
@@ -46,7 +45,8 @@ body {
 		String rsoperobject = rs.getString("operobject");
 		count ++;
 		 %>
-		  <td height="22" bgcolor="#FFFFFF"><div align="center"><span class="STYLE3"><input type="radio" name="delete" value="r1"></span></div></td>
+		 <tr>
+		  <td height="22" bgcolor="#FFFFFF"><div align="center"><span class="STYLE3"><input type="radio" name="delete" value="<%= count %>"></span></div></td>
 			<td height="22" bgcolor="#FFFFFF"><div align="center"><span class="STYLE3"><%=rsoperuser %></span></div></td>
 			<td height="22" bgcolor="#FFFFFF"><div align="center"><span class="STYLE3"><%=rsoperdate %></span></div></td>
 			<td height="22" bgcolor="#FFFFFF"><div align="center"><span class="STYLE3"><%=rsopername %></span></div></td>
@@ -60,6 +60,8 @@ body {
 		%>
 	</table></td>
 </tr>
+<input type="submit" name="submit" value="删除">
+</form>
 <tr>
 	<td height="35"><table width="100%" border="0" cellspacing="0" cellpadding="0">
 		<tr>
