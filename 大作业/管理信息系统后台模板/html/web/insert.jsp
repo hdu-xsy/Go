@@ -60,7 +60,7 @@ Date date = new Date();
 out.print( "<p>" +date.toString()+"<p>");
 DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 %>
-      <form action="insertconfirm.jsp">
+      <form action="../../insertconfirm">
         操作用户<lable><input type="text" id ="user" name="user"></lable><br>
         操作时间<lable><input type="text" id ="time" name="time" VALUE="<%= format1.format(date) %>"></lable><br>
         操作名称<lable><input type="text" id ="name" name="name"></lable><br>

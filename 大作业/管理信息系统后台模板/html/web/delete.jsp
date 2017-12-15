@@ -26,7 +26,7 @@ body {
 		 sql = "SELECT * FROM log order by opertime desc";
 		 ResultSet rs = stat.executeQuery(sql);
  %>
-<form action="deleteconfirm.jsp">
+<form action="../../deleteconfirm">
 <tr>
 	<td><table width="100%" border="0" cellpadding="0" cellspacing="1" bgcolor="#c9c9c9">
 		<tr>
