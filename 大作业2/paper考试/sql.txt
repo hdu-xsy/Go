@@ -51,3 +51,5 @@ CREATE TABLE IF NOT EXISTS `users`(
 INSERT INTO users(Id,username,pwd) VALUES (1,'Zhangsan','123456');
 INSERT INTO users(Id,username,pwd) VALUES (2,'Lisi','123456');
 INSERT INTO users(Id,username,pwd) VALUES (3,'Wangwu','123456');
+
+INSERT INTO News(Id,ntitle,ncontent,father,nurl) VALUES (14,'公司简介','杭州言汇科技有限公司乘坐校车存在安全风险并且 这种交通风险过于集中，一旦发生事年人伤亡，损太 大。据此，《征求意见稿》规定规划，乘坐校车存在安全风险并且 这种交通风险过于集中，》规定规划....',1,'');

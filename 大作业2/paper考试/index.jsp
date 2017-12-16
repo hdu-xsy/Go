@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.io.*,java.util.*,java.sql.*"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -68,7 +70,21 @@
     <div class="main_left">
       <div class="about_us m-b-10">
         <h2>公司简介<a href="#" class="more">MORE</a></h2>
-        <div class="about_us_contain"> <img src="images/about_img.png" width="113" height="101" /><span class="blod">杭州言汇科技有限公司</span>乘坐校车存在安全风险并且  这种交通风险过于集中，一旦发生事年人伤亡，损太  大。据此，《征求意见稿》规定规划，乘坐校车存在安全风险并且  这种交通风险过于集中，》规定规划....</div>
+        <div class="about_us_contain"> <img src="images/about_img.png" width="113" height="101" /><span class="blod">杭州言汇科技有限公司</span>
+        <%
+             Class.forName("com.mysql.jdbc.Driver");
+             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/Javawebpaper","root","Xsydx886.");
+             Statement stat=conn.createStatement();
+             String sql;
+             sql = "SELECT * FROM News where father = 1;";
+             ResultSet rs = stat.executeQuery(sql);
+            while(rs.next()){
+              String rsnews = rs.getString("ncontent");
+              out.println(rsnews);
+              break;
+            }
+            %>
+      </div>
       </div>
       <div class="lay_div">
         <h2>联系我们</h2>
@@ -94,15 +110,37 @@
           <div class="lay_contain">
             <dl class="right_dl">
               <dt><img src="images/news_img.png" width="113" height="101" /></dt>
-              <dd class="title">消费者对医疗保健服务的需求</dd>
-              <dd>根据医疗保健市场的据医疗保健市场的调研出版...</dd>
+              <dd class="title">
+                <%
+                sql = "SELECT * FROM News where father = 2;";
+                ResultSet rs2 = stat.executeQuery(sql);
+                while(rs2.next()){
+                 String rstitle = rs2.getString("ntitle");
+                 out.print(rstitle);
+                 break;
+               }
+                %>
+              </dd>
+              <dd>
+                <%
+                  String rsnews = rs2.getString("ncontent");
+                  out.print(rsnews);
+                %>
+              </dd>
               <dd>[<a href="#">查看</a>]</dd>
             </dl>
             <ul class="right_ul">
-              <li><a href="#">低碳水化合物饮食可能增加心脑血管疾病的风险</a></li>
-              <li><a href="#">名人代言医疗广告明年起将禁播</a>，</li>
-              <li><a href="#">外贸入侵国内低端医疗器械企业前景堪忧</a></li>
-              <li><a href="#">外贸入侵国内低端医疗器械企业前景堪忧</a></li>
+              <%
+                int count = 0;
+                while(rs2.next() && count<4)
+                {
+                  String rstitle = rs2.getString("ntitle");
+                  count ++;
+              %>
+              <li><a href="#"><%=rstitle %></a></li>
+              <%
+                }
+              %>
             </ul>
           </div>
         </div>
@@ -111,7 +149,8 @@
           <div class="lay_contain">
             <dl class="right_dl">
               <dt><img src="images/hy_news_img.png" width="113" height="101" /></dt>
-              <dd class="title">消费者对医疗保健服务的需求</dd>
+              <dd class="title">消费者对医疗保健服务的需求
+              </dd>
               <dd>根据医疗保健市场的调据医疗保健市场的调研出版...</dd>
               <dd>[<a href="#">查看</a>]</dd>
             </dl>
@@ -125,6 +164,10 @@
         </div>
         <br class="clear"/>
       </div>
+      <%
+      stat.close();
+      conn.close();
+      %>
       <div class="lay_div">
         <h2>最新产品<a href="#" class="more">MORE</a></h2>
         <div class="lay_contain product">
