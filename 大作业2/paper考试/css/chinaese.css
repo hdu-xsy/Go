@@ -1,0 +1,107 @@
+@charset "utf-8";
+/* CSS Document */
+/*top*/
+.logo{ height:59px; margin:10px; float:left;}
+.help_div{ float:right; position:relative;}
+.lang{position:absolute; right:0; top:0; width:178px;}
+.lang a{ padding:10px 10px 10px 25px; display:block; float:left;}
+.lang a.chinaese{ background:url(../images/chinaese_icon.png) no-repeat left 10px;}
+.lang a.english{background:url(../images/english_icon.png) no-repeat left 10px;}
+.lang a.hanyu{ background:url(../images/hanyu_icon.png) no-repeat left 10px;}
+.search{ background:url(../images/search_bg.png) no-repeat; width:235px; height:22px; position:absolute; right:0px; top:45px; padding:1px 0 0 10px;}
+.search_txt{ font-size:12px; border:0; width:205px;height:20px; line-height:18px; color:#818181;}
+/*menu*/
+.menu{ background:url(../images/menu_center.png) repeat-x; height:28px;}
+.menu_l{ background:url(../images/menu_left.png) no-repeat; height:28px;width:5px; float:left;}
+.menu_r{ background:url(../images/menu_right.png) no-repeat; height:28px; width:4px; float:right;}
+.menu_main{ margin:0 4px 0 5px; height:28px; position:relative;}
+.menu_top{ position:absolute; width:100%;}
+.menu_nav{width:80px;text-align:center;float:left; background:url(../images/menu_center.png) repeat-x;}
+.menu_nav.more_nav{ width:90px;}
+.menu_head{cursor:pointer;background:url(../images/menu_line.png) no-repeat right top; color:#fff;line-height:28px;}
+.child_nav{ background:url(../images/child_nav.png) no-repeat 72px 12px; display:block;}
+.menu_head a{ color:#fff!important;}
+.menu_head a:hover{ color:#f4ae34!important; text-decoration:none;}
+.menu_body{display:none; width:120px;width:120px\9;*width:120px!important;*width:90px;}
+.menu_body a{padding:10px 15px;display:block;color:#535353;text-align:center;background:#eee;text-decoration:none; border-bottom:1px #ccc dotted;}
+.menu_body a:hover{color:#7fb2f4;background:#dfdfdf;}
+/*banner*/
+.banner{ margin:8px 0;}
+/*main*/
+.main_left{ width:306px; float:left;}
+.main_right{ margin:0 0 0 314px;}
+
+.about_us h2{ background:url(../images/about_h1.png) no-repeat; height:27px; line-height:27px; text-indent:20px; font-size:12px; font-weight:bold; color:#22349a;position:relative;}
+.about_us h2 a.more{ position:absolute; right:10px; top:0px; font-weight:normal;font-family:Verdana; font-size:9px;}
+.about_us_contain{ border:1px #ccc solid; padding:10px;line-height:22px; border-top:0;}
+.about_us_contain img{ float:left; margin-right:10px;}
+
+.lay_div{ border:1px #ccc solid;}
+.lay_div h2{height:27px; line-height:27px; text-indent:10px; font-size:12px; font-weight:bold; color:#22349a; position:relative;}
+.lay_div h2 a.more{ position:absolute; right:10px; top:0px; font-weight:normal; font-family:Verdana;font-size:9px;}
+.lay_contain{ padding:10px;}
+
+.contain_dl dt{ float:left; margin:0 10px 10px 0;}
+.contain_dl dd{ line-height:22px;}
+.contain_dl dd.title{ font-weight:bold;}
+.contain_ul{ clear:both;}
+.contain_ul li{ line-height:22px;}
+
+.main_right_top{ height:248px;}
+.lay_div.news{ float:left; width:312px;width:312px\9;*width:312px!important;*width:310px;}
+.right_dl dt{ float:left; margin:0 10px 10px 0;}
+.right_dl dd{ line-height:22px;}
+.right_dl dd.title{ font-weight:bold; text-align:center;}
+.right_ul{ clear:both;}
+.right_ul li{ line-height:22px; background:url(../images/point.png) no-repeat left 10px; text-indent:10px;}
+.right_ul li a{ color:#737373!important;}
+
+.product{ height:130px;}
+.move_left{ height:83px; width:15px; float:left; padding-top:50px;}
+.move_right{ height:83px; width:15px; float:right;padding-top:50px;}
+.move_left_btn{ background:url(../images/move_left.png) no-repeat; height:28px; width:15px; border:0;}
+.move_right_btn{ background:url(../images/move_right.png) no-repeat; height:28px; width:15px; border:0;}
+.porduct_list{ margin:0 17px; height:133px;width:570px; overflow:hidden;}
+.product_ul{ width:135px; float:left; display:block; height:131px; margin-right:6px;}
+.poduct_img img{ border:1px #ccc solid;}
+.product_ul li{ text-align:center; line-height:25px;}
+
+/*内页*/
+.left_nav{ width:210px;float:left;}
+.left_nav h2{ background:url(../images/left_nav_h2.png) no-repeat; width:208px; height:25px; line-height:25px; font-size:12px; font-weight:bold; color:#003e7c; text-indent:30px;}
+.left_nav ul{ background:url(../images/left_nav_ul.png) repeat-y;}
+.left_nav ul li{ line-height:25px; background:url(../images/red_icon.png) no-repeat 30px 10px; text-indent:40px;}
+.left_nav ul li a{ color:#da251c;}
+.right_main{ margin:0 0 0 218px;height:460px; height:auto!important;min-height:460px;}
+.address{ color:#fff; text-indent:10px; line-height:25px; height:25px; background:#2d7fcb;}
+.contain{ padding:10px 0; line-height:25px;}
+.contain h1{ font-size:14px; font-weight:bold; line-height:35px;}
+.contain h2{ font-size:12px; font-weight:bold; line-height:25px;}
+.contain p{ line-height:22px; text-indent:25px;}
+/*news*/
+.news_list{ display:block; margin-bottom:10px;}
+.news_list li{ line-height:25px; background:url(../images/point.png) 5px 10px no-repeat; text-indent:15px; border-bottom:1px #ccc dotted;display:block;}
+.news_list li span{ float:right; margin-right:5px;}
+.page{ text-align:center;clear:both; line-height:25px;}
+.page a{ padding:5px; border:1px #ccc solid; background:#f7f7f7; color:#333!important;}
+.page a:hover{ padding:5px; border:1px #2d7fcb solid; background:#2d7fcb; color:#fff!important; text-decoration:none;}
+.news_h1{ line-height:45px; text-align:center; border-bottom:1px #ccc solid;}
+.date{ text-align:center; line-height:25px; margin-bottom:10px;}
+.map{ float:right; margin:30px 10px 0 0;}
+.address_div{ padding:30px 0 0 0; font-size:14px; height:400px;}
+
+.img_link img{ border:1px #ccc solid; margin:0 20px 20px 0;}
+.left_menu{ border:1px #ccc solid;margin-bottom:10px;}
+.left_nav h2.left_menu_h2{ background:url(../images/left_menu1.png) no-repeat; cursor:pointer;}
+.left_nav h2.left_menu_h2.open{ background:url(../images/left_menu2.png) no-repeat; cursor:pointer;}
+.left_menu_body a{color:#707070!important;}
+.left_menu_body a.selected{color:#da251c!important;}
+.product_div{ width:133px; height:125px; margin:0 50px 20px 0; float:left;}
+
+/*table*/
+.data_table{ border-collapse:collapse; empty-cells:show;border-left:1px #ccc solid;border-top:1px #ccc solid; margin-bottom:10px;}
+.data_table td{ line-height:25px; border-bottom:1px #ccc solid;border-right:1px #ccc solid; padding:0 5px;}
+.data_table td.odd{ background:#f7f7f7; width:15%;}
+/*bottom*/
+.bottom{ border-top:1px #ccc solid; padding:10px; text-align:center;}
+.bottom p{ line-height:25px;}
