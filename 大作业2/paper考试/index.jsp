@@ -145,51 +145,94 @@
           </div>
         </div>
         <div class="lay_div news">
-          <h2>行业新闻<a href="#" class="more">MORE</a></h2>
+          <h2>技术服务<a href="#" class="more">MORE</a></h2>
           <div class="lay_contain">
             <dl class="right_dl">
               <dt><img src="images/hy_news_img.png" width="113" height="101" /></dt>
-              <dd class="title">消费者对医疗保健服务的需求
+              <dd class="title">
+                <%
+                sql = "SELECT * FROM News where father = 4;";
+                ResultSet rs4 = stat.executeQuery(sql);
+                while(rs4.next()){
+                 String rstitle = rs4.getString("ntitle");
+                 out.print(rstitle);
+                 break;
+               }
+               %>
               </dd>
-              <dd>根据医疗保健市场的调据医疗保健市场的调研出版...</dd>
+              <dd>
+                <%
+                String rsnews4 = rs4.getString("ncontent");
+                out.print(rsnews4);
+                %>
+              </dd>
               <dd>[<a href="#">查看</a>]</dd>
             </dl>
             <ul class="right_ul">
-              <li><a href="#">低碳水化合物饮食可能增加心脑血管疾病的风险</a></li>
-              <li><a href="#">名人代言医疗广告明年起将禁播</a>，</li>
-              <li><a href="#">外贸入侵国内低端医疗器械企业前景堪忧</a></li>
-              <li><a href="#">外贸入侵国内低端医疗器械企业前景堪忧</a></li>
+              <%
+                int count4 = 0;
+                while(rs4.next() && count4<4)
+                {
+                  String rstitle4 = rs4.getString("ntitle");
+                  count4 ++;
+              %>
+              <li><a href="#"><%=rstitle4 %></a></li>
+              <%
+                }
+              %>
             </ul>
           </div>
         </div>
         <br class="clear"/>
       </div>
-      <%
-      stat.close();
-      conn.close();
-      %>
       <div class="lay_div">
-        <h2>最新产品<a href="#" class="more">MORE</a></h2>
+        <h2>产品介绍<a href="#" class="more">MORE</a></h2>
         <div class="lay_contain product">
        	  <div class="move_left"><input name="" type="button"  class="move_left_btn" value=""/></div>
             <div class="move_right"><input name="" type="button"  class="move_right_btn" value=""/></div>
             <div class="porduct_list">
        	  <ul class="product_ul">
-                	<li class="poduct_img"><a href="#"><img src="images/product/index_01.png" width="133" height="106" /></a></li>
-                    <li><a href="#">产品名称</a></li>
+            <%
+              sql = "SELECT * FROM News where father = 3;";
+              ResultSet rspoduct = stat.executeQuery(sql);
+              String rspoducttitle;
+              String rspoducturl;
+            %>
+            <%
+              rspoduct.next();
+              rspoducttitle = rspoduct.getString("ntitle");
+              rspoducturl = rspoduct.getString("nurl");
+            %>
+                	<li class="poduct_img"><a href="#"><img src="./images/<%=rspoducturl %>" width="133" height="106" /></a></li>
+                    <li><a href="#"><%=rspoducttitle %></a></li>
               </ul>
-          <ul class="product_ul">
-                	<li class="poduct_img"><a href="#"><img src="images/product/index_01.png" width="133" height="106" /></a></li>
-                    <li><a href="#">产品名称</a></li>
-              </ul>
-          <ul class="product_ul">
-                	<li class="poduct_img"><a href="#"><img src="images/product/index_01.png" width="133" height="106" /></a></li>
-                    <li><a href="#">产品名称</a></li>
-              </ul>
-          <ul class="product_ul">
-                	<li class="poduct_img"><a href="#"><img src="images/product/index_01.png" width="133" height="106" /></a></li>
-                    <li><a href="#">产品名称</a></li>
-              </ul>
+              <ul class="product_ul">
+                <%
+                  rspoduct.next();
+                  rspoducttitle = rspoduct.getString("ntitle");
+                  rspoducturl = rspoduct.getString("nurl");
+                %>
+                    	<li class="poduct_img"><a href="#"><img src="./images/<%=rspoducturl %>" width="133" height="106" /></a></li>
+                        <li><a href="#"><%=rspoducttitle %></a></li>
+                  </ul>
+              <ul class="product_ul">
+                <%
+                  rspoduct.next();
+                  rspoducttitle = rspoduct.getString("ntitle");
+                  rspoducturl = rspoduct.getString("nurl");
+                %>
+                    	<li class="poduct_img"><a href="#"><img src="./images/<%=rspoducturl %>" width="133" height="106" /></a></li>
+                        <li><a href="#"><%=rspoducttitle %></a></li>
+                  </ul>
+              <ul class="product_ul">
+                <%
+                  rspoduct.next();
+                  rspoducttitle = rspoduct.getString("ntitle");
+                  rspoducturl = rspoduct.getString("nurl");
+                %>
+                    	<li class="poduct_img"><a href="#"><img src="./images/<%=rspoducturl %>" width="133" height="106" /></a></li>
+                        <li><a href="#"><%=rspoducttitle %></a></li>
+                  </ul>
             </div>
         </div>
       </div>
@@ -201,5 +244,9 @@
     <p>©2011 杭州言汇信息科技有限公司 All rights reserved.</p>
   </div>
 </div>
+<%
+stat.close();
+conn.close();
+%>
 </body>
 </html>
