@@ -9,8 +9,9 @@ func main() {
 	var L = new(LinkedList.LNode)
 	LinkedList.InitList(L)
 	var a,i,e int
+	Break:
 	for {
-		fmt.Println("请输入功能1.插入 2.删除 3.查找 4.尾部添加 5.遍历")
+		fmt.Println("请输入功能1.插入 2.删除 3.查找 4.尾部添加 5.遍历 6.离开")
 		fmt.Scanln(&a)
 		switch a {
 		case 1:
@@ -46,6 +47,9 @@ func main() {
 			LinkedList.ListAdd(L,e)
 		case 5:
 			LinkedList.GetList(L)
+		case 6:
+			break Break
 		}
 	}
+	fmt.Println("结束")
 }
