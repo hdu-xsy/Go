@@ -1,6 +1,9 @@
 package LinkedList
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 type LNode struct {
 	data int
@@ -9,11 +12,12 @@ type LNode struct {
 
 type LinkList *LNode
 
-func InitList(L LinkList) {
+func InitList(L LinkList) bool{
 	L = new(LNode)
 	if L == nil {
-		return
+		os.Exit(-1)
 	}
+	return true
 }
 
 func ListEmpty(L LinkList) bool {
