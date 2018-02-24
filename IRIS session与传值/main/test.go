@@ -7,6 +7,8 @@ import (
 	"github.com/kataras/iris"
 	_"github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
+	"github.com/kataras/iris/sessions"
+	"github.com/kataras/iris/mvc"
 )
 
 var app = iris.New()
@@ -22,10 +24,10 @@ type AdminUser struct {
 	Account  string
 	Password string
 }
-type AdminLogin struct {
-	Account  string
-	Password string
-}
+var (
+	cookieNameForSessionID = "mycookiesessionnameid"
+	sess                   = sessions.New(sessions.Config{Cookie: cookieNameForSessionID})
+)
 func index(ctx iris.Context) {
 	ctx.Redirect("/adminlogin")
 }
@@ -42,13 +44,22 @@ func fourzerofour(ctx iris.Context) {
 	}
 }
 func backend(ctx iris.Context) {
+	if auth, _ := sess.Start(ctx).GetBoolean("authenticated"); !auth {
+		ctx.Redirect("/adminlogin")
+		return
+	}
 	if err := ctx.View("backend.html");err!=nil {
 		ctx.StatusCode(iris.StatusInternalServerError)
 		ctx.WriteString(err.Error())
 	}
+	session := sess.Start(ctx)
+	if v,ok := session.Get("Account").(string);ok {
+		ctx.WriteString(v)
+	}
+	ctx.JSON(iris.Map{"result": "Hello World!"})
 }
-func admincheck(ctx iris.Context) {
-	user := AdminLogin{}
+func AdminLoginAjax(ctx iris.Context) {
+	user := AdminUser{}
 	err := ctx.ReadForm(&user)
 	if err !=nil {
 		ctx.StatusCode(iris.StatusInternalServerError)
@@ -69,20 +80,51 @@ func admincheck(ctx iris.Context) {
 	adminuser := AdminUser{Account: user.Account}
 	if ok, _ := orm.Get(&adminuser); ok {
 		if adminuser.Password == user.Password {
-			ctx.Redirect("/backend")
+			app.Logger().Println(user.Account+"   "+user.Password+"   login")
+			ctx.WriteString("TRUE")
+			session := sess.Start(ctx)
+			session.Set("authenticated", true)
+			session.Set("Account",user.Account)
 		} else {
-			ctx.Redirect("/adminlogin")
+			ctx.WriteString("密码错误")
 		}
 	} else {
-		ctx.Redirect("/adminlogin")
+		ctx.WriteString("用户名不存在")
 	}
+	return
 }
+func adminlogout(ctx iris.Context) {
+	session := sess.Start(ctx)
+	session.Set("authenticated",false)
+	session.Set("Account","nil")
+}
+
 func main() {
 	app.RegisterView(iris.HTML("html",".html").Reload(true))
 	app.Get("/",index)
 	app.Get("/adminlogin",adminlogin)
-	app.Post("/admincheck",admincheck)
 	app.Get("/404",fourzerofour)
-	app.Get("/backend",backend)
+	mvc.New(app.Party("/backend")).Handle(new(AdminLoginController))
+	//app.Get("/backend",backend)
+	app.Post("/AdminLoginAjax",AdminLoginAjax)
+	app.Get("/adminlogout",adminlogout)
+	//app.Get("test",test)
 	app.Run(iris.Addr(":4567"))
+}
+
+type AdminLoginController struct {
+	Account string
+}
+func (c *AdminLoginController) BeginRequest(ctx iris.Context) {
+	session := sess.Start(ctx)
+	c.Account = session.Get("Account").(string)
+}
+func (c *AdminLoginController) EndRequest(ctx iris.Context) {}
+func (c *AdminLoginController) Get() mvc.View {
+	return mvc.View{
+		Name: "backend",
+		Data: iris.Map{
+			"Account":  c.Account,
+		},
+	}
 }
