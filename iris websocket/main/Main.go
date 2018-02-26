@@ -8,10 +8,11 @@ import (
 	"github.com/go-xorm/xorm"
 	"github.com/kataras/iris/sessions"
 	"github.com/kataras/iris/mvc"
-	"github.com/kataras/iris/websocket"
+	"time"
 )
 
 var app = iris.New()
+var uuu int64
 func checkError(err error) {
 	if err != nil {
 		fmt.Println("Error is ", err)
@@ -20,13 +21,18 @@ func checkError(err error) {
 }
 type AdminUser struct {
 	Id       int64`pk`
-	Account  string
+	Account  string`unique`
 	Password string
 }
 type UserData struct {
 	Id       int64`pk`
-	Username string
+	Username string`unique`
 	Password string
+}
+type OnlineUser struct {
+	Id        int64
+	Username  string`unique`
+	Logintime time.Time`created`
 }
 var (
 	cookieNameForSessionID = "mycookiesessionnameid"
@@ -87,18 +93,26 @@ func UserLoginAjax(ctx iris.Context) {
 	iris.RegisterOnInterrupt(func(){
 		orm.Close()
 	})
-	err = orm.Sync2(new(UserData))
-	if err != nil {
+	if err = orm.Sync2(new(UserData));err != nil {
 		app.Logger().Fatalf("orm failed to initialized User table: %v", err)
 	}
 	userdata := UserData{Username: user.Username}
 	if ok, _ := orm.Get(&userdata); ok {
 		if userdata.Password == user.Password {
+			olu := OnlineUser{Username:userdata.Username}
+			if ok,_ := orm.Get(&olu);ok {
+				ctx.WriteString("该用户正在线上")
+				return
+			}
 			app.Logger().Println("user    "+user.Username+"   "+user.Password+"   login")
 			ctx.WriteString("TRUE")
 			session := sess.Start(ctx)
 			session.Set("userauthenticated", true)
 			session.Set("Username",user.Username)
+			uuu = userdata.Id
+			var time = time.Now()
+			var onlineuser = OnlineUser{Id:uuu,Username:user.Username,Logintime:time}
+			orm.Insert(&onlineuser)
 		} else {
 			ctx.WriteString("密码错误")
 		}
@@ -109,8 +123,21 @@ func UserLoginAjax(ctx iris.Context) {
 }
 func userlogout(ctx iris.Context) {
 	session := sess.Start(ctx)
+	orm,err := xorm.NewEngine("mysql", "root:Xsydx886.@/javaweb?charset=utf8")
+	if err != nil {
+		app.Logger().Fatalf("orm failed to initialized: %v", err)
+	}
+	iris.RegisterOnInterrupt(func(){
+		orm.Close()
+	})
+	if err = orm.Sync2(new(OnlineUser));err !=nil {
+		app.Logger().Fatalf("orm failed to initialized User table: %v", err)
+	}
+	onlineuser := OnlineUser{Username:session.GetString("Username")}
+	orm.Delete(&onlineuser)
 	session.Set("userauthenticated",false)
 	session.Set("Username","nil")
+	uuu = 0
 }
 func main() {
 	app.RegisterView(iris.HTML("html",".html").Reload(true))
@@ -123,11 +150,9 @@ func main() {
 	app.Get("/404",func (ctx iris.Context) {
 		ctx.View("404.html")
 	})
-	// when 404 then render the template $templatedir/errors/404.html
 	app.OnErrorCode(iris.StatusNotFound, func(ctx iris.Context){
 		ctx.View("404.html")
 	})
-
 	app.OnErrorCode(500, func(ctx iris.Context){
 		ctx.View("404.html")
 	})
@@ -145,68 +170,3 @@ func main() {
 	app.Run(iris.Addr(":4567"))
 }
 
-type AdminLoginController struct {
-	Account string
-}
-func (c *AdminLoginController) BeginRequest(ctx iris.Context) {
-	if auth, _ := sess.Start(ctx).GetBoolean("authenticated"); !auth {
-		ctx.Redirect("/adminlogin")
-		return
-	}
-	session := sess.Start(ctx)
-	c.Account = session.GetString("Account")
-}
-func (c *AdminLoginController) EndRequest(ctx iris.Context) {}
-func (c *AdminLoginController) Get() mvc.View {
-	return mvc.View{
-		Name: "backend",
-		Data: iris.Map{
-			"Account":  c.Account,
-		},
-	}
-}
-type UserLoginController struct {
-	Username string
-}
-func (c *UserLoginController) BeginRequest(ctx iris.Context) {
-	if auth, _ := sess.Start(ctx).GetBoolean("userauthenticated"); !auth {
-		ctx.Redirect("/login")
-		return
-	}
-	session := sess.Start(ctx)
-	c.Username = session.GetString("Username")
-}
-func (c *UserLoginController) EndRequest(ctx iris.Context) {
-	userlogout(ctx)
-}
-func (c *UserLoginController) Get() mvc.View {
-	return mvc.View{
-		Name: "chatform",
-		Data: iris.Map{
-			"Username":  c.Username,
-		},
-	}
-}
-func setupWebsocket(app *iris.Application) {
-	// create our echo websocket server
-	ws := websocket.New(websocket.Config{
-		ReadBufferSize:  1024,
-		WriteBufferSize: 1024,
-	})
-	ws.OnConnection(handleConnection)
-	// register the server on an endpoint.
-	app.Get("/echo", ws.Handler())
-	// see html script tags, this path is used.
-	app.Any("/iris-ws.js", func(ctx iris.Context) {
-		ctx.Write(websocket.ClientSource)
-	})
-}
-
-func handleConnection(c websocket.Connection) {
-	c.On("chat", func(msg string) {
-		// fmt.Printf("%s sent: %s\n", c.Context().RemoteAddr(), msg)
-		// Write message back to the client message owner with: c.Emit("chat", msg)
-		// Write message to all except this client with:
-		c.To(websocket.Broadcast).Emit("chat",  msg)
-	})
-}
