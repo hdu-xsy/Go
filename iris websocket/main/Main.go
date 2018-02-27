@@ -141,6 +141,7 @@ func userlogout(ctx iris.Context) {
 }
 func main() {
 	app.RegisterView(iris.HTML("html",".html").Reload(true))
+	app.StaticWeb("/js", "./js") // serve our custom javascript code
 	app.Get("/",func (ctx iris.Context) {
 		ctx.View("index.html")
 	})
