@@ -1,17 +1,30 @@
 ## Go IRIS框架学习笔记
+
+> 当前网上关于Golang的IRIS框架的教程极极极极少，有参考价值的也就官方文档，可惜官网文档*除 了 代 码 什 么 都 没 有*，而且 还 *没 有 中 文 版*，竟 然 还 是 *按 照 首 字 母 排 得 序*，但是比起热门的GIN、BEEGO、马卡龙框架，IRIS还是有自己的特点的，于是在此整理方便学习和以后使用（以官方文档为主）  []内内容为备注(类型) [...]为方法体
+
+### 安装iris和导入iris
+```
+命令行:go get github.com/kataras/iris
+```
+```
+import (
+	"github.com/kataras/iris"
+)
+```
 ### 生成网页与注册路由的一般方法
 - main函数中
 ```Golang
-app.RegisterView(iris.HTML("html",".html").Reload(true))
-app.StaticWeb("/js", "./js") // serve our custom javascript code
-app.Get("/",index)  //路由
+app.RegisterView(iris.HTML("/html[directory]",".html[extension]").Reload(true))
+app.StaticWeb("/js[request path]", "./js[system path]") // serve our custom javascript code
+app.Get("/",index[funcName])  //路由
 app.Run(iris.Addr(":80"))  //端口
 ```
 - 路由函数中
 ```
-if err := ctx.View("index.html");err!=nil {
-		ctx.StatusCode(iris.StatusInternalServerError)
-		ctx.WriteString(err.Error())
+func funcName(ctx iris.Context){
+    if err := ctx.View("index.html");err!=nil {
+    		//错误处理[...]
+    }
 }
 ```
 - 错误页面
@@ -34,11 +47,10 @@ func Funcname(ctx iris.Context) {
 	//  读取请求
 	err := ctx.ReadForm(&user)
 	if err !=nil {
-		ctx.StatusCode(iris.StatusInternalServerError)
-		ctx.WriteString(err.Error())
-		ctx.Redirect("/404")
+		//[..]
 	}
 	//  ORM
+	//  mysql
 	orm,err := xorm.NewEngine("mysql", "用户名:密码@/库名?charset=utf8")
 	//  不同数据库操作不同 具体参考文档
 	if err != nil {
@@ -67,7 +79,16 @@ func Funcname(ctx iris.Context) {
 	var users []AdminUser
 	orm.Find(&users)
 	//详细操作日后再来学习
+    //官方文档http://www.xorm.io/docs/
 }
+```
+## 带参数的路径
+```
+app.Get("/{xxx}/{namedRoute}", func(ctx iris.Context) {
+        xxx := ctx.Params().Get("xxx")
+		routeName := ctx.Params().Get("namedRoute")
+		//[...]
+})
 ```
 ## Ajax
 - 前端页面
@@ -200,6 +221,59 @@ session.Destroy()   //销毁
 - 官方的websocket
 - 第三方websocket
 ### 模板
+- 上下文视图数据
+```
+app.Get("/路由", func(ctx iris.Context) {
+		ctx.ViewData("Key", "Value")
+		if err := ctx.View("index.html"); err != nil {
+			//[...]
+		}
+})
+//HTML中使用{{.Key}}获取
+```
+- 嵌入模板
+```
+//layout页面中加入{{ yield }}使用模板
+//HTML中使用{{funcName 参数}}使用函数 如下例中可使用 {{ greet "string" }}
+//{{ render "路径" }} 把别的html文件的内容拿过来
+func main() {
+	app := iris.New()
+	//全局模板 所有页面适用
+	tmpl := iris.HTML("./templates[html文件夹路径]", ".html")
+	tmpl.Layout("layouts/layout.html[layout文件路径]")
+	tmpl.AddFunc("greet", func(s string) string {
+		//[..]
+	})
+	tmpl.Binary(Asset, AssetNames) // <-- IMPORTANT
+	app.RegisterView(tmpl)
+	app.Get("/", func(ctx iris.Context) {
+		if err := ctx.View("page1.html"); err != nil {
+			ctx.StatusCode(iris.StatusInternalServerError)
+			ctx.Writef(err.Error())
+		}
+	})
+
+	// 不使用全局模板
+	app.Get("/nolayout", func(ctx iris.Context) {
+		ctx.ViewLayout(iris.NoLayout)
+		if err := ctx.View("page1.html"); err != nil {
+			ctx.StatusCode(iris.StatusInternalServerError)
+			ctx.Writef(err.Error())
+		}
+	})
+
+	// 局部模板 不受全局模板影响
+	my := app.Party("/my").Layout("layouts/mylayout.html") { 
+		my.Get("/", func(ctx iris.Context) {
+			ctx.View("page1.html")
+		})
+		my.Get("/other", func(ctx iris.Context) {
+			ctx.View("page2.html")
+		})
+	}
+	app.Run(iris.Addr(":8080"))
+}
+```
 ### mvc
 ### 认证框架
 ### 文件上传
