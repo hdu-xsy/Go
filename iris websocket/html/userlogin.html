@@ -30,21 +30,9 @@
     </form>
     <button type="submit" class="btn btn-default" id="btn" name="btn">确认</button>
     <span id="helpBlock" class="help-block">账号:username 密码:password 账号:username2 密码:password2</span>
+    <p id="text" name="text"></p>
 </div>
-<p id="text" name="text"></p>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<script type="text/javascript">
-    $(function() {
-        $("#btn").click(function() {
-            var params = {
-                Username : $("#Username").val(),
-                Password : $("#Password").val()
-            };
-            $.post("/UserLoginAjax",params,function (data) {
-                if (data == "TRUE") $(location).attr('href', '/chatform');
-                $("#text").html(data)});
-        });
-    });
-</script>
+<script type="text/javascript" src="../js/UserLoginAjax.js"></script>
 </body>
 </html>
