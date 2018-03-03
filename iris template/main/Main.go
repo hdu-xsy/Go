@@ -143,7 +143,7 @@ func main() {
 	app.RegisterView(iris.HTML("html",".html").Reload(true))
 	app.StaticWeb("/js", "./js") // serve our custom javascript code
 	app.Get("/",func (ctx iris.Context) {
-		ctx.View("index.html")
+		ctx.View("aa.html")
 	})
 	app.Get("/adminlogin",func (ctx iris.Context) {
 		ctx.View("adminlogin.html")
@@ -168,6 +168,6 @@ func main() {
 	app.Post("/UserLoginAjax",UserLoginAjax)
 	setupWebsocket(app)
 	//app.Get("test",test)
-	app.Run(iris.Addr(":4567"))
+	app.Run(iris.Addr(":80"))
 }
 

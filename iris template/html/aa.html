@@ -308,13 +308,14 @@ app.Get("/路由", func(ctx iris.Context) {
             //[...]
         }
 })
-//HTML中使用{{.Key}}获取
+//HTML中使用｛｛.Key｝｝获取
 </pre>
 <li><h5>嵌入模板</h5></li>
 <pre>
-//layout页面中加入{{ yield }}使用模板
-//HTML中使用{{funcName 参数}}使用函数 如下例中可使用 {{ greet "string" }}
-//{{ render "路径" }} 把别的html文件的内容拿过来
+//花括号为半角 因为用半角会自动翻译 所以这里用全角
+//layout页面中加入｛｛ yield ｝｝使用模板
+//HTML中使用｛｛funcName 参数｝｝使用函数 如下例中可使用 ｛｛ greet "string" ｝｝
+//｛｛ render "路径" ｝｝ 把别的html文件的内容拿过来
 func main() {
     app := iris.New()
     //全局模板 所有页面适用
@@ -323,7 +324,7 @@ func main() {
     tmpl.AddFunc("greet", func(s string) string {
         //[..]
     })
-    tmpl.Binary(Asset, AssetNames) // &lt;-<li><h5>IMPORTANT
+    tmpl.Binary(Asset, AssetNames) // &lt;-- ####IMPORTANT
     app.RegisterView(tmpl)
     app.Get("/", func(ctx iris.Context) {
         if err := ctx.View("page1.html"); err != nil {
@@ -575,7 +576,7 @@ web.xml
 &lt;listen&gt;
     &lt;listen-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listen-class&gt;
 &lt;/listen&gt;</pre>
-                            <h4> bean实例化:
+                        <h4> bean实例化:</h4>
                                 <ul>
                                     <li><h5>无参构造√:</h5>  
                                         <pre>
@@ -880,6 +881,7 @@ hibernateTemplate.findByCriteria(DetachedCriteria criteria,firstResult,maxResult
                                             <li>一对多</li>
                                             <li>多对多</li>
                                             <li>查询(深入)</li>
+                                        </ul>
                                             <blockquote>
                                                 <p>数据访问层框架</p>
                                                 <p>Hibernate 5.2.12</p>
