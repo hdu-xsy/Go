@@ -1,0 +1,333 @@
+<h3 id="Spring">Spring</h3>
+<ul class="list-unstyled">
+    <ul>
+        <li>Spring配置</li>
+        <li>bean实例化</li>
+        <li>属性注入</li>
+        <li>注解操作</li>
+        <li>AOP</li>
+        <li>jdbcTemplate</li>
+        <li>监听器</li>
+        <li>SSH整合</li>
+    </ul>
+</ul>
+<blockquote>
+    <p> 开源轻量级框架</p>
+    <p>  核心：AOP、IOC</p>
+    <p> 一站式框架</p>
+    <p>  Spring5.0.3</p>
+</blockquote>
+<h4>Spring配置:</h4>
+<pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context" xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"&gt; &lt;!-- bean definitions here --&gt;
+    &lt;context:component-scan base-package="扫描的包名"&gt;&lt;/context:component-scan&gt;
+    &lt;aop:aspectj-autoproxy&gt;&lt;/aop:aspectj-autoproxy&gt;
+&lt;/beans&gt;
+web.xml
+&lt;context-param&gt;
+    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+    &lt;param-value&gt;classpath:applicationContext.xml&lt;/param-value&gt;
+&lt;/context-param&gt;
+&lt;listen&gt;
+    &lt;listen-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listen-class&gt;
+&lt;/listen&gt;</pre>
+<h4> bean实例化:</h4>
+<ul>
+    <li><h5>无参构造√:</h5>  
+        <pre>
+&lt;bean id="名称" class="全路径"&gt;&lt;/bean&gt;   //不含特殊符号 name属性可以加特殊符号
+//scope singletou 默认,单实例 prototype多实例
+</pre>
+    </li>
+    <li>
+        <h5>静态工厂:</h5>  
+        <pre>
+静态工厂类里
+public static Bean getBean() {
+    return new Bean();
+}
+&lt;bean id="名称" class="全路径" factory-method="getBean"&gt;&lt;/bean&gt;  
+</pre>
+    </li>
+    <li>
+        <h5>实例工厂：</h5>
+        <pre>
+实例工厂类里  
+public Bean getBean() {
+    return new Bean();
+}
+&lt;bean id="工厂类名" class="全路径"&gt;&lt;/bean&gt;
+&lt;bean id="名称" factory-bean="工厂类名" factory-method="getBean"&gt;&lt;/bean&gt;  
+</pre>
+    </li>
+</ul>
+<h4>属性注入 :</h4>
+<ul>
+    <li><h5>有参构造注入</h5>
+        <pre>
+&lt;bean id="名称" class="全路径"&gt;
+    &lt;constructor-arg name="属性名" value="值"&gt;&lt;/constructor-arg&gt;
+&lt;/bean&gt;  
+</pre>
+    </li>
+    <li><h5>set注入√</h5>  
+        <pre>
+&lt;bean id="名称" class="全路径"&gt;
+    &lt;property name="属性名" value="值"&gt;&lt;/property&gt;
+&lt;/bean&gt;  
+</pre>
+    </li>
+    <li><h5>注入对象属性</h5>
+        <pre>
+service类里加入set方法
+&lt;bean id="名称" class="DAO类全路径"&gt;&lt;/bean&gt;  
+&lt;bean id="名称" class="service类全路径"&gt;
+    &lt;property name="set的属性名" ref="名称"&gt;&lt;/proterty&gt;
+</pre>
+    </li>
+    <li><h5>p名称空间注入</h5>  
+        <pre>
+xmlns:p="http://www.springframework.org/schema/p"
+&lt;bean id="名称" class="DAO全路径" p:属性名="属性值"&gt;&lt;/p&gt;
+</pre>
+    </li>
+    <li><h5>数组/Map/List注入</h5>  
+        <pre>
+&lt;bean id="名称" class="全路径"&gt;
+    &lt;property name="属性名"&gt;
+    &lt;list/map&gt;
+        &lt;value&gt;...&lt;/value&gt;
+        //&lt;entry key="" value=""&gt;&lt;/entry&gt;
+    &lt;list/map&gt;
+    &lt;/property&gt;  
+&lt;/bean&gt;
+</pre>
+    </li>
+</ul>
+<h4>注解操作:</h4>
+<ul>
+    <li>注解创建对象
+        <pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context" xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"&gt; &lt;!-- bean definitions here --&gt;
+    &lt;context:component-scan base-package=""&gt;&lt;/context:component-scan&gt;
+&lt;/beans&gt;
+@Component(value="名称")  
+类 
+@Controller 表述层  @Service 业务逻辑层  @Respository  数据访问层  
+</pre>
+    </li>
+    <li>注解注入属性
+        <pre>
+@Autowired
+private 类 对象;  
+或
+@Resource(name="要引用的对象的Component里的value值");  
+</pre>
+    </li>
+</ul>
+Bean用来创建对象 注解用来注入属性
+<pre>
+&lt;bean id="名称" class="被作为属性的对象的类的全路径"&gt;&lt;/bean&gt;  
+@Resource(name="名称")
+private 类 对象名;
+</pre>
+<h4>AOP:</h4>
+<ul>
+    <li>xml配置
+        <pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop" xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"&gt; &lt;!-- bean definitions here --&gt;
+&lt;bean id="名称" class="增强的类"&gt;&lt;/bean&gt;  
+&lt;bean id="名称" class="被增强的类"&gt;&lt;/bean&gt;  
+&lt;aop:config&gt;
+    &lt;aop:pointcut expression="execution(* 包.被增强方法(..))" id="名称"/&gt;
+    &lt;aop:aspect ref="增强的类名称"&gt;
+        &lt;aop:类型(before/after-returning/around) method="增强方法名"/ pointcut-ref="被增强方法(切入点)名称"&gt;  
+    &lt;/aop:aspect&gt;
+&lt;/aop:config&gt;
+&lt;/beans&gt;
+</pre>
+    </li>
+    <li>注解
+        <pre>
+&lt;bean ...&gt;
+&lt;aop:aspectj-autoproxy&gt;&lt;/aop:aspectj-autoproxy&gt;
+@Aspect
+public class 增强类{
+    @类型(value="execution(* 被增强类.切入点())")
+    public void 增强方法(){
+        ...
+    }
+}
+</pre>
+    </li>
+</ul>
+//环绕 proceedingJoinPoint.proceed();  
+<h4>jdbcTemplate</h4>
+<ul>
+    <li>增删改
+        <pre>
+DriverManagerDataSource dataSource = new DriverManagerDataSource();
+dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+dataSource.setUrl("jdbc:mysql:///库");
+dataSource.setUsername("");
+dataSource.setPassword("");
+JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSouce);
+String sql = "xxx ? xxx"
+int rows = jdbcTemplate.update(sql,"value");
+</pre>
+    </li>
+    <li>查询
+        <ul>
+            <li>返回一个值
+                <pre>
+    int num = jdbcTemplate.queryForObject(sql,Integer.class);
+  </pre>
+            </li>
+            <li>返回一个对象
+                <pre>
+    Entity Entity_name = jdbcTemplate.queryForObject(sql,new MyRowMapper(),"value");
+    class MyRowMapper implements RowMapper&lt;Entity&gt;{
+    重写mapRow{
+        re.getString......;
+        Entity Entity_name = new Entity();
+        set........;
+        return Entity;
+        }
+     }
+   </pre>
+            </li>
+            <li>返回一个List
+                <pre>
+    List&lt;Entity&gt; list = jdbcTemplate.query(sql,new MyRowMapper());
+  </pre>
+            </li>
+        </ul>
+    </li>
+    <li>连接池
+        <pre>
+&lt;bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"&gt;
+    &lt;property name="driverClass" value="com.mysql.jdbc.Driver"&gt;&lt;/property&gt;
+    &lt;property name="jdbcUrl" value="jdbc:mysql:///库"&gt;&lt;/property&gt;
+    &lt;property name="user" value=""&gt;&lt;/property&gt;
+    &lt;property name="password" value=""&gt;&lt;/property&gt;
+&lt;/bean&gt;
+//Service注入DAO
+//DAO注入jdbcTemplate
+//jdbcTemplate注入连接池
+&lt;bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate"&gt;
+&lt;property name="dataSource" ref="dataSource"&gt;&lt;/property&gt;
+&lt;/beans&gt;
+</pre>
+    </li>
+    <li>事务
+        <ul>
+            <li>配置
+                <pre>
+    &lt;bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"&gt;
+    &lt;property name="dataSource" ref="dataSource"&gt;&lt;/property&gt;
+    &lt;/bean&gt;
+    &lt;tx:advice id="txadvice" transaction-manager="transactionManager"&gt;
+        &lt;tx:attributes&gt;
+            &lt;tx:method name="xxx*" propagation="REQUIRED"/&gt;
+        &lt;/tx:attributes&gt;
+    &lt;/tx:adbice&gt;
+    &lt;aop:config&gt;
+        &lt;aop:pointcut expression:"execution(* 类.切入点(..))" id="pointcut"&gt;
+        &lt;aop:advisor advice-ref="txadvice" pointcut-ref="pointcut"/&gt;
+    &lt;/aop:config&gt;
+  </pre>
+            </li>
+            <li>注解
+                <pre>
+    &lt;bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"&gt;
+    &lt;property name="dataSource" ref="dataSource"&gt;&lt;/property&gt;
+    &lt;/bean&gt;
+    &lt;tx:annotation-driven transaction-manager="transactionManager"/&gt;
+    @Transactional
+    public class Service类{
+    }
+  </pre>
+            </li>
+        </ul>
+    </li>
+</ul>
+<h4>监听器:</h4>
+<pre>
+&lt;context-param&gt;
+    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+    &lt;param-value&gt;classpath:配置文件路径&lt;/param-value&gt;
+&lt;/context-param&gt;  
+&lt;listen&gt;
+    &lt;listen-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listen-class&gt;
+&lt;/listen&gt;
+</pre>
+<h4>SSH框架整合</h4>
+<ul>
+    <li>Struts2 整合 Spring
+        <pre>
+spring中
+&lt;bean id="" class="类全路径" scope="prototype"&gt;
+Struts2中
+&lt;action name="" class="beanid"&gt;
+</pre>
+    </li>
+    <li>Spring 整合 Hibernate
+        <pre>
+Hibernate内连接配置可以去掉
+&lt;bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"&gt;
+    &lt;property name="dataSource" ref="dataSource"&gt;&lt;/property&gt;
+    &lt;property name="configLocations" value="classpath:hibernate.cfg.xml"&gt;&lt;/property&gt;
+&lt;/bean&gt;
+</pre>
+    </li>
+    <li>Hibernate Template
+        <pre>
+&lt;bean id="Dao" class="Dao类"&gt;
+    &lt;property name="hibernateTemplate" ref="hibernateTemplate"&gt;
+&lt;/bean&gt;
+&lt;bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate"&gt;
+    &lt;property name="sessionFactory" ref="sessionFactory"&gt;&lt;/property&gt;
+&lt;/bean&gt;
+&lt;bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager"&gt;
+    &lt;property name="sessionFactory" ref="sessionFactory"&gt;&lt;/property&gt;
+&lt;/bean&gt;
+&lt;tx:annotation-driven  transaction-manager="transactionManager"&gt;
+@Transactional
+Service类{
+}
+</pre>
+        <pre>
+get方法(根据id查询)
+Entity Entity_name = hibernateTemplate.get(Entity.class,id);
+find方法(条件查询)
+List&lt;Entity&gt; list = (List&lt;Entity&gt;) hibernateTemplate.find(HQL,value);
+分页查询
+hibernateTemplate.findByCriteria(DetachedCriteria criteria,firstResult,maxResults)
+</pre>
+    </li>
+    <li>分模块
+        <pre>
+&lt;import resource="classpath:xxx.xml"/&gt;
+</pre>
+    </li>
+</ul>
+</div>
+<div><%+ "hibernate.html" %></div>

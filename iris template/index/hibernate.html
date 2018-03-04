@@ -1,0 +1,319 @@
+<div>
+    <h2 id="Hibernate">Hibernate 框架</h2>
+    <h3>Hibernate</h3>
+    <ul>
+        <li>实体类</li>
+        <li>配置</li>
+        <li>实现</li>
+        <li>CRUD</li>
+        <li>事务</li>
+        <li>绑定session</li>
+        <li>查询</li>
+        <li>一对多</li>
+        <li>多对多</li>
+        <li>查询(深入)</li>
+    </ul>
+    <blockquote>
+        <p>数据访问层框架</p>
+        <p>Hibernate 5.2.12</p>
+    </blockquote>
+    <h4>实体类:</h4>
+    <pre>
+          Public class 表名{
+            private 类型 属性名;
+            ....
+            get函数;
+            ....
+            set函数;
+            ....
+          }
+        </pre>
+    <h4>映射配置:</h4>
+    <pre>
+          &lt;?xml version="1.0" encoding="UTF-8"?&gt;  
+          &lt;!DOCTYPE hibernate-mapping PUBLIC
+            "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+            "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"&gt;
+        &lt;hibernate-mapping&gt;
+            &lt;class name="实体类全路径" table="表名"&gt;  
+                &lt;id name="主键属性名" column="主键字段名"&gt;  
+                    &lt;generator class=""&gt;&lt;/generator&gt;  
+                &lt;/id&gt;
+                &lt;property name="属性名" column="字段名"&gt;&lt;/property&gt;  
+            &lt;/class&gt;
+        &lt;/hibernate-mapping&gt;
+        &lt;xml-body&gt;
+        &lt;/xml-body&gt;
+
+        generator: increment / identity / sequence / native(√) / uuid(String) / assigned
+        </pre>
+    <h4> 核心配置:</h4>
+    <pre>
+          &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+          &lt;!DOCTYPE hibernate-configuration PUBLIC
+            "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+            "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd"&gt;
+          &lt;hibernate-configuration&gt;
+            &lt;session-factory&gt;
+                &lt;property name="hibernate.connection.driver_class"&gt;com.mysql.jdbc.Driver&lt;/property&gt;
+                &lt;property name="hibernate.connection.url"&gt;jdbc:mysql://localhost:3306/&lt;/property&gt;
+                &lt;property name="hibernate.connection.username"&gt;root&lt;/property&gt;
+                &lt;property name="hibernate.connection.password"&gt;&lt;/property&gt;
+                &lt;property name="hibernate.show_sql"&gt;true&lt;/property&gt;
+                &lt;property name="hibernate.format_sql"&gt;true&lt;/property&gt;
+                &lt;property name="hibernate.hbm2ddl.auto"&gt;update&lt;/property&gt;
+                &lt;property name="hibernate.dialect"&gt;org.hibernate.dialect.MySQLDialect&lt;/property&gt;
+                &lt;mapping resource="entity\userdata.hbm.xml"/&gt;
+            &lt;/session-factory&gt;
+          &lt;/hibernate-configuration&gt;
+          &lt;xml-body&gt;
+
+          &lt;/xml-body&gt;
+        </pre>
+    <h4>实现：</h4>
+    <pre>
+          Configuration cfg = new Configuration();
+          cfg.configure();
+          SessionFactory sessionFactory = cfg.buildSessionFactory();
+          Session session = sessionFactory.openSession();
+          Transaction tx = session.beginTransaction();
+          //功能
+          userdata userdata = new userdata();
+          session.save(userdata);
+          //
+          tx.commit();
+          session.close();
+          sessionFactory.close();
+        </pre>
+    <h4>查找操作:</h4>
+    <pre>
+        //Configuration cfg = new Configuration();
+        //cfg.configure();
+        //SessionFactory sessionFactory = cfg.buildSessionFactory();
+        SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
+        Session session = sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+        //get语句
+        userdata userdata = session.get(userdata.class,记录主键值);
+        //输出 System.out.println.........
+        tx.commit();
+        session.close();
+        //sessionFactory.close();
+        </pre>
+    <h4> 修改操作:</h4>
+    <pre>
+        userdata userdata = session.get(userdata.class,记录主键值);
+        userdata.set属性名(记录值);
+        session.update(userdata);
+        </pre>
+    <h4> 删除操作: </h4>
+    <pre>
+        userdata userdata = session.get(userdata.class,记录主键值);
+        session.delete(userdata);
+        </pre>
+    <h4>事务:</h4>
+    <pre>
+        SessionFactory  sessionfactory = null;
+        Session session = null;
+        Transaction tx = null;
+        try{
+            sessionfactory = HibernateUtils.getSessionFactory();
+            session = sessionfactory.openSession();
+            tx = session.beginTransaction();
+            //  
+            tx.commit();
+        }catch(Exception e){
+            tx.rollback();
+        }finally{
+             session.close();
+        }
+        </pre>
+    <h4>绑定session:</h4>
+    <pre>
+        &lt;property name="hibernate.current_session_context_class"&gt;thread&lt;/property&gt;
+        public static Session getSessionobject() {
+                return sessionFactory.getCurrentSession();
+            }
+        Session session = HibernateUtils.getSessionobject();
+        </pre>
+    <h4>查询</h4> 
+    <ul>
+        <li>Query:
+            <pre>
+        Query query = session.createQuery(HQL(from userdata));
+        List&lt;userdata&gt; list = query.list();
+        遍历
+        </pre>
+        </li>
+        <li>Criteria:  
+            <pre>
+        Criteria criteria = session.createCriteria(userdata.class);
+        List&lt;userdata&gt; list = criteria.list();
+        遍历
+        </pre>
+        </li>
+        <li>SQLQuery:
+            <pre>
+        SQLQuery sqlQuery = session.createSQLQuery(SQL(select * from userdata));
+        //List&lt;Object[]&gt; list = sqlQuery.list();
+        //遍历(数组)
+        sqlQuery.addEntity(userdata.class);
+        List&lt;userdata&gt; list = sqlQuery.list();
+        遍历
+        </pre>
+        </li>
+    </ul>
+    <h4>一对多:</h4>
+    <ul>
+        <li>映射:  
+            <pre>
+        Entity1一对多Entity2:
+        Entity1中
+        private set&lt;Entity2&gt; Entity2_name = new HashSet&lt;Entity2&gt;();
+        get()....set().....
+        Entity2中
+        private Entity1 Entity1_name;
+        get()...set...
+        Entity1.hbm.xml中  
+        &lt;set name="Entity2_name"&gt;
+        &lt;key column="外键名"&gt;&lt;/key&gt;
+        &lt;one-to-many class="Entity2全路径"/&gt;
+        &lt;/set&gt;
+        Entity2.hbm.xml中
+        &lt;many-to-one name="Entity1_name" class="Entity1全路径" column="外键名"&gt;&lt;/many-to-one&gt;
+        </pre>
+        </li>
+        <li>级联保存:  
+            <pre>
+        Entity1_name.getSetEntity2().add(Entity2_name1);
+        Entity1_name.getSetEntity2().add(Entity2_name2);
+        Entity2_name1.setEntity1(Entity1_name);
+        Entity2_name2.setEntity1(Entity1_name);
+        session.save(Entity1_name);
+        session.save(Entity2_name1);
+        session.save(Entity2_name2);  
+        或者
+        Entity1.hbm.xml中
+        set标签内添加 cascade="save-update"
+        Entity1_name.getSetEntity2().add(Entity2_name1);
+        Entity1_name.getSetEntity2().add(Entity2_name2);
+        session.save(Entity1_name);
+        </pre>
+        </li>
+        <li>级联删除:  
+            <pre>
+        cascade加入delete
+        session.delete(Entity1_name);
+        </pre>
+        </li>
+        <li>修改:  
+            <pre>
+        Entity1.hbm.xml中
+        set标签内添加 inverse="false"
+        Entity1_name.getsetEntity2().add(Entity2_name);
+        Entity2_name.setEntity1(Entity1_name);
+        </pre>
+        </li>
+    </ul>
+    <h4>多对多:</h4>
+    <ul>
+        <li>映射:  
+            <pre>
+        Entity1中
+        private set&lt;Entity2&gt; Entity2_name = new HashSet&lt;Entity2&gt;();
+        get()....set().....
+        Entity2中
+        private set&lt;Entity1&gt; Entity1_name = new HashSet&lt;Entity1&gt;();
+        get()....set().....
+        Entity1.hbm.xml中  
+        &lt;set name="Entity2_name" table="维护的表名"&gt;  
+        &lt;key column="Entity1外键名"&gt;&lt;/key&gt;
+        &lt;many-to-many class="Entity2全路径" column="Entity2外键名"/&gt;
+        &lt;/set&gt;
+        Entity2.hbm.xml中
+        &lt;set name="Entity1_name" table="维护的表名"&gt;  
+        &lt;key column="Entity2外键名"&gt;&lt;/key&gt;
+        &lt;many-to-many class="Entity1全路径" column="Entity1外键名"/&gt;
+        &lt;/set&gt;
+        </pre>
+        </li>
+        <li>级联保存:  
+            <pre>
+        若要用Entity1保存Entity2
+        Entity1.hbm.xml中  
+        set标签内添加 cascade="save-update"
+        Entity1_name1.getSetEntity2().add(Entity2_name1);
+        Entity1_name1.getSetEntity2().add(Entity2_name2);
+        Entity1_name2.getSetEntity2().add(Entity2_name2);
+        Entity1_name2.getSetEntity2().add(Entity2_name3);
+        session.save(Entity1_name1);
+        session.save(Entity1_name2);
+        </pre>
+        </li>
+        <li>级联删除:  
+            <pre>
+        //一般不用,也用不到
+        cascade加入delete  
+        session.delete(Entity1_name1);
+        </pre>
+        </li>
+        <li>维护第三张表:  
+            <pre>
+        Entity1和Entity2相关联
+        Entity1_name.getsetEntity2().add(Entity2_name);  
+        Entity1和Entity2取消关联  
+        Entity1_name.getsetEntity2().remove(Entity2_name);  
+        </pre>
+        </li>
+    </ul>
+    <h4>查询:</h4>
+    <ul>
+        <li>对象导航查询:  
+            <pre>
+        Set&lt;Entity2&gt; Entity2_name = Entity1_name.getSetEntity2();
+        </pre>
+        </li>
+        <li>OID查询:  
+            <pre>
+        Entity Entity_name = session.get(Entity.class,记录主键值);
+        </pre>
+        </li>
+        <li>HQL查询:  
+            <pre>
+        Query query = session.createQuery(HQL);
+        query.setParameter(位置,值);
+        List&lt;userdata&gt; list = query.list();
+        遍历
+        条件查询 from 实体类名 where 实体类属性 = ?
+        条件查询 from 实体类名 where 实体类属性 like ?  
+        排序查询 freom 实体类名 order by 实体类属性 asc/desc  
+        分页查询 query.setFirstResult(第一条记录);query.setMaxResults(记录数);  
+        投影查询 select 实体类属性 from  
+        聚集函数 select 聚集函数 from...hving.. ...  Object obj = query.uniqueResult(); 遍历obj  
+        连接查询 from Entity1 e inner join e.setEntity2 ... List list = query.list();
+        迫切连接 from Entity1 e inner join fetch e.setEntity2 ... List list = query.list();
+        </pre>
+        </li>
+        <li>QBC查询:  
+            <pre>
+        Criteria criteria = session.createCriteria(Entity.class);
+        List&lt;Entity&gt; list = criteria.list();
+        遍历
+        条件查询 criteria.add(Restrictions.方法(属性名,值));
+        排序查询 criteria.addOrder(Order.方法(属性名));
+        分页查询 criteria.setFirstResult(第一条记录);criteria.setMaxResults(记录数);
+        统计查询 criteria.setProjection(Projection.rowCount());Object obj = criteria.uniqueResult();
+        离线查询 
+        DetachedCriteria detachedcriteria = DetachedCriteria.forClass(Entity.class);
+        Criteria criteria = detachedcriteria.getExecutableCriteria(session);  
+        批量抓取 set加入batch-size="10"标签
+        </pre>
+        </li>
+        <li>本地SQL查询:  
+            <pre>
+        ...
+        </pre>
+        </li>
+    </ul>
+</div>
+<div><%+ "struts2.html" %></div>

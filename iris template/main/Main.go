@@ -9,6 +9,7 @@ import (
 	"github.com/kataras/iris/sessions"
 	"github.com/kataras/iris/mvc"
 	"time"
+	"../index"
 )
 
 var app = iris.New()
@@ -142,7 +143,7 @@ func userlogout(ctx iris.Context) {
 func main() {
 	app.RegisterView(iris.HTML("html",".html").Reload(true))
 	app.StaticWeb("/js", "./js") // serve our custom javascript code
-	app.Get("/",func (ctx iris.Context) {
+	app.Get("/iii",func (ctx iris.Context) {
 		ctx.View("index.html")
 	})
 	app.Get("/adminlogin",func (ctx iris.Context) {
@@ -167,7 +168,12 @@ func main() {
 	app.Get("/logout",userlogout)
 	app.Post("/UserLoginAjax",UserLoginAjax)
 	setupWebsocket(app)
-	//app.Get("test",test)
-	app.Run(iris.Addr(":4567"))
+	app.Get("/", func(ctx iris.Context) {
+		var data = []string{
+			"data",
+		}
+		index.UserListToWriter(data, ctx)
+	})
+	app.Run(iris.Addr(":80"))
 }
 

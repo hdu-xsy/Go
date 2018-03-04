@@ -1,0 +1,51 @@
+<%: func UserListToWriter(userList []string, w io.Writer) (int, error)%>
+
+<%~ "index.html" %>
+
+<%@ nav { %>
+<nav id="navbar-example" class="navbar navbar-default navbar-static" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button class="navbar-toggle" type="button" data-toggle="collapse"
+                    data-target=".bs-js-navbar-scrollspy">
+                <span class="sr-only">切换导航</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Web开发学习笔记</a>
+        </div>
+        <div class="collapse navbar-collapse bs-js-navbar-scrollspy">
+            <ul class="nav navbar-nav">
+                <li><a href="adminlogin">后台 <!--<span class="sr-only">(current)</span>--></a></li>
+                <li><a href="#go">golang与iris框架</a></li>
+                <li><a href="#Spring">Spring</a></li>
+                <li><a href="#Hibernate">Hibernate</a></li>
+                <li><a href="#Struts2">Struts2</a></li>
+                <li><a href="#ELJSTL">EL及JSTL</a></li>
+                <li><a href="#AJAX">AJAX</a></li>
+                <li><a href="#BootStrap">栅格与响应式</a></li>
+                <li><a href="#websocket">websocket与netty框架</a></li>
+            </ul>
+            <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search">
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">注册</a></li>
+                <li><a href="/login">登录</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="cow">
+    <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
+    <div data-spy="scroll" data-target="#navbar-example" data-offset="0"
+         style="height:800px;overflow:auto; position: relative;" class="col-md-8 col-lg-8 col-sm-10 col-xs-10">
+        <div><%+ "iris.html" %></div>
+    </div>
+    <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
+</div>
+<% } %>
