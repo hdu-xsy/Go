@@ -1,0 +1,144 @@
+<div>
+    <h2 id="websocket">websocket与netty框架</h2>
+    <ul>
+        <li>websocket
+            <ul>
+                <li>前端页面
+                    <pre>
+	&lt;%@ page language="java" pageEncoding="UTF-8" %&gt;
+	&lt;!DOCTYPE html&gt;
+	&lt;html&gt;
+	&lt;head&gt;
+	    &lt;title&gt;WebSocket&lt;/title&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+	    &lt;button onclick="send()"&gt;发送消息&lt;/button&gt;
+	    &lt;button onclick="closeWebSocket()"&gt;关闭WebSocket连接&lt;/button&gt;
+	&lt;/body&gt;
+
+	&lt;script type="text/javascript"&gt;
+	    var websocket = null;
+	    //判断当前浏览器是否支持WebSocket
+	    if ('WebSocket' in window) {
+	       websocket = new WebSocket("ws://112.74.97.185/websocket"); // 此处为服务器地址!!!不能是localhost!!!
+	    }
+	    else {
+	        alert('当前浏览器不支持websocket')
+	    }
+	    //连接发生错误的回调方法
+	    websocket.onerror = function () {
+	        setMessageInnerHTML("WebSocket连接发生错误");
+	    };
+	    //连接成功建立的回调方法
+	    websocket.onopen = function () {
+	        //..
+	    }
+
+	    //接收到消息的回调方法
+	    websocket.onmessage = function (event) {
+	        //..
+	    }
+	    //连接关闭的回调方法
+	    websocket.onclose = function () {
+	        //..
+	    }
+	    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+	    window.onbeforeunload = function () {
+	        closeWebSocket();
+	    }
+	    //关闭WebSocket连接
+	    function closeWebSocket() {
+	        websocket.close();
+	    }
+	    //发送消息
+	    function send() {
+	        var message = //..
+	        websocket.send(message);
+	    }
+	&lt;/script&gt;
+	&lt;/html&gt;
+								  </pre>
+                </li>
+                <li>JAVA类
+                    <pre>
+	package websocket;
+	import java.io.IOException;
+	import java.util.concurrent.CopyOnWriteArraySet;
+	import javax.websocket.*;
+	import javax.websocket.server.ServerEndpoint;
+	// @ServerEndpoint 注解是一个类层次的注解
+	@ServerEndpoint("/websocket")
+	public class Websocket {
+	  //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
+	  private static int onlineCount = 0;
+	  //concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象。若要实现服务端与单一客户端通信的话，可以使用Map来存放，其中Key可以为用户标识
+	  private static CopyOnWriteArraySet&lt;Websocket&gt; webSocketSet = new CopyOnWriteArraySet&lt;Websocket&gt;();
+	  //与某个客户端的连接会话，需要通过它来给客户端发送数据
+	  private Session session;
+	  /**
+	   * 连接建立成功调用的方法
+	   * @param session  可选的参数。session为与某个客户端的连接会话，需要通过它来给客户端发送数据
+	   */
+	  @OnOpen
+	  public void onOpen(Session session){
+	      this.session = session;
+	      webSocketSet.add(this);     //加入set中
+	  }
+	  //连接关闭调用的方法
+	  @OnClose
+	  public void onClose(){
+	      webSocketSet.remove(this);  //从set中删除
+	  }
+	  /**
+	   * 收到客户端消息后调用的方法
+	   * @param message 客户端发送过来的消息
+	   * @param session 可选的参数
+	   */
+	  @OnMessage
+	  public void onMessage(String message, Session session) {
+	      //群发消息
+	      for(Websocket item: webSocketSet){
+	          try {
+	              item.sendMessage(message);
+	          } catch (IOException e) {
+	              e.printStackTrace();
+	              continue;
+	          }
+	      }
+	  }
+	  //发生错误时调用
+	  @OnError
+	  public void onError(Session session, Throwable error){
+	      System.out.println("发生错误");
+	      error.printStackTrace();
+	  }
+	  public void sendMessage(String message) throws IOException{
+	      this.session.getBasicRemote().sendText(message);
+	  }
+								    </pre></li>
+                </li>
+            </ul>
+        <li>websocket使用http域对象
+            <ul>
+                <li>Configurator类中
+                    <pre>
+	public class GetHttpSessionConfigurator extends Configurator {
+	    @Override
+	    public void modifyHandshake(ServerEndpointConfig sec,
+	            HandshakeRequest request, HandshakeResponse response) {
+	        // TODO Auto-generated method stub
+	        HttpSession httpSession=(HttpSession) request.getHttpSession();
+	        sec.getUserProperties().put(HttpSession.class.getName(),httpSession);
+	    }
+	}
+								  </pre></li>
+                <li>websocket类中
+                    <pre>
+	@ServerEndpoint(value="/...",configurator=GetHttpSessionConfigurator.class)
+	public void ...(...,EndpointConfig config)
+	HttpSession httpSession= (HttpSession)config.getUserProperties().get(HttpSession.class.getName());
+								  </pre></li>
+            </ul>
+        </li>
+    </ul>
+</div>
