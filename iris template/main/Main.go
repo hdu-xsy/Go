@@ -1,23 +1,21 @@
 package main
 
 import (
-	"fmt"
-	"os"
 	"github.com/kataras/iris"
 	_"github.com/go-sql-driver/mysql"
-	"github.com/go-xorm/xorm"
 	"github.com/kataras/iris/sessions"
 	"github.com/kataras/iris/mvc"
 	"time"
 	"../index"
+	"../userlist"
+	"../Util"
 )
 
 var app = iris.New()
 var uuu int64
 func checkError(err error) {
 	if err != nil {
-		fmt.Println("Error is ", err)
-		os.Exit(-1)
+		app.Logger().Fatalf("err:",err)
 	}
 }
 type AdminUser struct {
@@ -42,28 +40,14 @@ var (
 func AdminLoginAjax(ctx iris.Context) {
 	user := AdminUser{}
 	err := ctx.ReadForm(&user)
-	if err !=nil {
-		ctx.StatusCode(iris.StatusInternalServerError)
-		ctx.WriteString(err.Error())
-		ctx.Redirect("/404")
-	}
-	orm,err := xorm.NewEngine("mysql", "root:Xsydx886.@/javaweb?charset=utf8")
-	if err != nil {
-		app.Logger().Fatalf("orm failed to initialized: %v", err)
-	}
-	iris.RegisterOnInterrupt(func(){
-		orm.Close()
-	})
-	err = orm.Sync2(new(AdminUser))
-	if err != nil {
-		app.Logger().Fatalf("orm failed to initialized User table: %v", err)
-	}
+	checkError(err)
+	orm := Util.GetAdminUser(*app)
 	adminuser := AdminUser{Account: user.Account}
 	if ok, _ := orm.Get(&adminuser); ok {
 		if adminuser.Password == user.Password {
 			app.Logger().Println(user.Account+"   "+user.Password+"   login")
 			ctx.WriteString("TRUE")
-			session := sess.Start(ctx)
+			session :=sess.Start(ctx)
 			session.Set("authenticated", true)
 			session.Set("Account",user.Account)
 		} else {
@@ -78,25 +62,13 @@ func adminlogout(ctx iris.Context) {
 	session := sess.Start(ctx)
 	session.Set("authenticated",false)
 	session.Set("Account","nil")
+	ctx.Redirect("/")
 }
 func UserLoginAjax(ctx iris.Context) {
 	user := UserData{}
 	err := ctx.ReadForm(&user)
-	if err !=nil {
-		ctx.StatusCode(iris.StatusInternalServerError)
-		ctx.WriteString(err.Error())
-		ctx.Redirect("/404")
-	}
-	orm,err := xorm.NewEngine("mysql", "root:Xsydx886.@/javaweb?charset=utf8")
-	if err != nil {
-		app.Logger().Fatalf("orm failed to initialized: %v", err)
-	}
-	iris.RegisterOnInterrupt(func(){
-		orm.Close()
-	})
-	if err = orm.Sync2(new(UserData));err != nil {
-		app.Logger().Fatalf("orm failed to initialized User table: %v", err)
-	}
+	checkError(err)
+	orm := Util.GetUserData(*app)
 	userdata := UserData{Username: user.Username}
 	if ok, _ := orm.Get(&userdata); ok {
 		if userdata.Password == user.Password {
@@ -111,8 +83,7 @@ func UserLoginAjax(ctx iris.Context) {
 			session.Set("userauthenticated", true)
 			session.Set("Username",user.Username)
 			uuu = userdata.Id
-			var time = time.Now()
-			var onlineuser = OnlineUser{Id:uuu,Username:user.Username,Logintime:time}
+			var onlineuser = OnlineUser{Id:uuu,Username:user.Username,Logintime:time.Now()}
 			orm.Insert(&onlineuser)
 		} else {
 			ctx.WriteString("密码错误")
@@ -124,21 +95,13 @@ func UserLoginAjax(ctx iris.Context) {
 }
 func userlogout(ctx iris.Context) {
 	session := sess.Start(ctx)
-	orm,err := xorm.NewEngine("mysql", "root:Xsydx886.@/javaweb?charset=utf8")
-	if err != nil {
-		app.Logger().Fatalf("orm failed to initialized: %v", err)
-	}
-	iris.RegisterOnInterrupt(func(){
-		orm.Close()
-	})
-	if err = orm.Sync2(new(OnlineUser));err !=nil {
-		app.Logger().Fatalf("orm failed to initialized User table: %v", err)
-	}
+	orm := Util.GetOnlineUser(*app)
 	onlineuser := OnlineUser{Username:session.GetString("Username")}
 	orm.Delete(&onlineuser)
 	session.Set("userauthenticated",false)
 	session.Set("Username","nil")
 	uuu = 0
+	ctx.Redirect("/")
 }
 func main() {
 	app.RegisterView(iris.HTML("html",".html").Reload(true))
@@ -161,7 +124,7 @@ func main() {
 	app.Get("/login",func (ctx iris.Context) {
 		ctx.View("userlogin.html")
 	})
-	mvc.New(app.Party("/backend")).Handle(new(AdminLoginController))
+	//mvc.New(app.Party("/backend")).Handle(new(AdminLoginController))
 	app.Post("/AdminLoginAjax",AdminLoginAjax)
 	app.Get("/adminlogout",adminlogout)
 	mvc.New(app.Party("/chatform")).Handle(new(UserLoginController))
@@ -173,6 +136,16 @@ func main() {
 			"data",
 		}
 		index.UserListToWriter(data, ctx)
+	})
+	app.Get("/backend", func(ctx iris.Context) {
+		if auth, _ := sess.Start(ctx).GetBoolean("authenticated"); !auth {
+			ctx.Redirect("/adminlogin")
+			return
+		}
+		orm := Util.GetOnlineUser(*app)
+		var userList []userlist.UserData
+		orm.Find(&userList)
+		userlist.UserListToWriter(userList, ctx)
 	})
 	app.Run(iris.Addr(":80"))
 }

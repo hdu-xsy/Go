@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/websocket"
-	"github.com/go-xorm/xorm"
 	"strconv"
+	"../Util"
 )
 
 func setupWebsocket(app *iris.Application) {
@@ -32,16 +32,7 @@ func handleConnection(c websocket.Connection) {
 		c.To(websocket.All).Emit("login",mesg)
 	})
 	c.OnDisconnect(func() {
-		orm,err := xorm.NewEngine("mysql", "root:Xsydx886.@/javaweb?charset=utf8")
-		if err != nil {
-			app.Logger().Fatalf("orm failed to initialized: %v", err)
-		}
-		iris.RegisterOnInterrupt(func(){
-			orm.Close()
-		})
-		if err = orm.Sync2(new(OnlineUser));err !=nil {
-			app.Logger().Fatalf("orm failed to initialized User table: %v", err)
-		}
+		orm := Util.GetOnlineUser(*app)
 		olu := OnlineUser{Id:uuu}
 		orm.Delete(&olu)
 		var mesg = showonlineuser()
@@ -50,16 +41,7 @@ func handleConnection(c websocket.Connection) {
 }
 
 func showonlineuser() string{
-	orm,err := xorm.NewEngine("mysql", "root:Xsydx886.@/javaweb?charset=utf8")
-	if err != nil {
-		app.Logger().Fatalf("orm failed to initialized: %v", err)
-	}
-	iris.RegisterOnInterrupt(func(){
-		orm.Close()
-	})
-	if err = orm.Sync2(new(OnlineUser));err !=nil {
-		app.Logger().Fatalf("orm failed to initialized User table: %v", err)
-	}
+	orm := Util.GetOnlineUser(*app)
 	var olu []OnlineUser
 	orm.Find(&olu)
 	var mesg string
