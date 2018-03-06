@@ -90,6 +90,38 @@ app.Get("/{xxx}/{namedRoute}", func(ctx iris.Context) {
 		//[...]
 })
 ```
+## 中间件生态系统
+```
+app.Use(func(ctx iris.Context){
+	// ... any code here
+
+	ctx.Next() //为了继续下一个处理程序，
+	//如果缺少那么链处理程序中的下一个将不会被执行，
+	//对于认证中间件很有用
+})
+
+//全局
+//在任何路线之后或之前，将中间件预先添加到所有路线
+app.UseGlobal(handler1, handler2, handler3)
+
+//每个路由
+app.Post("/login", authenticationHandler, loginPageHandler)
+
+//每个派对（路线组）
+users := app.Party("/users", usersMiddleware)
+users.Get("/", usersIndex)
+
+//每个子域
+mysubdomain := app.Party("mysubdomain.", firstMiddleware)
+mysubdomain.Use(secondMiddleware)
+mysubdomain.Get("/", mysubdomainIndex)
+
+//每个通配符，动态子域
+dynamicSub := app.Party(".*", firstMiddleware, secondMiddleware)
+dynamicSub.Get("/", func(ctx iris.Context){
+	ctx.Writef("Hello from subdomain: "+ ctx.Subdomain())
+})
+```
 ## Ajax
 - 前端页面
 ```
