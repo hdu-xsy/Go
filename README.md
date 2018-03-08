@@ -481,4 +481,19 @@ func main() {
 ### 认证框架
 ### 文件上传
 ### 测试
+- GDB调试
+- 测试用例
+1. import "testing"包 文件以_test.go结尾 函数以Test开头
+2. 案例
+```
+func Test_Name(t *testing.T) {
+	t.Error("非预期的结果")
+	t.Log("预期的结果")
+	t.Fatal("致命错误")
+}
+```
+3. go test -v Path
+- 压力测试
+- 基准测试
+- 样本测试
 ### Redis
