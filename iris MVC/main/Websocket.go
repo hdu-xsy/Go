@@ -33,7 +33,7 @@ func handleConnection(c websocket.Connection) {
 	})
 	c.OnDisconnect(func() {
 		orm := Util.GetOnlineUser(*app)
-		olu := OnlineUser{Id:uuu}
+		olu := OnlineUser{Id:uid}
 		orm.Delete(&olu)
 		var mesg = showonlineuser()
 		c.To(websocket.All).Emit("login",mesg)
