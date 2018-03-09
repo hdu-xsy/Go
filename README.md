@@ -478,6 +478,50 @@ func main() {
       - 例: `<# 这是一个注释 >`.
 
 ### mvc
+- 基本
+    - main函数中
+    ```
+    mvc.New(app.Party("/backend")).Handle(new(AdminLoginController))
+    
+    ```
+    - Controller
+    ```
+    type UserLoginController struct {
+	    Result string
+    }
+    func (c *UserLoginController) BeginRequest(ctx iris.Context) {
+    	//[..]
+    }
+    func (c *UserLoginController) EndRequest(ctx iris.Context) {}
+    func (c *UserLoginController) Get() mvc.View {
+        //也可不使用返回值mvc.View使用hero模板的函数,Get(ctx iris.Context)
+    	return mvc.View{
+    		Name: "Name",
+    		Data: iris.Map{
+    			"Result": c.Result,
+    		},
+    	}
+    }
+    ```
+    - HTML
+    ```
+    {{.Result}}
+    ```
+- BeforeActivation
+```
+func (m *MyController) BeforeActivation(b mvc.BeforeActivation) {
+	// b.Dependencies().Add/Remove
+	// b.Router().Use/UseGlobal/Done // and any standard API call you already know
+
+	// 1-> Method
+	// 2-> Path
+	// 3-> The controller's function name to be parsed as handler
+	// 4-> Any handlers that should run before the MyCustomHandler
+	b.Handle("GET", "/something/{id:long}", "MyCustomHandler", func (ctx iris.Context){})
+}
+```
+> 通过`BeforeActivation`自定义事件回调，每个控制器将自定义控制器的结构方法注册为具有自定义路径的处理程序（即使使用正则表达式参数化路径）
+
 ### 认证框架
 ### 文件上传
 ### 测试
