@@ -17,7 +17,7 @@ func setupWebsocket(app *iris.Application) {
 	// register the server on an endpoint.
 	app.Get("/echo", ws.Handler())
 	// see html script tags, this path is used.
-	app.Any("/iris-ws.js", func(ctx iris.Context) {
+	app.Any("/iris-ws", func(ctx iris.Context) {
 		ctx.Write(websocket.ClientSource)
 	})
 }

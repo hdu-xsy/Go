@@ -22,7 +22,6 @@ var (
 func main() {
 	app.RegisterView(iris.HTML("html",".html").Reload(true))
 	app.StaticWeb("/js", "./js") // serve our custom javascript code
-	setupWebsocket(app)
 	app.Get("/iii",func (ctx iris.Context) {
 		ctx.View("index.html")
 	})
@@ -51,6 +50,7 @@ func main() {
 		var data = []string{"data",}
 		index.UserListToWriter(data, ctx)
 	})
+	setupWebsocket(app)
 	app.Run(iris.Addr(":80"))
 }
 
