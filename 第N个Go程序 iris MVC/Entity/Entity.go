@@ -1,6 +1,9 @@
-package main
+package Entity
 
-import "time"
+import (
+	"time"
+	"github.com/kataras/iris/sessions"
+)
 
 type AdminUser struct {
 	Id       int64`pk`
@@ -17,3 +20,7 @@ type OnlineUser struct {
 	Username  string`unique`
 	Logintime time.Time`created`
 }
+var (
+	CookieNameForSessionID = "mycookiesessionnameid"
+	Sess                   = sessions.New(sessions.Config{Cookie: CookieNameForSessionID})
+)

@@ -6,7 +6,11 @@ $(function() {
             Password : $("#Password").val()
         };
         $.post("/AdminLoginAjax",params,function (data) {
-            if (data == "TRUE") $(location).attr('href', '/backend');
-            $("#text").html(data)});
+            if (data == " ") {
+                $(location).attr('href', '/backend');
+            } else {
+                $("#text").html(data)
+            }
+        });
     });
 });

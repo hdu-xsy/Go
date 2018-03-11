@@ -8,13 +8,9 @@ import (
 	"github.com/shiyanhui/hero"
 	"io"
 	"strconv"
+	"../Entity"
 )
-type UserData struct {
-	Id       int64`pk`
-	Username string`unique`
-	Password string
-}
-func UserListToWriter(userList []UserData, w io.Writer) (int, error){
+func UserListToWriter(userList []Entity.UserData, w io.Writer) (int, error){
 	_buffer := hero.GetBuffer()
 	defer hero.PutBuffer(_buffer)
 	_buffer.WriteString(`<!DOCTYPE html>

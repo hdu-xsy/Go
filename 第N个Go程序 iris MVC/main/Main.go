@@ -3,28 +3,15 @@ package main
 import (
 	"github.com/kataras/iris"
 	_"github.com/go-sql-driver/mysql"
-	"github.com/kataras/iris/sessions"
 	"github.com/kataras/iris/mvc"
 	"../index"
+	"../Controller"
 )
 
 var app = iris.New()
-var uid int64
-func checkError(err error) {
-	if err != nil {
-		app.Logger().Fatalf("err:",err)
-	}
-}
-var (
-	cookieNameForSessionID = "mycookiesessionnameid"
-	sess                   = sessions.New(sessions.Config{Cookie: cookieNameForSessionID})
-)
 func main() {
 	app.RegisterView(iris.HTML("html",".html").Reload(true))
 	app.StaticWeb("/js", "./js") // serve our custom javascript code
-	app.Get("/iii",func (ctx iris.Context) {
-		ctx.View("index.html")
-	})
 	app.Get("/adminlogin",func (ctx iris.Context) {
 		ctx.View("adminlogin.html")
 	})
@@ -40,17 +27,17 @@ func main() {
 	app.Get("/login",func (ctx iris.Context) {
 		ctx.View("userlogin.html")
 	})
-	mvc.New(app.Party("/backend")).Handle(new(AdminLoginController))
-	app.Post("/AdminLoginAjax",AdminLoginAjax)
-	app.Get("/adminlogout",adminlogout)
-	mvc.New(app.Party("/chatform")).Handle(new(UserLoginController))
-	app.Get("/logout",userlogout)
-	app.Post("/UserLoginAjax",UserLoginAjax)
+	mvc.New(app.Party("/backend")).Handle(new(Controller.AdminLoginController))
+	app.Post("/AdminLoginAjax",Controller.AdminLoginAjax)
+	mvc.New(app.Party("/adminlogout")).Handle(new(Controller.AdminLogout))
+	mvc.New(app.Party("/chatform")).Handle(new(Controller.UserLoginController))
+	mvc.New(app.Party("/logout")).Handle(new(Controller.Logout))
+	app.Post("/UserLoginAjax",Controller.UserLoginAjax)
 	app.Get("/", func(ctx iris.Context) {
 		var data = []string{"data",}
 		index.UserListToWriter(data, ctx)
 	})
-	setupWebsocket(app)
+	mvc.Configure(app.Party("/echo"), Controller.ConfigureMVC)
 	app.Run(iris.Addr(":80"))
 }
 
