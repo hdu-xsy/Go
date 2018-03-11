@@ -37,9 +37,37 @@
     </div>
 </div>
 <!-- js -->
-<script src="/iris-ws.js"></script>
+<script src="/echo/iris-ws"></script>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<script type="text/javascript" src="../js/WebSocket.js"></script>
+<script type="text/javascript">
+        var input = document.getElementById("msg");
+        var output = document.getElementById("message");
+        var useroutput = document.getElementById("login")
+        var socket = new Ws("ws://localhost:80/echo");
+        socket.OnConnect(function () {
+            output.innerHTML += "已连接服务器<br>";
+            socket.Emit("chat",{{.Username}}+"连接服务器")
+            socket.Emit("login","OnConnect")
+        });
+        socket.OnDisconnect(function () {
+            output.innerHTML += "无法连接服务器\n";
+        });
+        socket.On("chat", function (msg) {
+            output.innerHTML = output.innerHTML+ msg + "<br>";
+        });
+        socket.On("login",function (msg) {
+            useroutput.innerHTML = msg
+        });
+        socket.onclose(function () {
+            socket.Emit("login","onclose")
+        });
+        function send() {
+            if(input.value != "") {
+                socket.Emit("chat", {{.Username}}+" : " + input.value);// send chat event data to the websocket server
+                input.value = ""; // clear the input
+            }
+        };
+</script>
 <script type="text/javascript" src="../js/slideToggle.js"></script>
 </body>
 </html>
