@@ -540,4 +540,18 @@ func Test_Name(t *testing.T) {
 - 压力测试
 - 基准测试
 - 样本测试
+- iris测试
+```
+func TestNewApp(t *testing.T) {
+	app := newApp()
+	e := httptest.New(t, app)
+	e.GET("/").Expect().Status(httptest.StatusUnauthorized)
+	e.GET("/admin").WithBasicAuth("myusername", "mypassword").Expect().
+		Status(httptest.StatusOK).Body().Equal("/admin myusername:mypassword")
+	// with invalid basic auth
+	e.GET("/admin/settings").WithBasicAuth("invalidusername", "invalidpassword").
+		Expect().Status(httptest.StatusUnauthorized)
+}
+`go test -v`
+```
 ### Redis
