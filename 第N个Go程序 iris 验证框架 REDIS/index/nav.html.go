@@ -66,7 +66,7 @@ _buffer.WriteString(`
                 <button type="submit" class="btn btn-default">Submit</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">注册</a></li>
+                <li><a href="/register">注册</a></li>
                 <li><a href="/login">登录</a></li>
             </ul>
         </div>

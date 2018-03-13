@@ -16,3 +16,7 @@ func (d *UserData) Get(userdata Entity.UserData) (bool,error,Entity.UserData){
 	bo, err := orm.Get(&userdata)
 	return bo,err,userdata
 }
+func (d *UserData) Insert(userdata Entity.UserData) (int64,error) {
+	i,err := orm.Insert(&userdata)
+	return i,err
+}

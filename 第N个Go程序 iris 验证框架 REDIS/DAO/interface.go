@@ -14,6 +14,7 @@ var err3 = Util.GetOnlineUser(*app)
 type UserDataDAOInterface interface {
 	FindAll() []Entity.UserData
 	Get(userdata Entity.UserData) (bool,error,Entity.UserData)
+	Insert(Userdata Entity.UserData) (int64,error)
 }
 
 type AdminUserDAOInterface interface {

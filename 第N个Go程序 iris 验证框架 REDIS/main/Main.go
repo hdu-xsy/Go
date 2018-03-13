@@ -22,13 +22,17 @@ func main() {
 		ctx.View("404.html")
 	})
 	app.OnErrorCode(500, func(ctx iris.Context){
-		ctx.View("404.html")
+		ctx.View("500.html")
 	})
 	app.Get("/login",func (ctx iris.Context) {
 		ctx.View("userlogin.html")
 	})
+	app.Get("/register",func(ctx iris.Context) {
+		ctx.View("register.html")
+	})
 	mvc.New(app.Party("/backend")).Handle(new(Controller.AdminLoginController))
 	app.Post("/AdminLoginAjax",Controller.AdminLoginAjax)
+	app.Post("/Register",Controller.Register)
 	mvc.New(app.Party("/adminlogout")).Handle(new(Controller.AdminLogout))
 	mvc.New(app.Party("/chatform")).Handle(new(Controller.UserLoginController))
 	mvc.New(app.Party("/logout")).Handle(new(Controller.Logout))
