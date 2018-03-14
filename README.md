@@ -555,3 +555,21 @@ func TestNewApp(t *testing.T) {
 `go test -v`
 ```
 ### Redis
+### API Doc
+```
+import (
+	"github.com/kataras/iris"
+
+	"github.com/betacraft/yaag/irisyaag"
+	"github.com/betacraft/yaag/yaag"
+)
+```
+```
+yaag.Init(&yaag.Config{ // <- IMPORTANT, init the middleware.
+	On:       true,
+	DocTitle: "Iris",
+	DocPath:  "apidoc.html",
+	BaseUrls: map[string]string{"Production": "", "Staging": ""},
+})
+app.Use(irisyaag.New()) // <- IMPORTANT, register the middleware.
+```
