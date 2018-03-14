@@ -1,12 +1,12 @@
 function validate(){
-    var a = document.getElementById("Username").value;
-    var b = document.getElementById("Password").value;
+    var a = document.getElementById("Title").value;
+    var b = document.getElementById("Content").value;
     if(a == ""){
-        alert("用户名不能为空");
+        alert("标题不能为空");
         return false;
     }
     if(b == ""){
-        alert("用户名不能为空");
+        alert("内容不能为空");
         return false;
     }
     if (confirm("提交?")){
@@ -19,18 +19,16 @@ $(function() {
     $("#btn").click(function() {
         //提交的参数，name是struts action中对应的接收变量
         var params = {
-            Username : $("#Username").val(),
-            Password : $("#Password").val()
+            Title : $("#Title").val(),
+            Menu : $("#Menu").val(),
+            Content : $("#Content").val()
         };
-        $.post("/Register",params,function (data) {
+        $.post("/artinsert",params,function (data) {
             if (data == " ") {
-                $(location).attr('href', '/login');
+                $(location).attr('href', '/backend');
             } else {
                 $("#text").html(data)
             }
         });
     });
 });
-function rs() {
-    document.getElementById("form").reset();
-}

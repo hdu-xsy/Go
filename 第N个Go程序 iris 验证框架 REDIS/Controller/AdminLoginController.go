@@ -19,3 +19,9 @@ func (c *AdminLoginController) EndRequest(ctx iris.Context) {}
 func (c *AdminLoginController) Get(ctx iris.Context) {
 	AdminLoginService.Get(ctx)
 }
+
+
+var adminloginajax = Service.AdminLoginAjax{}
+func AdminLoginAjax(ctx iris.Context) {
+	adminloginajax.Get(ctx)
+}

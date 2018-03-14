@@ -14,3 +14,5 @@ var uid int64
 var userdatadao DAO.UserDataDAOInterface = new(DAO.UserData)
 var adminuserdao DAO.AdminUserDAOInterface = new(DAO.AdminUser)
 var onlineuserdao DAO.OnlineUserDAOInterface = new(DAO.OnlineUser)
+var articledao DAO.ArticleDAOInterface = new(DAO.Article)
+var menudao DAO.MenuDAOInterface = new(DAO.MenuDAO)
