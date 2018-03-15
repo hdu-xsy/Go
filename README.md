@@ -538,8 +538,25 @@ func Test_Name(t *testing.T) {
 ```
 3. go test -v Path
 - 压力测试
+> 压力测试用来检测函数(方法）的性能，和编写单元功能测试的方法类似
+首字母不能是小写字母func BenchmarkXXX(b *testing.B) { ... }
+需要带上参数 -test.bench语法: - test.bench="test_name_regex" ,例如 go test -test.bench=".*"
+在压力测试用例中,请记得在循环体内使用 testing.B.N ,以使测试可以正常的运行
+文件名也必须以 _test.go 结尾
+
+```
+func Benchmark_Division(b *testing.B) {
+    //[..]
+}
+func Benchmark_TimeConsumingFunction(b *testing.B) {
+    b.StopTimer() // 调用该函数停止压力测试的时间计数
+    // 做一些初始化的工作 , 例如读取文件数据 , 数据库连接之类的 ,
+    b.StartTimer() // 重新开始时间
+    // [..]
+}
+```
 - 基准测试
-- 样本测试
+- 样本测试
 - iris测试
 ```
 func TestNewApp(t *testing.T) {
