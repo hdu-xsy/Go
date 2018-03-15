@@ -26,7 +26,7 @@ func (s *UserLoginAjax)Get(ctx iris.Context) int64{
 			session.Set("userauthenticated", true)
 			session.Set("Username",user.Username)
 			uid = userdata.Id
-			checkError(onlineuserdao.Insert(Entity.OnlineUser{Id:uid,Username:user.Username,Logintime:time.Now()}))
+			checkError(onlineuserdao.Insert(Entity.OnlineUser{Uid:uid,Username:user.Username,Logintime:time.Now()}))
 		} else {
 			ctx.WriteString("密码错误")
 		}

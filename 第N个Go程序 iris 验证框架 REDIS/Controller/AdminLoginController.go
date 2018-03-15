@@ -25,3 +25,16 @@ var adminloginajax = Service.AdminLoginAjax{}
 func AdminLoginAjax(ctx iris.Context) {
 	adminloginajax.Get(ctx)
 }
+
+type ArticInsertController struct{
+}
+func (c *ArticInsertController) BeginRequest(ctx iris.Context) {
+	if auth, _ := Entity.Sess.Start(ctx).GetBoolean("authenticated"); !auth {
+		ctx.Redirect("/adminlogin")
+		return
+	}
+}
+func (c *ArticInsertController) EndRequest(ctx iris.Context) {}
+func (c *ArticInsertController) Get(ctx iris.Context) {
+	ctx.View("articleinsert.html")
+}

@@ -4,7 +4,7 @@ import (
 	"time"
 	"github.com/kataras/iris/sessions"
 )
-
+type CString string
 type AdminUser struct {
 	Id       int64`xorm:"pk"`
 	Account  string`xorm:"unique"`
@@ -16,18 +16,18 @@ type UserData struct {
 	Password string
 }
 type OnlineUser struct {
-	Id        int64
+	Uid       int64
 	Username  string`xorm:"unique"`
 	Logintime time.Time`xorm:"created"`
 }
 type Article struct {
-	Id        int64`xorm:"pk"`
-	User      int64`xorm:"unique"`
+	Id        int64`pk`
+	User      int64
 	Time	  time.Time`xorm:"created"`
-	Title	  string`xorm:"unique"`
-	Menu	  string`xorm:"unique"`
-	Classify  string`xorm:"unique"`
-	Content   string`xorm:"varchar(5000)"`
+	Title	  string
+	Menu	  string
+	Classify  string
+	Content   CString
 }
 type Menu struct {
 	Id		  int64`xorm:"pk"`

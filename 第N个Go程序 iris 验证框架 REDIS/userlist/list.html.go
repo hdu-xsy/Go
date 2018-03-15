@@ -35,6 +35,7 @@ func UserListToWriter(userList []Entity.UserData, w io.Writer) (int, error){
     <script src="https://cdn.bootcss.com/markdown.js/0.6.0-beta1/markdown.min.js"></script>
 </head>
 <body>
+<div style="margin-top:5%;margin-left:20%;margin-right:20%">
     `)
 	_buffer.WriteString(`
     <table class="table table-bordered">
@@ -60,6 +61,26 @@ func UserListToWriter(userList []Entity.UserData, w io.Writer) (int, error){
 `)
 
 	_buffer.WriteString(`
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+    <li>
+      <a href="#" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    <li><a href="#">1</a></li>
+    <li><a href="#">2</a></li>
+    <li><a href="#">3</a></li>
+    <li><a href="#">4</a></li>
+    <li><a href="#">5</a></li>
+    <li>
+      <a href="#" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+</div>
 </body>
 </html>`)
 	return w.Write(_buffer.Bytes())

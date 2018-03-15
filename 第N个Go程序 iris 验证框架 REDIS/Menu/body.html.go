@@ -8,8 +8,9 @@ import (
 	"io"
 	"../Entity"
 	"strconv"
+	"github.com/kataras/iris"
 )
-func MenuWriter(menuList []Entity.Article,themenu Entity.Menu,w io.Writer) (int, error){
+func MenuWriter(menuList []Entity.Article,themenu Entity.Menu,ctx iris.Context,w io.Writer) (int, error){
 	_buffer := hero.GetBuffer()
 	defer hero.PutBuffer(_buffer)
 	_buffer.WriteString(`<!DOCTYPE html>
@@ -46,7 +47,7 @@ func MenuWriter(menuList []Entity.Article,themenu Entity.Menu,w io.Writer) (int,
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Web开发学习笔记</a>
+            <a class="navbar-brand" href="/">Web开发学习笔记</a>
         </div>
         <div class="collapse navbar-collapse bs-js-navbar-scrollspy">
             <ul class="nav navbar-nav">
@@ -67,9 +68,13 @@ func MenuWriter(menuList []Entity.Article,themenu Entity.Menu,w io.Writer) (int,
                 <button type="submit" class="btn btn-default">Submit</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
-				<li><a href="/adminlogin">后台</a></li>
-                <li><a href="/register">注册</a></li>
-                <li><a href="/login">登录</a></li>
+				<li><a href="/adminlogin">后台</a></li>`)
+	if auth, _ := Entity.Sess.Start(ctx).GetBoolean("userauthenticated"); !auth {
+		_buffer.WriteString(`<li><a href="/register">注册</a></li>`+`<li><a href="/login">登录</a></li>`)
+	}else {
+		_buffer.WriteString(`<li><a href="/">欢迎你 : `+Entity.Sess.Start(ctx).GetString("Username")+`</a></li>`)
+	}
+	_buffer.WriteString(`
             </ul>
         </div>
     </div>
@@ -79,13 +84,16 @@ func MenuWriter(menuList []Entity.Article,themenu Entity.Menu,w io.Writer) (int,
     <div class="col-md-5 col-lg-5 col-sm-10 col-xs-10">
         <div>
 			<ol class="breadcrumb">
-			  <li><a href="#">主页</a></li>
-			  <li><a href="#">施工中</a></li>
-			  <li class="active">施工中</li>
+			  <li><a href="/">主页</a></li>
+			  <li class="active">`)
+	_buffer.WriteString(themenu.Name)
+	_buffer.WriteString(`</li>
 			</ol>
             <h3>分类:`)
 	hero.EscapeHTML(themenu.Name,_buffer)
-	_buffer.WriteString(`(共 施工中 篇文章)</h3><div class="list-group">`)
+	_buffer.WriteString(`(共 `)
+	_buffer.WriteString(strconv.Itoa(len(menuList)))
+	_buffer.WriteString(` 篇文章)</h3><br/><div class="list-group">`)
 	for _, menu := range menuList {
 		_buffer.WriteString(`<a href="/article/`)
 		hero.EscapeHTML(strconv.FormatInt(menu.Id,10),_buffer)

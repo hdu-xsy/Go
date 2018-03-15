@@ -8,8 +8,9 @@ import (
 	"github.com/shiyanhui/hero"
 	"io"
 	"../Entity"
+	"strconv"
 )
-func ContextWriter(Content Entity.Article, w io.Writer) (int, error){
+func ContextWriter(Content Entity.Article,menu Entity.Menu, w io.Writer) (int, error){
 	_buffer := hero.GetBuffer()
 	defer hero.PutBuffer(_buffer)
 	_buffer.WriteString(`<!DOCTYPE html>
@@ -46,7 +47,7 @@ func ContextWriter(Content Entity.Article, w io.Writer) (int, error){
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Web开发学习笔记</a>
+            <a class="navbar-brand" href="/">Web开发学习笔记</a>
         </div>
         <div class="collapse navbar-collapse bs-js-navbar-scrollspy">
             <ul class="nav navbar-nav">
@@ -79,15 +80,21 @@ func ContextWriter(Content Entity.Article, w io.Writer) (int, error){
     <div data-spy="scroll" data-target="#navbar-example" data-offset="0"class="col-md-8 col-lg-8 col-sm-10 col-xs-10">
         <div>
 			<ol class="breadcrumb">
-			  <li><a href="#">主页</a></li>
-			  <li><a href="#">施工中</a></li>
-			  <li class="active">施工中</li>
+			  <li><a href="/">主页</a></li>
+			  <li><a href="/menu/`)
+	_buffer.WriteString(strconv.FormatInt(menu.Id,10))
+	_buffer.WriteString(`">`)
+	_buffer.WriteString(menu.Name)
+	_buffer.WriteString(`</a></li>
+			  <li class="active">`)
+    _buffer.WriteString(Content.Title)
+    _buffer.WriteString(`</li>
 			</ol>
 			<hr/>
-			<h4>分类: 施工中 上一篇: 施工中
+			<h4>分类: 施工中 上一篇: 施工中</h4><br/>
             `)
 	_buffer.WriteString("<h3>"+Content.Title+"</h3><br/><h5>作者:施工中</h5><h5>日期:施工中</h5><br/>")
-	_buffer.WriteString("<div>"+Content.Content+"</div>")
+	_buffer.WriteString("<div>"+string(Content.Content)+"</div>")
 	_buffer.WriteString(`
         </div>
 	<h3>留言:施工中</h3>

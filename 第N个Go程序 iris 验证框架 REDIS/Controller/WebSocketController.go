@@ -30,7 +30,7 @@ func (c *WebSocketController) On(msg string) {
 
 func (c *WebSocketController) OnDisconnect() {
 	orm := Util.Getorm(*app)
-	olu := Entity.OnlineUser{Id:uid}
+	olu := Entity.OnlineUser{Uid:uid}
 	orm.Delete(&olu)
 	var mesg = showonlineuser()
 	c.Conn.To(websocket.All).Emit("login",mesg)

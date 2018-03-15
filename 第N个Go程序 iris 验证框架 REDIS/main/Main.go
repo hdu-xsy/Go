@@ -4,7 +4,6 @@ import (
 	"github.com/kataras/iris"
 	_"github.com/go-sql-driver/mysql"
 	"github.com/kataras/iris/mvc"
-	"../index"
 	"../Controller"
 )
 
@@ -25,7 +24,7 @@ func main() {
 	app.OnErrorCode(500, func(ctx iris.Context){ctx.View("500.html")})
 	app.Get("/login",func (ctx iris.Context) {ctx.View("userlogin.html")})
 	app.Get("/register",func(ctx iris.Context) {ctx.View("register.html")})
-	app.Get("/articleinsert",func (ctx iris.Context) {ctx.View("articleinsert.html")})
+	mvc.New(app.Party("/articleinsert")).Handle(new(Controller.ArticInsertController))
 	mvc.New(app.Party("/backend")).Handle(new(Controller.AdminLoginController))
 	app.Post("/AdminLoginAjax",Controller.AdminLoginAjax)
 	app.Post("/Register",Controller.Register)
@@ -34,10 +33,7 @@ func main() {
 	mvc.New(app.Party("/logout")).Handle(new(Controller.Logout))
 	app.Post("/UserLoginAjax",Controller.UserLoginAjax)
 	app.Post("/artinsert",Controller.ArticleInsertController)
-	app.Get("/", func(ctx iris.Context) {
-		var data = "aaa"
-		index.ContextWriter(data, ctx)
-	})
+	mvc.New(app.Party("/")).Handle(new(Controller.IndexController))
 	mvc.New(app.Party("/article/{id}")).Handle(new(Controller.ArticleController))
 	mvc.New(app.Party("/menu/{id}")).Handle(new(Controller.MenuController))
 	mvc.Configure(app.Party("/echo"), Controller.ConfigureMVC)
