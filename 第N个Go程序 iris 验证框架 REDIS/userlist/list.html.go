@@ -35,52 +35,63 @@ func UserListToWriter(userList []Entity.UserData, w io.Writer) (int, error){
     <script src="https://cdn.bootcss.com/markdown.js/0.6.0-beta1/markdown.min.js"></script>
 </head>
 <body>
-<div style="margin-top:5%;margin-left:20%;margin-right:20%">
     `)
 	_buffer.WriteString(`
-    <table class="table table-bordered">
-        <tr>
-            <td>编号</td><td>帐号</td><td>密码</td>
-        </tr>
-    `)
-	for _, user := range userList {
-		_buffer.WriteString(`<tr>
-    <td>`)
-		hero.EscapeHTML(strconv.FormatInt(user.Id,10), _buffer)
-		_buffer.WriteString(`</td>
-    <td>`)
-		hero.EscapeHTML(user.Username, _buffer)
-		_buffer.WriteString(`</td>
-    <td>`)
-		hero.EscapeHTML(user.Password, _buffer)
-		_buffer.WriteString(`</td>
-</tr>`)
-	}
-	_buffer.WriteString(`
-    </table>
-`)
+	<div class="row" style="margin-top:5%;">
+		<div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
+		<div class="col-md-3 col-lg-3 col-sm-4 col-xs-4">
+			<ul class="nav nav-pills nav-stacked">
+			  <li role="presentation" class="active"><a href="#">Home</a></li>
+			  <li role="presentation"><a href="#">Profile</a></li>
+			  <li role="presentation"><a href="#">Messages</a></li>
+			</ul>
+		</div>
+		<div class="col-md-5 col-lg-5 col-sm-6 col-xs-6">
+			<table class="table table-bordered">
+				<tr>
+					<td>编号</td><td>帐号</td><td>密码</td>
+				</tr>
+			`)
+			for _, user := range userList {
+				_buffer.WriteString(`<tr>
+			<td>`)
+				hero.EscapeHTML(strconv.FormatInt(user.Id,10), _buffer)
+				_buffer.WriteString(`</td>
+			<td>`)
+				hero.EscapeHTML(user.Username, _buffer)
+				_buffer.WriteString(`</td>
+			<td>`)
+				hero.EscapeHTML(user.Password, _buffer)
+				_buffer.WriteString(`</td>
+			</tr>`)
+			}
+				_buffer.WriteString(`
+				</table>
+			`)
 
-	_buffer.WriteString(`
-<nav aria-label="Page navigation">
-  <ul class="pagination">
-    <li>
-      <a href="#" aria-label="Previous">
-        <span aria-hidden="true">&laquo;</span>
-      </a>
-    </li>
-    <li><a href="#">1</a></li>
-    <li><a href="#">2</a></li>
-    <li><a href="#">3</a></li>
-    <li><a href="#">4</a></li>
-    <li><a href="#">5</a></li>
-    <li>
-      <a href="#" aria-label="Next">
-        <span aria-hidden="true">&raquo;</span>
-      </a>
-    </li>
-  </ul>
-</nav>
-</div>
+				_buffer.WriteString(`
+			<nav aria-label="Page navigation">
+			  <ul class="pagination">
+				<li>
+				  <a href="#" aria-label="Previous">
+					<span aria-hidden="true">&laquo;</span>
+				  </a>
+				</li>
+				<li><a href="#">1</a></li>
+				<li><a href="#">2</a></li>
+				<li><a href="#">3</a></li>
+				<li><a href="#">4</a></li>
+				<li><a href="#">5</a></li>
+				<li>
+				  <a href="#" aria-label="Next">
+					<span aria-hidden="true">&raquo;</span>
+				  </a>
+				</li>
+			  </ul>
+			</nav>
+		</div>
+		<div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
+	</div>
 </body>
 </html>`)
 	return w.Write(_buffer.Bytes())

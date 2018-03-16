@@ -79,7 +79,7 @@ _buffer.WriteString(`
         </div>
     </div>
 </nav>
-<div class="cow">
+<div class="row">
     <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
     <div class="col-md-5 col-lg-5 col-sm-10 col-xs-10">
         <div>
