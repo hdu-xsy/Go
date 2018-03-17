@@ -37,36 +37,58 @@ func UserListToWriter(userList []Entity.UserData, w io.Writer) (int, error){
 <body>
     `)
 	_buffer.WriteString(`
-	<div class="row" style="margin-top:5%;">
-		<div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
-		<div class="col-md-3 col-lg-3 col-sm-4 col-xs-4">
-			<ul class="nav nav-pills nav-stacked">
-			  <li role="presentation" class="active"><a href="#">Home</a></li>
-			  <li role="presentation"><a href="#">Profile</a></li>
-			  <li role="presentation"><a href="#">Messages</a></li>
-			</ul>
-		</div>
-		<div class="col-md-5 col-lg-5 col-sm-6 col-xs-6">
-			<table class="table table-bordered">
-				<tr>
-					<td>编号</td><td>帐号</td><td>密码</td>
-				</tr>
-			`)
-			for _, user := range userList {
-				_buffer.WriteString(`<tr>
-			<td>`)
-				hero.EscapeHTML(strconv.FormatInt(user.Id,10), _buffer)
-				_buffer.WriteString(`</td>
-			<td>`)
-				hero.EscapeHTML(user.Username, _buffer)
-				_buffer.WriteString(`</td>
-			<td>`)
-				hero.EscapeHTML(user.Password, _buffer)
-				_buffer.WriteString(`</td>
-			</tr>`)
-			}
+		<div class="row" style="margin-top:5%;">
+			<div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
+			<div class="col-md-3 col-lg-3 col-sm-4 col-xs-4">
+				<ul class="nav nav-pills nav-stacked">
+				  <li role="presentation" class="active"><a href="#">Home</a></li>
+				  <li role="presentation"><a href="#">Profile</a></li>
+				  <li role="presentation"><a href="#">Messages</a></li>
+				</ul>
+			</div>
+			<div class="col-md-5 col-lg-5 col-sm-6 col-xs-6">
+				<form action="User_motify">
+					<table class="table table-bordered">
+						<tr>
+							<tr><td>选择</td><td>编号</td><td>帐号</td><td>密码</td>
+						</tr>
+	`)
+				for i, user := range userList {
+					_buffer.WriteString(`
+						<tr>
+							<td width="8%"><input type="radio" name="select" id="select" value="`)
+					_buffer.WriteString(strconv.Itoa(i))
+					_buffer.WriteString(`"></td>
+							<td width="10%"><input type="text" id="userid`)
+					_buffer.WriteString(strconv.Itoa(i))
+					_buffer.WriteString(`" name="userid`)
+					_buffer.WriteString(strconv.Itoa(i))
+					_buffer.WriteString(`" value="`)
+					_buffer.WriteString(strconv.FormatInt(user.Id,10))
+					_buffer.WriteString(`" style="width:100%;" readonly></td>
+							<td width="41%"><input type="text" id="username`)
+					_buffer.WriteString(strconv.Itoa(i))
+					_buffer.WriteString(`" name="username`)
+					_buffer.WriteString(strconv.Itoa(i))
+					_buffer.WriteString(`" value="`)
+					_buffer.WriteString(user.Username)
+					_buffer.WriteString(`" style="width:100%;"></td>
+							<td width="41%"><input type="text" id="password`)
+					_buffer.WriteString(strconv.Itoa(i))
+					_buffer.WriteString(`" name="password`)
+					_buffer.WriteString(strconv.Itoa(i))
+					_buffer.WriteString(`" value="`)
+					_buffer.WriteString(user.Password)
+					_buffer.WriteString(`" style="width:100%;"></td>
+						</tr>`)
+				}
 				_buffer.WriteString(`
-				</table>
+						<input type="text" id ="Username" name="Username" style="display:none" value=""></input>
+						<input type="text" id ="Password" name="Password" style="display:none" value=""></input>
+					</table>
+					<label><button type="submit" class="btn btn-default" name="submit"onclick="return mvalidate()">确认</button></label>
+      				<label><button type="reset" class="btn btn-default" name="reset">重置</button></label>
+     			</form>
 			`)
 
 				_buffer.WriteString(`
@@ -92,6 +114,8 @@ func UserListToWriter(userList []Entity.UserData, w io.Writer) (int, error){
 		</div>
 		<div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
 	</div>
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script src="../js/Modify.js"></script>
 </body>
 </html>`)
 	return w.Write(_buffer.Bytes())
