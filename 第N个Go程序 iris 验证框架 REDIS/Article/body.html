@@ -1,0 +1,54 @@
+<%: func ContextWriter(Context string, w io.Writer) (int, error)%>
+
+<%~ "index.html" %>
+
+<%@ body { %>
+<nav id="navbar-example" class="navbar navbar-default navbar-static" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button class="navbar-toggle" type="button" data-toggle="collapse"
+                    data-target=".bs-js-navbar-scrollspy">
+                <span class="sr-only">切换导航</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Web开发学习笔记</a>
+        </div>
+        <div class="collapse navbar-collapse bs-js-navbar-scrollspy">
+            <ul class="nav navbar-nav">
+                <li><a href="adminlogin">后台 <!--<span class="sr-only">(current)</span>--></a></li>
+                <li><a href="#go">网站更新日志</a></li>
+                <li><a href="#go">GO语言学习</a></li>
+                <li><a href="#Spring">Python语言学习</a></li>
+                <li><a href="#Hibernate">Java学习</a></li>
+                <li><a href="#Struts2">JS学习</a></li>
+                <li><a href="#ELJSTL">PHP学习</a></li>
+                <li><a href="#AJAX">日记/感想</a></li>
+                <li><a href="#BootStrap">后端知识学习</a></li>
+                <li><a href="#websocket">关于二次元</a></li>
+            </ul>
+            <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search" value="golang是最好的语言">
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/register">注册</a></li>
+                <li><a href="/login">登录</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="cow">
+    <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
+    <div data-spy="scroll" data-target="#navbar-example" data-offset="0"
+         style="height:800px;overflow:auto; position: relative;" class="col-md-8 col-lg-8 col-sm-10 col-xs-10">
+        <div>
+            <%+ "content.html" %>
+        </div>
+    </div>
+    <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
+</div>
+<% } %>
