@@ -47,7 +47,7 @@ func UserListToWriter(userList []Entity.UserData, w io.Writer) (int, error){
 				</ul>
 			</div>
 			<div class="col-md-5 col-lg-5 col-sm-6 col-xs-6">
-				<form action="User_motify">
+				<form method="post" id="form" name="form" action="/modify">
 					<table class="table table-bordered">
 						<tr>
 							<tr><td>选择</td><td>编号</td><td>帐号</td><td>密码</td>
@@ -83,11 +83,12 @@ func UserListToWriter(userList []Entity.UserData, w io.Writer) (int, error){
 						</tr>`)
 				}
 				_buffer.WriteString(`
+						<input type="text" id ="Id" name="Id" style="display:none" value=""></input>
 						<input type="text" id ="Username" name="Username" style="display:none" value=""></input>
 						<input type="text" id ="Password" name="Password" style="display:none" value=""></input>
 					</table>
-					<label><button type="submit" class="btn btn-default" name="submit"onclick="return mvalidate()">确认</button></label>
-      				<label><button type="reset" class="btn btn-default" name="reset">重置</button></label>
+				<button type="submit" class="btn btn-default" id="Delete" name="Delete" onclick="return mvalidate()">Delete</button>
+				<button type="submit" class="btn btn-default" onclick="aaa()">确认</button>
      			</form>
 			`)
 

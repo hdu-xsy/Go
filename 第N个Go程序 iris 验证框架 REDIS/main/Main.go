@@ -28,6 +28,8 @@ func main() {
 	mvc.New(app.Party("/backend")).Handle(new(Controller.AdminLoginController))
 	app.Post("/AdminLoginAjax",Controller.AdminLoginAjax)
 	app.Post("/Register",Controller.Register)
+	app.Post("/delete",Controller.Delete)
+	app.Post("/modify",Controller.Modify)
 	mvc.New(app.Party("/adminlogout")).Handle(new(Controller.AdminLogout))
 	mvc.New(app.Party("/chatform")).Handle(new(Controller.UserLoginController))
 	mvc.New(app.Party("/logout")).Handle(new(Controller.Logout))

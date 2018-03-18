@@ -17,6 +17,8 @@ type UserDataDAOInterface interface {
 	FindAll() []Entity.UserData
 	Get(userdata Entity.UserData) (bool,error,Entity.UserData)
 	Insert(Userdata Entity.UserData) (int64,error)
+	Delete(userdata Entity.UserData) (int64,error)
+	Motify(userdata Entity.UserData) (int64,error)
 }
 
 type AdminUserDAOInterface interface {
