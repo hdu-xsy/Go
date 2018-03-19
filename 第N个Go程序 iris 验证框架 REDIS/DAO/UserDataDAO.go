@@ -21,7 +21,7 @@ func (d *UserData) Insert(userdata Entity.UserData) (int64,error) {
 	return i,err
 }
 func (d *UserData) Delete(userdata Entity.UserData) (int64,error) {
-	i,err := orm.Delete(&userdata)
+	i,err := orm.Id(userdata.Id).Delete(&userdata)
 	return i,err
 }
 func (d *UserData) Motify(userdata Entity.UserData) (int64,error) {

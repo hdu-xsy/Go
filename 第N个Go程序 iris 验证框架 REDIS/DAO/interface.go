@@ -35,6 +35,8 @@ type ArticleDAOInterface interface {
 	FindAll(id string) []Entity.Article
 	Insert(article Entity.Article) (int64,error)
 	OrderByTime() []Entity.Article
+	FindAllA() []Entity.Article
+	Update(article Entity.Article) (int64,error)
 }
 type MenuDAOInterface interface {
 	Get(menu Entity.Menu) (bool,error,Entity.Menu)

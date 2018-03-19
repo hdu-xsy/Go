@@ -37,7 +37,10 @@ func main() {
 	app.Post("/artinsert",Controller.ArticleInsertController)
 	mvc.New(app.Party("/")).Handle(new(Controller.IndexController))
 	mvc.New(app.Party("/article/{id}")).Handle(new(Controller.ArticleController))
+	mvc.New(app.Party("/articlemodify")).Handle(new(Controller.ArticleListController))
 	mvc.New(app.Party("/menu/{id}")).Handle(new(Controller.MenuController))
+	mvc.New(app.Party("/articlemodify/{id}")).Handle(new(Controller.ArticleModifyController))
+	app.Post("/articleModify",Controller.ArticlemodifyController)
 	mvc.Configure(app.Party("/echo"), Controller.ConfigureMVC)
 	app.Run(iris.Addr(":80"))
 }
