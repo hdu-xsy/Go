@@ -524,9 +524,90 @@ func (m *MyController) BeforeActivation(b mvc.BeforeActivation) {
 
 ### 认证框架
 ### 文件上传
+- html
+```
+<form enctype="multipart/form-data"
+	action="http://127.0.0.1:8080/upload" method="POST">
+	<input type="file" name="uploadfile" /> <input type="hidden"
+		name="token" value="{{.}}" /> <input type="submit" value="upload" />
+</form>
+```
+- token
+```
+// Serve the upload_form.html to the client.
+app.Get("/upload", func(ctx iris.Context) {
+	// create a token (optionally).
+	now := time.Now().Unix()
+	h := md5.New()
+	io.WriteString(h, strconv.FormatInt(now, 10))
+	token := fmt.Sprintf("%x", h.Sum(nil))
+	// render the form with the token for any use you'd like.
+	// ctx.ViewData("", token)
+	// or add second argument to the `View` method.
+	// Token will be passed as {{.}} in the template.
+	ctx.View("upload_form.html", token)
+})
+```
+- upload
+```
+app.Post("/upload", func(ctx iris.Context) {
+	// iris.LimitRequestBodySize(32 <<20) as middleware to a route
+	// or use ctx.SetMaxRequestBodySize(32 << 20)
+	// to limit the whole request body size,
+	//
+	// or let the configuration option at app.Run for global setting
+	// for POST/PUT methods, including uploads of course.
+
+	// Get the file from the request.
+	file, info, err := ctx.FormFile("uploadfile")
+
+	if err != nil {
+		ctx.StatusCode(iris.StatusInternalServerError)
+		ctx.HTML("Error while uploading: <b>" + err.Error() + "</b>")
+		return
+	}
+
+	defer file.Close()
+	fname := info.Filename
+
+	// Create a file with the same name
+	// assuming that you have a folder named 'uploads'
+	out, err := os.OpenFile("./路径/"+fname,
+		os.O_WRONLY|os.O_CREATE, 0666)
+
+	if err != nil {
+		ctx.StatusCode(iris.StatusInternalServerError)
+		ctx.HTML("Error while uploading: <b>" + err.Error() + "</b>")
+		return
+	}
+	defer out.Close()
+
+	io.Copy(out, file)
+})
+// start the server at http://localhost:8080 with post limit at 32 MB.
+app.Run(iris.Addr(":8080"), iris.WithPostMaxMemory(32<<20))
+```
+- 修改名称
+```
+func beforeSave(ctx iris.Context, file *multipart.FileHeader) {
+	ip := ctx.RemoteAddr()
+	// make sure you format the ip in a way
+	// that can be used for a file name (simple case):
+	ip = strings.Replace(ip, ".", "_", -1)
+	ip = strings.Replace(ip, ":", "_", -1)
+
+	// you can use the time.Now, to prefix or suffix the files
+	// based on the current time as well, as an exercise.
+	// i.e unixTime :=	time.Now().Unix()
+	// prefix the Filename with the $IP-
+	// no need for more actions, internal uploader will use this
+	// name to save the file into the "./uploads" folder.
+	file.Filename = ip + "-" + file.Filename
+}
+```
 ### 测试
 - GDB调试
-- 测试用例
+- 测试用例
 1. import "testing"包 文件以_test.go结尾 函数以Test开头
 2. 案例
 ```
