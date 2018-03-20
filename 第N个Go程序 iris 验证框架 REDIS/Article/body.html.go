@@ -10,7 +10,7 @@ import (
 	"../Entity"
 	"strconv"
 )
-func ContextWriter(Content Entity.Article,menu Entity.Menu, w io.Writer) (int, error){
+func ContextWriter(Content Entity.Article,prearticle Entity.Article,username string,menu Entity.Menu, w io.Writer) (int, error){
 	_buffer := hero.GetBuffer()
 	defer hero.PutBuffer(_buffer)
 	_buffer.WriteString(`<!DOCTYPE html>
@@ -36,8 +36,7 @@ func ContextWriter(Content Entity.Article,menu Entity.Menu, w io.Writer) (int, e
 </head>
 <body>
 `)
-	_buffer.WriteString(`
-<nav id="navbar-example" class="navbar navbar-default navbar-static" role="navigation">
+	_buffer.WriteString(`<nav id="navbar-example" class="navbar navbar-default navbar-static" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
             <button class="navbar-toggle" type="button" data-toggle="collapse"
@@ -91,17 +90,25 @@ func ContextWriter(Content Entity.Article,menu Entity.Menu, w io.Writer) (int, e
     _buffer.WriteString(`</li>
 			</ol>
 			<hr/>
-			<h4>分类: 施工中 上一篇: 施工中</h4><br/>
-            `)
-	_buffer.WriteString("<h3>"+Content.Title+"</h3><br/><h5>作者:施工中</h5><h5>日期:施工中</h5><br/>")
+			<h4>分类:`)
+    _buffer.WriteString(Content.Classify)
+	_buffer.WriteString(`<p class="text-right">上一篇: <a href="/article/`)
+	_buffer.WriteString(strconv.FormatInt(Content.Id-1,10))
+	_buffer.WriteString(`">`)
+	_buffer.WriteString(prearticle.Title)
+	_buffer.WriteString(`</a></p></h4><br/>`)
+	_buffer.WriteString("<h3>"+Content.Title+"</h3><br/><h5>作者:")
+	_buffer.WriteString(username)
+	_buffer.WriteString("</h5><h5>最后修改日期:")
+	_buffer.WriteString(Content.Time.Format("2006-01-02 15:04:05"))
+	_buffer.WriteString("</h5><br/>")
 	_buffer.WriteString("<div>"+string(Content.Content)+"</div>")
 	_buffer.WriteString(`
         </div>
 	<h3>留言:施工中</h3>
     </div>
     <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
-</div>
-`)
+</div>`)
 
 	_buffer.WriteString(`
 </body>

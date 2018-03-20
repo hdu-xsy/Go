@@ -34,8 +34,7 @@ func UserListToWriter(userList []Entity.UserData, w io.Writer) (int, error){
     </style>
     <script src="https://cdn.bootcss.com/markdown.js/0.6.0-beta1/markdown.min.js"></script>
 </head>
-<body>
-    `)
+<body>`)
 	_buffer.WriteString(`
 		<div class="row" style="margin-top:5%;">
 			<div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
@@ -43,7 +42,7 @@ func UserListToWriter(userList []Entity.UserData, w io.Writer) (int, error){
 				<ul class="nav nav-pills nav-stacked">
 				  <li role="presentation" class="active"><a href="/backend">修改用户</a></li>
 				  <li role="presentation"><a href="/articlemodify">修改文章</a></li>
-				  <li role="presentation"><a href="#">Messages</a></li>
+				  <li role="presentation"><a href="/articleinsert">增加文章</a></li>
 				</ul>
 			</div>
 			<div class="col-md-5 col-lg-5 col-sm-6 col-xs-6">
@@ -51,8 +50,7 @@ func UserListToWriter(userList []Entity.UserData, w io.Writer) (int, error){
 					<table class="table table-bordered">
 						<tr>
 							<tr><td>选择</td><td>编号</td><td>帐号</td><td>密码</td>
-						</tr>
-	`)
+						</tr>`)
 				for i, user := range userList {
 					_buffer.WriteString(`
 						<tr>
@@ -89,9 +87,7 @@ func UserListToWriter(userList []Entity.UserData, w io.Writer) (int, error){
 					</table>
 				<button type="submit" class="btn btn-default" id="Delete" name="Delete" onclick="mvalidate(0)">Delete</button>
 				<button type="submit" class="btn btn-default" id="Modify" name="Modify" onclick="mvalidate(1)">Modify</button>
-     			</form>
-			`)
-
+     			</form>`)
 				_buffer.WriteString(`
 			<nav aria-label="Page navigation">
 			  <ul class="pagination">
@@ -146,8 +142,7 @@ func ArticleListToWriter(articleList []Entity.Article,w io.Writer) (int, error){
     </style>
     <script src="https://cdn.bootcss.com/markdown.js/0.6.0-beta1/markdown.min.js"></script>
 </head>
-<body>
-    `)
+<body>`)
 	_buffer.WriteString(`
 		<div class="row" style="margin-top:5%;">
 			<div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
@@ -155,13 +150,12 @@ func ArticleListToWriter(articleList []Entity.Article,w io.Writer) (int, error){
 				<ul class="nav nav-pills nav-stacked">
 				  <li role="presentation"><a href="/backend">修改用户</a></li>
 				  <li role="presentation" class="active"><a href="/articlemodify">修改文章</a></li>
-				  <li role="presentation"><a href="#">Messages</a></li>
+				  <li role="presentation"><a href="/articleinsert">增加文章</a></li>
 				</ul>
 			</div>
 			<div class="col-md-5 col-lg-5 col-sm-6 col-xs-6">
 				<table class="table table-striped">
-				<tr><td>Id</td><td>Title</td><td>Menu</td><td>Time</td></tr>
-	`)
+				<tr><td>Id</td><td>Title</td><td>Menu</td><td>Time</td></tr>`)
 	for _,article := range articleList{
 		_buffer.WriteString(`
 				<tr>
@@ -182,8 +176,7 @@ func ArticleListToWriter(articleList []Entity.Article,w io.Writer) (int, error){
 	_buffer.WriteString(`
 					</td>
 				</tr>
-				</table>
-			`)
+				</table>`)
 	_buffer.WriteString(`
 			<nav aria-label="Page navigation">
 			  <ul class="pagination">

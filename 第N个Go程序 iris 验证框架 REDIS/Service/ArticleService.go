@@ -16,9 +16,11 @@ type ArticleService struct {
 func (s *ArticleService)Get(ctx iris.Context) {
 	id,_ := strconv.ParseInt(ctx.Params().Get("id"),10,64)
 	_,_,article := articledao.Get(Entity.Article{Id:id})
+	_,_,prearticle := articledao.Get(Entity.Article{Id:id-1})
 	mid,_ := strconv.ParseInt(article.Menu,10,64)
 	_,_,menu := menudao.Get(Entity.Menu{Id:mid})
-	Article.ContextWriter(article,menu,ctx)
+	_,_,user := userdatadao.Get(Entity.UserData{Id:article.User})
+	Article.ContextWriter(article,prearticle,user.Username,menu,ctx)
 }
 type ArticleInsertService struct {
 
@@ -28,7 +30,6 @@ func (s *ArticleInsertService)Get(ctx iris.Context) {
 	checkError(ctx.ReadForm(&article))
 	article.User=1
 	article.Time=time.Now()
-	article.Classify="学习笔记"
 	articledao.Insert(article)
 	ctx.WriteString(" ")
 	return
@@ -61,9 +62,10 @@ func (s *Articlemodify)Update(ctx iris.Context) {
 	title := ctx.PostValue("Title")
 	menu := ctx.PostValue("Menu")
 	content := ctx.PostValue("Content")
-	article := Entity.Article{Id:id,User:1,Time:time.Now(),Title:title,Menu:menu,Classify:"nil",Content:Entity.CString(content)}
+	classify := ctx.PostValue("Classify")
+	timenow := time.Now()
+	article := Entity.Article{Id:id,User:1,Time:timenow,Title:title,Menu:menu,Classify:classify,Content:content}
 	articledao.Update(article)
-	app.Logger().Println(strconv.FormatInt(id,10)+title+menu)
 	ctx.Redirect("/articlemodify")
 	return
 }

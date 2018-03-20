@@ -52,8 +52,11 @@ func ArticleToWriter(article Entity.Article,w io.Writer) (int, error){
             		<label for="Title">标题</label>
             		<input type="text" class="form-control" id="Title" name="Title" value="`)
 	_buffer.WriteString(article.Title)
-	_buffer.WriteString(`
-            		"></input>
+	_buffer.WriteString(`"></input>
+					<label for="Classify">分类</label>
+            		<input type="text" class="form-control" id="Classify" name="Classify" value="`)
+	_buffer.WriteString(article.Classify)
+	_buffer.WriteString(`"></input>
         		</div>
         		<select name="Menu" id="Menu" class="form-control">
 					<option value="1"`)
