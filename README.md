@@ -122,6 +122,50 @@ dynamicSub.Get("/", func(ctx iris.Context){
 	ctx.Writef("Hello from subdomain: "+ ctx.Subdomain())
 })
 ```
+## 重写Context
+```
+type MyContext struct {
+	// Optional Part 1: embed (optional but required if you don't want to override all context's methods)
+	context.Context // it's the context/context.go#context struct but you don't need to know it.
+}
+
+var _ context.Context = &MyContext{} // optionally: validate on compile-time if MyContext implements context.Context.
+
+// The only one important if you will override the Context
+// with an embedded context.Context inside it.
+// Required in order to run the handlers via this "*MyContext".
+func (ctx *MyContext) Do(handlers context.Handlers) {
+	context.Do(ctx, handlers)
+}
+
+// The second one important if you will override the Context
+// with an embedded context.Context inside it.
+// Required in order to run the chain of handlers via this "*MyContext".
+func (ctx *MyContext) Next() {
+	context.Next(ctx)
+}
+
+// Override any context's method you want...
+// [...]
+
+func (ctx *MyContext) HTML(htmlContents string) (int, error) {
+	//[...]
+}
+
+func main() {
+	app := iris.New()
+	app.ContextPool.Attach(func() context.Context {
+		return &MyContext{
+			Context: context.NewContext(app),
+		}
+	})
+	app.Handle("GET", "/", recordWhichContextJustForProofOfConcept, func(ctx context.Context) {
+		// use the context's overridden HTML method.
+		ctx.HTML([...])
+	})
+	app.Run(iris.Addr(":8080"))
+}
+```
 ## Ajax
 - 前端页面
 ```
