@@ -105,7 +105,8 @@ func ContextWriter(Content Entity.Article,prearticle Entity.Article,username str
 	_buffer.WriteString("<div>"+string(Content.Content)+"</div>")
 	_buffer.WriteString(`
         </div>
-	<h3>留言:施工中</h3>
+	<hr/>
+	<h3>留言(共 施工中 条):施工中</h3>
     </div>
     <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
 </div>`)

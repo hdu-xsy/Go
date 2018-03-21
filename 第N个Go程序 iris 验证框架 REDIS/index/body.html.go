@@ -100,9 +100,15 @@ _buffer.WriteString(`
         </div>
     </div>
     <div class="col-md-3 col-lg-3 hidden-sm hidden-xs">
-        <div>
-            <p>正在施工</p>
-        </div>
+		<div><h3>最近留言</h3>施工中</div><hr/>
+        <div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">公告</h3>
+			</div>
+			<div class="panel-body">
+				欢迎帮忙找BUG
+			</div>
+		</div>
     </div>
     <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
 </div>
