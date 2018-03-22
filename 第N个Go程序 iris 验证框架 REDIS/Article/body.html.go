@@ -9,8 +9,9 @@ import (
 	"io"
 	"../Entity"
 	"strconv"
+	"github.com/kataras/iris"
 )
-func ContextWriter(Content Entity.Article,prearticle Entity.Article,username string,menu Entity.Menu, w io.Writer) (int, error){
+func ContextWriter(Content Entity.Article,prearticle Entity.Article,username string,menu Entity.Menu,ctx iris.Context, w io.Writer) (int, error){
 	_buffer := hero.GetBuffer()
 	defer hero.PutBuffer(_buffer)
 	_buffer.WriteString(`<!DOCTYPE html>
@@ -58,7 +59,7 @@ func ContextWriter(Content Entity.Article,prearticle Entity.Article,username str
                 <li><a href="/menu/6">PHP学习</a></li>
                 <li><a href="/menu/7">日记/感想</a></li>
                 <li><a href="/menu/8">后端知识学习</a></li>
-                <li><a href="/menu/9">关于二次元</a></li>
+                <li><a href="/menu/9">计算机基础</a></li>
             </ul>
             <form class="navbar-form navbar-left">
                 <div class="form-group">
@@ -67,9 +68,13 @@ func ContextWriter(Content Entity.Article,prearticle Entity.Article,username str
                 <button type="submit" class="btn btn-default">Submit</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
-				<li><a href="/adminlogin">后台</a></li>
-                <li><a href="/register">注册</a></li>
-                <li><a href="/login">登录</a></li>
+				<li><a href="/adminlogin">后台</a></li>`)
+	if auth, _ := Entity.Sess.Start(ctx).GetBoolean("userauthenticated"); !auth {
+		_buffer.WriteString(`<li><a href="/register">注册</a></li>`+`<li><a href="/login">登录</a></li>`)
+	}else {
+		_buffer.WriteString(`<li><a href="/user">欢迎你&nbsp;:&nbsp;`+Entity.Sess.Start(ctx).GetString("Username")+`&nbsp;&nbsp;&nbsp;更多</a></li>`)
+	}
+	_buffer.WriteString(`
             </ul>
         </div>
     </div>

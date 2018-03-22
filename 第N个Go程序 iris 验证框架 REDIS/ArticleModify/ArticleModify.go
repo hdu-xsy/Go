@@ -86,7 +86,7 @@ func ArticleToWriter(article Entity.Article,w io.Writer) (int, error){
 	_buffer.WriteString(`>后端知识学习</option>
 					<option value="9"`)
 	if menu == 9 {_buffer.WriteString(` selected = "selected"`)}
-	_buffer.WriteString(`>关于二次元</option>
+	_buffer.WriteString(`>计算机基础</option>
         		</select>
         		<textarea class="form-control" rows="20" name="Content" id="Content">`)
 	_buffer.WriteString(string(article.Content))

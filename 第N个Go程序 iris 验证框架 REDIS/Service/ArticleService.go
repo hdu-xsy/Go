@@ -20,7 +20,7 @@ func (s *ArticleService)Get(ctx iris.Context) {
 	mid,_ := strconv.ParseInt(article.Menu,10,64)
 	_,_,menu := menudao.Get(Entity.Menu{Id:mid})
 	_,_,user := userdatadao.Get(Entity.UserData{Id:article.User})
-	Article.ContextWriter(article,prearticle,user.Username,menu,ctx)
+	Article.ContextWriter(article,prearticle,user.Username,menu,ctx,ctx)
 }
 type ArticleInsertService struct {
 

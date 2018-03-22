@@ -5,7 +5,7 @@ $(function() {
             Password : $("#Password").val()
         };
         $.post("/UserLoginAjax",params,function (data) {
-            if (data == " ") $(location).attr('href', '/chatform');
+            if (data == " ") $(location).attr('href', '/');
             $("#text").html(data)});
     });
 });

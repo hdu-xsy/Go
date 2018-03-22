@@ -13,6 +13,7 @@ type UserData struct {
 	Id       int64`xorm:"pk"`
 	Username string`xorm:"unique"`
 	Password string
+	SessionId string
 }
 type OnlineUser struct {
 	Uid       int64
