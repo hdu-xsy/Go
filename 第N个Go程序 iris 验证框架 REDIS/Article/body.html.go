@@ -112,6 +112,18 @@ func ContextWriter(Content Entity.Article,prearticle Entity.Article,username str
         </div>
 	<hr/>
 	<h3>留言(共 施工中 条):施工中</h3>
+	<hr/>
+		<h4>施工中 楼 施工中 说:</h4>
+		<p>施工中.</p>
+		<p class="text-right">日期:施工中</p>
+	<hr dashed> 
+	<hr>
+	<br><br>
+	<h3>发表观点</h3>
+	<form>
+		<textarea class="form-control" rows="3"></textarea>
+	</form>
+	<button class="btn btn-default" name="btn" id="btn" onclick="return validate()">提交</button>
     </div>
     <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
 </div>`)
