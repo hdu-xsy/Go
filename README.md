@@ -103,6 +103,7 @@ app.Use(func(ctx iris.Context){
 //全局
 //在任何路线之后或之前，将中间件预先添加到所有路线
 app.UseGlobal(handler1, handler2, handler3)
+app.DoneGlobal(after)
 
 //每个路由
 app.Post("/login", authenticationHandler, loginPageHandler)
@@ -120,6 +121,23 @@ mysubdomain.Get("/", mysubdomainIndex)
 dynamicSub := app.Party(".*", firstMiddleware, secondMiddleware)
 dynamicSub.Get("/", func(ctx iris.Context){
 	ctx.Writef("Hello from subdomain: "+ ctx.Subdomain())
+})
+```
+## 路由状态
+```
+none := app.None("...", func(ctx iris.Context) {
+	//[...]
+})
+app.Get("/change", func(ctx iris.Context) {
+
+	if none.IsOnline() {
+		none.Method = iris.MethodNone
+	} else {
+		none.Method = iris.MethodGet
+	}
+
+	// refresh re-builds the router at serve-time in order to be notified for its new routes.
+	app.RefreshRouter()
 })
 ```
 ## 重写Context
