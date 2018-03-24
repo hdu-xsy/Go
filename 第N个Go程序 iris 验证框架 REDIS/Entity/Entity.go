@@ -33,6 +33,14 @@ type Menu struct {
 	Id		  int64`xorm:"pk"`
 	Name	  string`xorm:"unique"`
 }
+type Comment struct {
+	Id		  int64`pk`
+	Article   int64
+	Floor     int64
+	User      int64
+	Time      time.Time`xorm:"created"`
+	Content   string
+}
 var (
 	CookieNameForSessionID = "mycookiesessionnameid"
 	Sess                   = sessions.New(sessions.Config{Cookie: CookieNameForSessionID})
