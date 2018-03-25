@@ -4,7 +4,6 @@ import (
 	"time"
 	"github.com/kataras/iris/sessions"
 )
-type CString string
 type AdminUser struct {
 	Id       int64`xorm:"pk"`
 	Account  string`xorm:"unique"`
@@ -14,6 +13,7 @@ type UserData struct {
 	Id       int64`xorm:"pk"`
 	Username string`xorm:"unique"`
 	Password string
+	SessionId string
 }
 type OnlineUser struct {
 	Uid       int64
@@ -27,11 +27,19 @@ type Article struct {
 	Title	  string
 	Menu	  string
 	Classify  string
-	Content   CString
+	Content   string
 }
 type Menu struct {
 	Id		  int64`xorm:"pk"`
 	Name	  string`xorm:"unique"`
+}
+type Comment struct {
+	Id		  int64`pk`
+	Article   int64
+	Floor     int64
+	User      int64
+	Time      time.Time`xorm:"created"`
+	Content   string
 }
 var (
 	CookieNameForSessionID = "mycookiesessionnameid"

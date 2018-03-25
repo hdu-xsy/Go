@@ -1,4 +1,4 @@
-function mvalidate() {
+function mvalidate(v) {
     var selected = 0;
     var a = document.getElementsByName("select");
     var s = $('input:radio[name="select"]:checked').val();
@@ -24,9 +24,33 @@ function mvalidate() {
         return false;
     }
     if (confirm("提交?")){
-        return true;
+        //return true;
+        if(v == 0) {
+            document.form.action = "/delete";
+            document.forms.from.submit();
+        }else if(v == 1) {
+            document.form.action = "/modify";
+            document.forms.from.submit();
+        }
     }
     else {
+        return false;
+    }
+}
+function validate(){
+    var a = document.getElementById("Title").value;
+    var b = document.getElementById("Content").value;
+    if(a == ""){
+        alert("标题不能为空");
+        return false;
+    }
+    if(b == ""){
+        alert("内容不能为空");
+        return false;
+    }
+    if (confirm("提交?")){
+        return true;
+    }else{
         return false;
     }
 }

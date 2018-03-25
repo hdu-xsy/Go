@@ -9,8 +9,10 @@ import (
 	"io"
 	"../Entity"
 	"strconv"
+	"github.com/kataras/iris"
+	"../DAO"
 )
-func ContextWriter(Content Entity.Article,menu Entity.Menu, w io.Writer) (int, error){
+func ContextWriter(Content Entity.Article,prearticle Entity.Article,username string,menu Entity.Menu,comment []Entity.Comment,ctx iris.Context, w io.Writer) (int, error){
 	_buffer := hero.GetBuffer()
 	defer hero.PutBuffer(_buffer)
 	_buffer.WriteString(`<!DOCTYPE html>
@@ -36,8 +38,7 @@ func ContextWriter(Content Entity.Article,menu Entity.Menu, w io.Writer) (int, e
 </head>
 <body>
 `)
-	_buffer.WriteString(`
-<nav id="navbar-example" class="navbar navbar-default navbar-static" role="navigation">
+	_buffer.WriteString(`<nav id="navbar-example" class="navbar navbar-default navbar-static" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
             <button class="navbar-toggle" type="button" data-toggle="collapse"
@@ -59,7 +60,7 @@ func ContextWriter(Content Entity.Article,menu Entity.Menu, w io.Writer) (int, e
                 <li><a href="/menu/6">PHP学习</a></li>
                 <li><a href="/menu/7">日记/感想</a></li>
                 <li><a href="/menu/8">后端知识学习</a></li>
-                <li><a href="/menu/9">关于二次元</a></li>
+                <li><a href="/menu/9">计算机基础</a></li>
             </ul>
             <form class="navbar-form navbar-left">
                 <div class="form-group">
@@ -68,9 +69,13 @@ func ContextWriter(Content Entity.Article,menu Entity.Menu, w io.Writer) (int, e
                 <button type="submit" class="btn btn-default">Submit</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
-				<li><a href="/adminlogin">后台</a></li>
-                <li><a href="/register">注册</a></li>
-                <li><a href="/login">登录</a></li>
+				<li><a href="/adminlogin">后台</a></li>`)
+	if auth, _ := Entity.Sess.Start(ctx).GetBoolean("userauthenticated"); !auth {
+		_buffer.WriteString(`<li><a href="/register">注册</a></li>`+`<li><a href="/login">登录</a></li>`)
+	}else {
+		_buffer.WriteString(`<li><a href="/user">欢迎你&nbsp;:&nbsp;`+Entity.Sess.Start(ctx).GetString("Username")+`&nbsp;&nbsp;&nbsp;更多</a></li>`)
+	}
+	_buffer.WriteString(`
             </ul>
         </div>
     </div>
@@ -91,19 +96,54 @@ func ContextWriter(Content Entity.Article,menu Entity.Menu, w io.Writer) (int, e
     _buffer.WriteString(`</li>
 			</ol>
 			<hr/>
-			<h4>分类: 施工中 上一篇: 施工中</h4><br/>
-            `)
-	_buffer.WriteString("<h3>"+Content.Title+"</h3><br/><h5>作者:施工中</h5><h5>日期:施工中</h5><br/>")
+			<h4>分类:`)
+    _buffer.WriteString(Content.Classify)
+	_buffer.WriteString(`<p class="text-right">上一篇: <a href="/article/`)
+	_buffer.WriteString(strconv.FormatInt(Content.Id-1,10))
+	_buffer.WriteString(`">`)
+	_buffer.WriteString(prearticle.Title)
+	_buffer.WriteString(`</a></p></h4><br/>`)
+	_buffer.WriteString("<h3>"+Content.Title+"</h3><br/><h5>作者:")
+	_buffer.WriteString(username)
+	_buffer.WriteString("</h5><h5>最后修改日期:")
+	_buffer.WriteString(Content.Time.Format("2006-01-02 15:04:05"))
+	_buffer.WriteString("</h5><br/>")
 	_buffer.WriteString("<div>"+string(Content.Content)+"</div>")
 	_buffer.WriteString(`
         </div>
-	<h3>留言:施工中</h3>
+	<hr/>
+	<h3>留言&nbsp;共&nbsp;`)
+	_buffer.WriteString(strconv.Itoa(len(comment)))
+	_buffer.WriteString(`&nbsp;条)</h3>
+	<hr/>`)
+	user := Entity.UserData{}
+	for _,com := range comment {
+		var userdatadao DAO.UserDataDAOInterface = new(DAO.UserData)
+		_,_,user = userdatadao.Get(Entity.UserData{Id:com.User})
+		_buffer.WriteString("<h4>"+strconv.FormatInt(com.Floor,10)+` 楼 `)
+		_buffer.WriteString(user.Username)
+		_buffer.WriteString(` 说:</h4>
+		<p>`+com.Content+`</p>
+		<p class="text-right">日期:`+com.Time.Format("2006-01-02 15:04:05")+` | </p><a href="#">回复</a>
+	<hr dashed>`)
+	}
+	_buffer.WriteString(`<hr>
+	<br><br>
+	<h3>发表观点</h3>
+	<form  method="post" name="form" id="form">
+		<textarea class="form-control" rows="3" id="Comment" name="Comment"></textarea>
+		<input type="text" id ="Article" name="Article" style="display:none" value="`+strconv.FormatInt(Content.Id,10)+`"></input>
+		<input type="text" id ="Floor" name="Floor" style="display:none" value="`+strconv.Itoa(len(comment)+1)+`"></input>
+	</form>
+	<button class="btn btn-default" name="btn" id="btn">提交</button>
+	<p id="text" name="text"></p>
     </div>
     <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
-</div>
-`)
+</div>`)
 
 	_buffer.WriteString(`
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../js/CommentAjax.js"></script>
 </body>
 </html>`)
 	return w.Write(_buffer.Bytes())

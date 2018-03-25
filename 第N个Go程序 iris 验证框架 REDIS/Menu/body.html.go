@@ -59,7 +59,7 @@ func MenuWriter(menuList []Entity.Article,themenu Entity.Menu,ctx iris.Context,w
                 <li><a href="/menu/6">PHP学习</a></li>
                 <li><a href="/menu/7">日记/感想</a></li>
                 <li><a href="/menu/8">后端知识学习</a></li>
-                <li><a href="/menu/9">关于二次元</a></li>
+                <li><a href="/menu/9">计算机基础</a></li>
             </ul>
             <form class="navbar-form navbar-left">
                 <div class="form-group">
@@ -72,7 +72,7 @@ func MenuWriter(menuList []Entity.Article,themenu Entity.Menu,ctx iris.Context,w
 	if auth, _ := Entity.Sess.Start(ctx).GetBoolean("userauthenticated"); !auth {
 		_buffer.WriteString(`<li><a href="/register">注册</a></li>`+`<li><a href="/login">登录</a></li>`)
 	}else {
-		_buffer.WriteString(`<li><a href="/">欢迎你 : `+Entity.Sess.Start(ctx).GetString("Username")+`</a></li>`)
+		_buffer.WriteString(`<li><a href="/user">欢迎你&nbsp;:&nbsp;`+Entity.Sess.Start(ctx).GetString("Username")+`&nbsp;&nbsp;&nbsp;更多</a></li>`)
 	}
 	_buffer.WriteString(`
             </ul>

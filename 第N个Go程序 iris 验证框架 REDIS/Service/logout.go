@@ -19,6 +19,6 @@ func (s *Logout) Logout(ctx iris.Context) {
 	checkError(onlineuserdao.Delete(Entity.OnlineUser{Username:session.GetString("Username")}))
 	session.Set("userauthenticated",false)
 	session.Set("Username","nil")
-	uid = 0
+	uid = -1
 	ctx.Redirect("/")
 }

@@ -26,3 +26,12 @@ func (d *Article)OrderByTime() []Entity.Article{
 	orm.Desc("time").Limit(20,0).Find(&articleList)
 	return articleList
 }
+func (d *Article)FindAllA() []Entity.Article{
+	var articleList []Entity.Article
+	orm.Find(&articleList)
+	return articleList
+}
+func (d *Article)Update(article Entity.Article) (int64,error) {
+	i,err := orm.Id(article.Id).Update(&article)
+	return i,err
+}

@@ -19,27 +19,40 @@
 </head>
 
 <body>
-<div style="margin-top:5%;margin-left:20%;margin-right:20%">
-    <h2 class="text-center">插入文章</h2>
-    <form method="post" name="form" id="form">
-        <div class="form-group">
-            <label for="Title">标题</label>
-            <input type="text" class="form-control" id="Title" name="Title">
-        </div>
-        <select name="Menu" id="Menu" class="form-control">
-            <option value="1">网站更新日志</option>
-            <option value="2">GO语言学习</option>
-            <option value="3">Python语言学习</option>
-            <option value="4">Java学习</option>
-            <option value="5">JS学习</option>
-            <option value="6">PHP学习</option>
-            <option value="7">日记/感想</option>
-            <option value="8">后端知识学习</option>
-            <option value="9">关于二次元</option>
-        </select>
-        <textarea class="form-control" rows="500" name="Content" id="Content"></textarea>
-    </form>
-    <button class="btn btn-default" name="btn" id="btn" onclick="return validate()">确认</button>
+<div class="row" style="margin-top:5%;">
+    <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
+    <div class="col-md-3 col-lg-3 col-sm-4 col-xs-4">
+        <ul class="nav nav-pills nav-stacked">
+            <li role="presentation"><a href="/backend">修改用户</a></li>
+            <li role="presentation"><a href="/articlemodify">修改文章</a></li>
+            <li role="presentation" class="active"><a href="/articleinsert">增加文章</a></li>
+        </ul>
+    </div>
+    <div class="col-md-5 col-lg-5 col-sm-6 col-xs-6">
+        <h2 class="text-center">插入文章</h2>
+        <form method="post" name="form" id="form">
+            <div class="form-group">
+                <label for="Title">标题</label>
+                <input type="text" class="form-control" id="Title" name="Title">
+                <label for="Classify">分类</label>
+                <input type="text" class="form-control" id="Classify" name="Classify">
+            </div>
+            <select name="Menu" id="Menu" class="form-control">
+                <option value="1">网站更新日志</option>
+                <option value="2">GO语言学习</option>
+                <option value="3">Python语言学习</option>
+                <option value="4">Java学习</option>
+                <option value="5">JS学习</option>
+                <option value="6">PHP学习</option>
+                <option value="7">日记/感想</option>
+                <option value="8">后端知识学习</option>
+                <option value="9">计算机基础</option>
+            </select>
+            <textarea class="form-control" rows="20" name="Content" id="Content"></textarea>
+        </form>
+        <button class="btn btn-default" name="btn" id="btn" onclick="return validate()">确认</button>
+    </div>
+    <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
 </div>
 <script type="text/javascript" src="../js/ArticleInsert.js"></script>
 </body>

@@ -18,5 +18,5 @@ func (c *AdminLogout) Get(ctx iris.Context){
 }
 func (c *Logout) Get(ctx iris.Context){
 	logout.Logout(ctx)
-	uid = 0
+	uid = -1
 }
