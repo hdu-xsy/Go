@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"github.com/kataras/iris"
 )
-func ListWriter(articleList []Entity.Article, ctx iris.Context,w io.Writer) (int, error){
+func ListWriter(articleList []Entity.Article,comment []Entity.Comment, ctx iris.Context,w io.Writer) (int, error){
 	_buffer := hero.GetBuffer()
 	defer hero.PutBuffer(_buffer)
 	_buffer.WriteString(`<!DOCTYPE html>
@@ -100,7 +100,22 @@ _buffer.WriteString(`
         </div>
     </div>
     <div class="col-md-3 col-lg-3 hidden-sm hidden-xs">
-		<div><h3>最近留言</h3>施工中</div><hr/>
+		<div><h3>最近留言</h3>
+		<div class="list-group">`)
+		for _, com := range comment {
+			_buffer.WriteString(`<a href="/article/`)
+			hero.EscapeHTML(strconv.FormatInt(com.Article,10),_buffer)
+			_buffer.WriteString(`" class="list-group-item">
+		`)
+			var con string
+			if len(com.Content)>15 {con = com.Content[0:15]}else{con = com.Content}
+			hero.EscapeHTML(com.Time.Format("2006-01-02 15:04:05")+" : "+con+"...", _buffer)
+			_buffer.WriteString(`
+		</a>`)
+		}
+		_buffer.WriteString(`
+				</div>
+		施工中</div><hr/>
         <div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">公告</h3>

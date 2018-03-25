@@ -10,8 +10,9 @@ import (
 	"../Entity"
 	"strconv"
 	"github.com/kataras/iris"
+	"../DAO"
 )
-func ContextWriter(Content Entity.Article,prearticle Entity.Article,username string,menu Entity.Menu,ctx iris.Context, w io.Writer) (int, error){
+func ContextWriter(Content Entity.Article,prearticle Entity.Article,username string,menu Entity.Menu,comment []Entity.Comment,ctx iris.Context, w io.Writer) (int, error){
 	_buffer := hero.GetBuffer()
 	defer hero.PutBuffer(_buffer)
 	_buffer.WriteString(`<!DOCTYPE html>
@@ -111,24 +112,38 @@ func ContextWriter(Content Entity.Article,prearticle Entity.Article,username str
 	_buffer.WriteString(`
         </div>
 	<hr/>
-	<h3>留言(共 施工中 条):施工中</h3>
-	<hr/>
-		<h4>施工中 楼 施工中 说:</h4>
-		<p>施工中.</p>
-		<p class="text-right">日期:施工中</p>
-	<hr dashed> 
-	<hr>
+	<h3>留言&nbsp;共&nbsp;`)
+	_buffer.WriteString(strconv.Itoa(len(comment)))
+	_buffer.WriteString(`&nbsp;条)</h3>
+	<hr/>`)
+	user := Entity.UserData{}
+	for _,com := range comment {
+		var userdatadao DAO.UserDataDAOInterface = new(DAO.UserData)
+		_,_,user = userdatadao.Get(Entity.UserData{Id:com.User})
+		_buffer.WriteString("<h4>"+strconv.FormatInt(com.Floor,10)+` 楼 `)
+		_buffer.WriteString(user.Username)
+		_buffer.WriteString(` 说:</h4>
+		<p>`+com.Content+`</p>
+		<p class="text-right">日期:`+com.Time.Format("2006-01-02 15:04:05")+` | </p><a href="#">回复</a>
+	<hr dashed>`)
+	}
+	_buffer.WriteString(`<hr>
 	<br><br>
 	<h3>发表观点</h3>
-	<form>
-		<textarea class="form-control" rows="3"></textarea>
+	<form  method="post" name="form" id="form">
+		<textarea class="form-control" rows="3" id="Comment" name="Comment"></textarea>
+		<input type="text" id ="Article" name="Article" style="display:none" value="`+strconv.FormatInt(Content.Id,10)+`"></input>
+		<input type="text" id ="Floor" name="Floor" style="display:none" value="`+strconv.Itoa(len(comment)+1)+`"></input>
 	</form>
-	<button class="btn btn-default" name="btn" id="btn" onclick="return validate()">提交</button>
+	<button class="btn btn-default" name="btn" id="btn">提交</button>
+	<p id="text" name="text"></p>
     </div>
     <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
 </div>`)
 
 	_buffer.WriteString(`
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../js/CommentAjax.js"></script>
 </body>
 </html>`)
 	return w.Write(_buffer.Bytes())

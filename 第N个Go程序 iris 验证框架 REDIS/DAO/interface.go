@@ -12,6 +12,7 @@ var err2 = Util.GetAdminUser(*app)
 var err3 = Util.GetOnlineUser(*app)
 var err4 = Util.GetArticle(*app)
 var err5 = Util.GetMenu(*app)
+var err6 = Util.GetComment(*app)
 
 type UserDataDAOInterface interface {
 	FindAll() []Entity.UserData
@@ -44,4 +45,5 @@ type MenuDAOInterface interface {
 type CommentDAOInterface interface{
 	FindAll(article string) []Entity.Comment
 	Insert(comment Entity.Comment) (int64,error)
+	OrderByTime() []Entity.Comment
 }

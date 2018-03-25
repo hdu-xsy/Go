@@ -53,3 +53,11 @@ func GetArticle(app iris.Application) error {
 	err := orm.Sync2(new(Entity.Article))
 	return err
 }
+func GetComment(app iris.Application) error {
+	orm := Getorm(app)
+	iris.RegisterOnInterrupt(func(){
+		orm.Close()
+	})
+	err := orm.Sync2(new(Entity.Comment))
+	return err
+}

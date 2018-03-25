@@ -11,5 +11,6 @@ type IndexService struct {
 
 func (s *IndexService)Get(ctx iris.Context) {
 	articleList := articledao.OrderByTime()
-	index.ListWriter(articleList,ctx,ctx)
+	comment := commentdao.OrderByTime()
+	index.ListWriter(articleList,comment,ctx,ctx)
 }

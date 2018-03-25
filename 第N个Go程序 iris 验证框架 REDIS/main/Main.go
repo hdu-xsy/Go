@@ -30,6 +30,7 @@ func main() {
 	app.Post("/delete",Controller.Delete)
 	app.Post("/modify",Controller.Modify)
 	app.Post("/UserLoginAjax",Controller.UserLoginAjax)
+	app.Post("/Comment",Controller.CommentController)
 	app.Post("/artinsert",Controller.ArticleInsertController)
 	app.Post("/articleModify",Controller.ArticlemodifyController)
 	mvc.New(app.Party("/articleinsert")).Handle(new(Controller.ArticInsertController))
