@@ -41,6 +41,20 @@ type Comment struct {
 	Time      time.Time`xorm:"created"`
 	Content   string
 }
+type Entity struct {
+	AdminUser 		AdminUser
+	AdminUserList   []AdminUser
+	UserData  		UserData
+	UserDataList	[]UserData
+	OnlineUser  	OnlineUser
+	OnlineUserList  []OnlineUser
+	Article 		Article
+	ArticleList		[]Article
+	Menu 			Menu
+	MenuList		[]Menu
+	Comment 		Comment
+	CommentList		[]Comment
+}
 var (
 	CookieNameForSessionID = "mycookiesessionnameid"
 	Sess                   = sessions.New(sessions.Config{Cookie: CookieNameForSessionID})

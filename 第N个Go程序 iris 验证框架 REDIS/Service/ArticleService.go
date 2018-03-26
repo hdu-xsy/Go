@@ -16,12 +16,14 @@ type ArticleService struct {
 func (s *ArticleService)Get(ctx iris.Context) {
 	id,_ := strconv.ParseInt(ctx.Params().Get("id"),10,64)
 	_,_,article := articledao.Get(Entity.Article{Id:id})
-	_,_,prearticle := articledao.Get(Entity.Article{Id:id-1})
+	_,_,pre := articledao.Get(Entity.Article{Id:id-1})
+	_,_,suc := articledao.Get(Entity.Article{Id:id+1})
 	mid,_ := strconv.ParseInt(article.Menu,10,64)
 	_,_,menu := menudao.Get(Entity.Menu{Id:mid})
 	_,_,user := userdatadao.Get(Entity.UserData{Id:article.User})
 	comment := commentdao.FindAll(ctx.Params().Get("id"))
-	Article.ContextWriter(article,prearticle,user.Username,menu,comment,ctx,ctx)
+	entity := Entity.Entity{Article:article,UserData:user,Menu:menu,CommentList:comment}
+	Article.ContextWriter(entity,pre,suc,ctx,ctx)
 }
 type ArticleInsertService struct {
 

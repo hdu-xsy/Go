@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"github.com/kataras/iris"
 )
-func MenuWriter(menuList []Entity.Article,themenu Entity.Menu,ctx iris.Context,w io.Writer) (int, error){
+func MenuWriter(entity Entity.Entity,ctx iris.Context,w io.Writer) (int, error){
 	_buffer := hero.GetBuffer()
 	defer hero.PutBuffer(_buffer)
 	_buffer.WriteString(`<!DOCTYPE html>
@@ -86,15 +86,15 @@ func MenuWriter(menuList []Entity.Article,themenu Entity.Menu,ctx iris.Context,w
 			<ol class="breadcrumb">
 			  <li><a href="/">主页</a></li>
 			  <li class="active">`)
-	_buffer.WriteString(themenu.Name)
+	_buffer.WriteString(entity.Menu.Name)
 	_buffer.WriteString(`</li>
 			</ol>
             <h3>分类:`)
-	hero.EscapeHTML(themenu.Name,_buffer)
+	hero.EscapeHTML(entity.Menu.Name,_buffer)
 	_buffer.WriteString(`(共 `)
-	_buffer.WriteString(strconv.Itoa(len(menuList)))
+	_buffer.WriteString(strconv.Itoa(len(entity.ArticleList)))
 	_buffer.WriteString(` 篇文章)</h3><br/><div class="list-group">`)
-	for _, menu := range menuList {
+	for _, menu := range entity.ArticleList {
 		_buffer.WriteString(`<a href="/article/`)
 		hero.EscapeHTML(strconv.FormatInt(menu.Id,10),_buffer)
 		_buffer.WriteString(`" class="list-group-item">
@@ -106,8 +106,31 @@ func MenuWriter(menuList []Entity.Article,themenu Entity.Menu,ctx iris.Context,w
 	_buffer.WriteString(`
             </div>
         </div>
+		<nav aria-label="...">
+		  <ul class="pagination">
+			<li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+			<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+			<li class="disabled"><a href="#">2 <span class="sr-only">(current)</span></a></li>
+			<li class="disabled"><a href="#">3 <span class="sr-only">(current)</span></a></li>
+			<li class="disabled"><a href="#">4 <span class="sr-only">(current)</span></a></li>
+			<li class="disabled"><a href="#">5 <span class="sr-only">(current)</span></a></li>
+			<li class="disabled"><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+		  </ul>
+		</nav>
     </div>
-	<div class="col-md-3 col-lg-3 hidden-sm hidden-xs"><p>施工中</p></div>
+	<div class="col-md-3 col-lg-3 hidden-sm hidden-xs">
+		<h3>分类</h3>
+		<ul class="list-group">
+		  <li class="list-group-item">
+			<span class="badge">14</span>
+			施工中
+		  </li>
+		  <li class="list-group-item">
+			<span class="badge">14</span>
+			施工中
+		  </li>
+		</ul>
+	</div>
     <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
 </div>
 `)

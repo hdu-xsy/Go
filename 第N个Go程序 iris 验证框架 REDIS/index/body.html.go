@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"github.com/kataras/iris"
 )
-func ListWriter(articleList []Entity.Article,comment []Entity.Comment, ctx iris.Context,w io.Writer) (int, error){
+func ListWriter(entity Entity.Entity, ctx iris.Context,w io.Writer) (int, error){
 	_buffer := hero.GetBuffer()
 	defer hero.PutBuffer(_buffer)
 	_buffer.WriteString(`<!DOCTYPE html>
@@ -83,10 +83,10 @@ _buffer.WriteString(`
     <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
     <div class="col-md-5 col-lg-5 col-sm-10 col-xs-10">
         <div>
-            <h3>最近文章</h3>
+            <h3>最近的20篇文章</h3>
             <hr/>`)
             	_buffer.WriteString(`<br/><div class="list-group">`)
-	for _, menu := range articleList {
+	for _, menu := range entity.ArticleList {
 		_buffer.WriteString(`<a href="/article/`)
 	hero.EscapeHTML(strconv.FormatInt(menu.Id,10),_buffer)
 	_buffer.WriteString(`" class="list-group-item">
@@ -102,20 +102,20 @@ _buffer.WriteString(`
     <div class="col-md-3 col-lg-3 hidden-sm hidden-xs">
 		<div><h3>最近留言</h3>
 		<div class="list-group">`)
-		for _, com := range comment {
+		for _, com := range entity.CommentList {
 			_buffer.WriteString(`<a href="/article/`)
 			hero.EscapeHTML(strconv.FormatInt(com.Article,10),_buffer)
 			_buffer.WriteString(`" class="list-group-item">
 		`)
 			var con string
-			if len(com.Content)>15 {con = com.Content[0:15]}else{con = com.Content}
-			hero.EscapeHTML(com.Time.Format("2006-01-02 15:04:05")+" : "+con+"...", _buffer)
+			if len(com.Content)>30 {con = com.Content[0:30]+"..."}else{con = com.Content}
+			hero.EscapeHTML(com.Time.Format("2006-01-02 15:04:05")+" : "+con, _buffer)
 			_buffer.WriteString(`
 		</a>`)
 		}
 		_buffer.WriteString(`
 				</div>
-		施工中</div><hr/>
+		</div><hr/>
         <div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">公告</h3>

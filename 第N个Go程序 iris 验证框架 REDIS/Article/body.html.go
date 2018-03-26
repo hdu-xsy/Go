@@ -12,7 +12,7 @@ import (
 	"github.com/kataras/iris"
 	"../DAO"
 )
-func ContextWriter(Content Entity.Article,prearticle Entity.Article,username string,menu Entity.Menu,comment []Entity.Comment,ctx iris.Context, w io.Writer) (int, error){
+func ContextWriter(entity Entity.Entity,pre Entity.Article,suc Entity.Article,ctx iris.Context, w io.Writer) (int, error){
 	_buffer := hero.GetBuffer()
 	defer hero.PutBuffer(_buffer)
 	_buffer.WriteString(`<!DOCTYPE html>
@@ -38,7 +38,7 @@ func ContextWriter(Content Entity.Article,prearticle Entity.Article,username str
 </head>
 <body>
 `)
-	_buffer.WriteString(`<nav id="navbar-example" class="navbar navbar-default navbar-static" role="navigation">
+	_buffer.WriteString(`<nav id="navbar-example" class="navbar navbar-default navbar-static navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
             <button class="navbar-toggle" type="button" data-toggle="collapse"
@@ -87,37 +87,39 @@ func ContextWriter(Content Entity.Article,prearticle Entity.Article,username str
 			<ol class="breadcrumb">
 			  <li><a href="/">主页</a></li>
 			  <li><a href="/menu/`)
-	_buffer.WriteString(strconv.FormatInt(menu.Id,10))
+	_buffer.WriteString(strconv.FormatInt(entity.Menu.Id,10))
 	_buffer.WriteString(`">`)
-	_buffer.WriteString(menu.Name)
+	_buffer.WriteString(entity.Menu.Name)
 	_buffer.WriteString(`</a></li>
 			  <li class="active">`)
-    _buffer.WriteString(Content.Title)
+    _buffer.WriteString(entity.Article.Title)
     _buffer.WriteString(`</li>
 			</ol>
 			<hr/>
-			<h4>分类:`)
-    _buffer.WriteString(Content.Classify)
+			<h5>分类:`)
+    _buffer.WriteString(entity.Article.Classify)
 	_buffer.WriteString(`<p class="text-right">上一篇: <a href="/article/`)
-	_buffer.WriteString(strconv.FormatInt(Content.Id-1,10))
-	_buffer.WriteString(`">`)
-	_buffer.WriteString(prearticle.Title)
-	_buffer.WriteString(`</a></p></h4><br/>`)
-	_buffer.WriteString("<h3>"+Content.Title+"</h3><br/><h5>作者:")
-	_buffer.WriteString(username)
+	_buffer.WriteString(strconv.FormatInt(entity.Article.Id-1,10)+`">`)
+	_buffer.WriteString(pre.Title)
+	_buffer.WriteString(`</a></p><p class="text-right">下一篇: <a href="/article/`)
+	_buffer.WriteString(strconv.FormatInt(entity.Article.Id+1,10)+`">`)
+	_buffer.WriteString(suc.Title)
+	_buffer.WriteString(`</a></p></h5><br/>`)
+	_buffer.WriteString("<h3>"+entity.Article.Title+"</h3><br/><h5>作者:")
+	_buffer.WriteString(entity.UserData.Username)
 	_buffer.WriteString("</h5><h5>最后修改日期:")
-	_buffer.WriteString(Content.Time.Format("2006-01-02 15:04:05"))
+	_buffer.WriteString(entity.Article.Time.Format("2006-01-02 15:04:05"))
 	_buffer.WriteString("</h5><br/>")
-	_buffer.WriteString("<div>"+string(Content.Content)+"</div>")
+	_buffer.WriteString("<div>"+string(entity.Article.Content)+"</div>")
 	_buffer.WriteString(`
         </div>
 	<hr/>
 	<h3>留言&nbsp;共&nbsp;`)
-	_buffer.WriteString(strconv.Itoa(len(comment)))
+	_buffer.WriteString(strconv.Itoa(len(entity.CommentList)))
 	_buffer.WriteString(`&nbsp;条)</h3>
 	<hr/>`)
 	user := Entity.UserData{}
-	for _,com := range comment {
+	for _,com := range entity.CommentList {
 		var userdatadao DAO.UserDataDAOInterface = new(DAO.UserData)
 		_,_,user = userdatadao.Get(Entity.UserData{Id:com.User})
 		_buffer.WriteString("<h4>"+strconv.FormatInt(com.Floor,10)+` 楼 `)
@@ -132,8 +134,8 @@ func ContextWriter(Content Entity.Article,prearticle Entity.Article,username str
 	<h3>发表观点</h3>
 	<form  method="post" name="form" id="form">
 		<textarea class="form-control" rows="3" id="Comment" name="Comment"></textarea>
-		<input type="text" id ="Article" name="Article" style="display:none" value="`+strconv.FormatInt(Content.Id,10)+`"></input>
-		<input type="text" id ="Floor" name="Floor" style="display:none" value="`+strconv.Itoa(len(comment)+1)+`"></input>
+		<input type="text" id ="Article" name="Article" style="display:none" value="`+strconv.FormatInt(entity.Article.Id,10)+`"></input>
+		<input type="text" id ="Floor" name="Floor" style="display:none" value="`+strconv.Itoa(len(entity.CommentList)+1)+`"></input>
 	</form>
 	<button class="btn btn-default" name="btn" id="btn">提交</button>
 	<p id="text" name="text"></p>
