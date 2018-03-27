@@ -16,6 +16,7 @@ import (
 ```Golang
 app.RegisterView(iris.HTML("/html[directory]",".html[extension]").Reload(true))
 app.StaticWeb("/js[request path]", "./js[system path]") // serve our custom javascript code
+app.Favicon("[path]")	//图标
 app.Get("/",index[funcName])  //路由
 app.Run(iris.Addr(":80"))  //端口
 ```
@@ -667,6 +668,13 @@ func beforeSave(ctx iris.Context, file *multipart.FileHeader) {
 	file.Filename = ip + "-" + file.Filename
 }
 ```
+### 文件下载
+```
+app.Get("/", func(ctx iris.Context) {
+		file := "[path]"
+		ctx.SendFile(file, "name")
+})
+```
 ### 测试
 - GDB调试
 - 测试用例
@@ -732,4 +740,54 @@ yaag.Init(&yaag.Config{ // <- IMPORTANT, init the middleware.
 	BaseUrls: map[string]string{"Production": "", "Staging": ""},
 })
 app.Use(irisyaag.New()) // <- IMPORTANT, register the middleware.
+```
+### GO-BINDATA
+```
+该软件包可将任何文件转换为可管理的Go源代码。用于将二进制数据嵌入到go程序中。文件数据在转换为原始字节片段之前可以选择进行gzip压缩。
+
+它在go-bindata子目录中提供了一个命令行工具。该工具提供了一组命令行选项，用于自定义正在生成的输出。
+
+安装
+
+要安装库和命令行程序，请使用以下命令：
+
+go get -u github.com/shuLhan/go-bindata/...
+用法
+
+转换是在一组或多组文件上完成的。它们都嵌入到一个新的Go源文件中，以及一个目录和一个资产功能，该功能允许基于其名称快速访问资产。
+
+最简单的调用在当前工作目录中生成一个bindata.go文件。它包含数据目录中的所有资产。
+
+$ go-bindata data/
+要递归地包含所有输入子目录，请使用为Go导入路径定义的elipsis后缀。否则，它只会考虑输入目录本身的资产。
+
+$ go-bindata data/...
+要指定正在生成的输出文件的名称，我们使用以下内容：
+
+$ go-bindata -o myfile.go data/
+如果需要，可以指定多个输入目录。
+
+$ go-bindata dir1/... /path/to/dir2/... dir3
+以下段落详细介绍了一些可以提供给go-bindata的命令行选项。有关testdata / in中资源的各种输出示例，请参阅testdata / out目录。每个示例使用不同的命令行选项。
+
+要忽略文件，请使用-ignore传入正则表达式，例如：
+
+$ go-bindata -ignore=\\.gitignore data/...
+Accessing an asset
+
+To access asset data, we use the Asset(string) ([]byte, error) function which is included in the generated output.
+
+data, err := Asset("pub/style/foo.css")
+if err != nil {
+	// Asset was not found.
+}
+
+// use asset data
+调试与发布构建
+
+使用-debug标志调用程序时，生成的代码实际上不包含资产数据。相反，它会生成函数存根，用于从磁盘上的原始文件加载数据。资产API在调试版本和发布版本之间保持一致，因此您的代码不必更改。
+
+当您期望资产经常更改时，这在开发过程中很有用。使用这些资产的主机应用程序在这两种情况下都使用相同的API，并且不必关心实际数据来自何处。
+
+一个例子是一个带有一些嵌入式静态Web内容的Go web服务器，如HTML，JS和CSS文件。在开发它的时候，你不想重建整个服务器，并在你每次改变一些javascript时重启它。您只想构建并启动服务器一次。然后只需在浏览器中按刷新即可查看这些更改。用调试标志嵌入资产可以让你做到这一点。当您完成开发并准备部署时，只需重新调用go-bindata而不使用-debug标志。它现在将嵌入最新版本的资产。
 ```
