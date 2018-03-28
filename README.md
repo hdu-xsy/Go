@@ -316,6 +316,7 @@ session.Destroy()   //销毁
 - 官方的websocket
 - 第三方websocket
 ### 事务
+```
 //子域也适用于所有可用的路由器，就像其他功能一样。
 
 app.Get("/", func(ctx context.Context) {
@@ -356,7 +357,7 @@ app.Get("/", func(ctx context.Context) {
 		"if the transaction was failed and it was request scoped then this message would " +
 		"not been shown. But it has a transient scope(default) so, it is visible as expected!</h1>")
 })
-
+```
 ### 模板
 - 上下文视图数据
 ```
