@@ -315,6 +315,48 @@ session.Destroy()   //销毁
     ```
 - 官方的websocket
 - 第三方websocket
+### 事务
+//子域也适用于所有可用的路由器，就像其他功能一样。
+
+app.Get("/", func(ctx context.Context) {
+	ctx.BeginTransaction(func(t *context.Transaction) {
+		//选项步骤：如果为真，那么如果此事务失败，则不会执行下一个事务
+		// t.SetScope(context.RequestTransactionScope)
+		//可选步骤：
+		//在这里创建一个新的自定义类型的错误以跟踪状态码和原因消息
+		err := context.NewTransactionErrResult()
+
+		//我们应该使用t.Context，如果我们想回滚这个函数clojure中的任何错误。
+		t.Context().Text("Blablabla this should not be sent to the client because we will fill the err with a message and status")
+
+		//在这里虚拟出一个假的错误，以举例说明
+		fail := true
+		if fail {
+			err.StatusCode = iris.StatusInternalServerError
+			//注意：如果是空的原因，那么默认或自定义http错误将被触发（如ctx.FireStatusCode）
+			err.Reason = "Error: Virtual failure!!"
+		}
+
+		//选项步骤：
+		//但如果我们想在事务失败时将错误消息回发给客户端，那么它很有用。
+		//如果原因为空，则交易成功完成，
+		//否则我们会回滚整个回复作者的主体，
+		//标题和Cookie，状态码和所有内容都存在于此事务中
+		t.Complete(err)
+	})
+
+	ctx.BeginTransaction(func(t *context.Transaction) {
+		t.Context().HTML("<h1>This will sent at all cases because it lives on different transaction and it doesn't fails</h1>")
+		// *如果我们没有任何'throw error'逻辑，那么不需要
+	})
+
+	// OPTIONALLY取决于用法：
+	//在任何情况下，上下文事务中发生的事情都会发送给客户端
+	ctx.HTML("<h1>Let's add a second html message to the response, " +
+		"if the transaction was failed and it was request scoped then this message would " +
+		"not been shown. But it has a transient scope(default) so, it is visible as expected!</h1>")
+})
+
 ### 模板
 - 上下文视图数据
 ```
