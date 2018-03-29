@@ -315,6 +315,40 @@ session.Destroy()   //销毁
     ```
 - 官方的websocket
 - 第三方websocket
+### Writer
+- write-gzip
+```
+ctx.GzipResponseWriter().WriteString("Hello World!")
+
+or
+
+ctx.WriteGzip([]byte("Hello World!"))
+ctx.Header("X-Custom","Headers can be set here after WriteGzip as well, because the data are kept before sent to the client when using the context's GzipResponseWriter and ResponseRecorder.")
+```
+-Binary
+```
+ctx.Binary([]byte("Some binary data here."))
+```
+-Text
+```
+ctx.Text("Plain text here")
+```
+-Json
+```
+ctx.JSON(map[string]string{"hello": "json"}) // or myjsonStruct{hello:"json}
+```
+-Jsonp
+```
+ctx.JSONP(map[string]string{"hello": "jsonp"}, context.JSONP{Callback: "callbackName"})
+```
+-XML
+```
+ctx.XML(ExampleXML{One: "hello", Two: "xml"}) // or iris.Map{"One":"hello"...}
+```
+-Markdown
+```
+ctx.Markdown([]byte("# Hello Dynamic Markdown -- iris"))
+```
 ### 事务
 ```
 //子域也适用于所有可用的路由器，就像其他功能一样。
