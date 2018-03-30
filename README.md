@@ -325,27 +325,27 @@ or
 ctx.WriteGzip([]byte("Hello World!"))
 ctx.Header("X-Custom","Headers can be set here after WriteGzip as well, because the data are kept before sent to the client when using the context's GzipResponseWriter and ResponseRecorder.")
 ```
--Binary
+- Binary
 ```
 ctx.Binary([]byte("Some binary data here."))
 ```
--Text
+- Text
 ```
 ctx.Text("Plain text here")
 ```
--Json
+- Json
 ```
 ctx.JSON(map[string]string{"hello": "json"}) // or myjsonStruct{hello:"json}
 ```
--Jsonp
+- Jsonp
 ```
 ctx.JSONP(map[string]string{"hello": "jsonp"}, context.JSONP{Callback: "callbackName"})
 ```
--XML
+- XML
 ```
 ctx.XML(ExampleXML{One: "hello", Two: "xml"}) // or iris.Map{"One":"hello"...}
 ```
--Markdown
+- Markdown
 ```
 ctx.Markdown([]byte("# Hello Dynamic Markdown -- iris"))
 ```
