@@ -83,6 +83,19 @@ func Funcname(ctx iris.Context) {
     //官方文档http://www.xorm.io/docs/
 }
 ```
+### 图片
+- IRIS方法
+```
+app.StaticWeb("/static","./static") //前者为访问目录 后者为文件目录
+
+```
+- Go方法
+```
+<img  src=\"/static/IMG.jpg\">
+http.HandleFunc("/static/", func(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, r.URL.Path[1:])
+})
+```
 ## 带参数的路径
 ```
 app.Get("/{xxx}/{namedRoute}", func(ctx iris.Context) {
