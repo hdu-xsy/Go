@@ -13,7 +13,7 @@ var err3 = Util.GetOnlineUser(*app)
 var err4 = Util.GetArticle(*app)
 var err5 = Util.GetMenu(*app)
 var err6 = Util.GetComment(*app)
-
+var err7 = Util.GetFile(*app)
 type UserDataDAOInterface interface {
 	FindAll() []Entity.UserData
 	Get(userdata Entity.UserData) (bool,error,Entity.UserData)
@@ -46,4 +46,8 @@ type CommentDAOInterface interface{
 	FindAll(article string) []Entity.Comment
 	Insert(comment Entity.Comment) (int64,error)
 	OrderByTime() []Entity.Comment
+}
+type FileDAOInterface interface {
+	GetAll() []Entity.File
+	Insert(file Entity.File) (int64,error)
 }

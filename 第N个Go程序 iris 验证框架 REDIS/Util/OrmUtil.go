@@ -61,3 +61,11 @@ func GetComment(app iris.Application) error {
 	err := orm.Sync2(new(Entity.Comment))
 	return err
 }
+func GetFile(app iris.Application) error {
+	orm := Getorm(app)
+	iris.RegisterOnInterrupt(func(){
+		orm.Close()
+	})
+	err := orm.Sync2(new(Entity.File))
+	return err
+}

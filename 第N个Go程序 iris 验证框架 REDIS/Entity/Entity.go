@@ -55,6 +55,10 @@ type Entity struct {
 	Comment 		Comment
 	CommentList		[]Comment
 }
+type File struct {
+	Id			int64`pk`
+	Name 		string
+}
 var (
 	CookieNameForSessionID = "mycookiesessionnameid"
 	Sess                   = sessions.New(sessions.Config{Cookie: CookieNameForSessionID})

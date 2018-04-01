@@ -18,11 +18,16 @@ func main() {
 	app.Use(irisyaag.New()) // <- IMPORTANT, register the middleware.*/
 	app.RegisterView(iris.HTML("html",".html").Reload(true))
 	app.StaticWeb("/js", "./js") // serve our custom javascript code
+	app.StaticWeb("/Picture","./Picture")
 	app.Get("/adminlogin",func (ctx iris.Context) {ctx.View("adminlogin.html")})
 	app.Get("/404",func (ctx iris.Context) {ctx.View("404.html")})
 	app.Get("/login",func (ctx iris.Context) {ctx.View("userlogin.html")})
 	app.Get("/error",func (ctx iris.Context) {ctx.View("error.html")})
 	app.Get("/register",func(ctx iris.Context) {ctx.View("register.html")})
+	app.Get("/File/{Name}", func(ctx iris.Context) {
+		file := "./Files/"+ctx.Params().Get("Name")
+		ctx.SendFile(file, ctx.Params().Get("Name"))
+	})
 	app.OnErrorCode(iris.StatusNotFound, func(ctx iris.Context){ctx.View("404.html")})
 	app.OnErrorCode(500, func(ctx iris.Context){ctx.View("500.html")})
 	app.Post("/AdminLoginAjax",Controller.AdminLoginAjax)
@@ -33,6 +38,7 @@ func main() {
 	app.Post("/Comment",Controller.CommentController)
 	app.Post("/artinsert",Controller.ArticleInsertController)
 	app.Post("/articleModify",Controller.ArticlemodifyController)
+	app.Post("/upload",Controller.Uploads)
 	mvc.New(app.Party("/articleinsert")).Handle(new(Controller.ArticInsertController))
 	mvc.New(app.Party("/backend")).Handle(new(Controller.AdminLoginController))
 	mvc.New(app.Party("/adminlogout")).Handle(new(Controller.AdminLogout))
@@ -44,7 +50,9 @@ func main() {
 	mvc.New(app.Party("/articlemodify")).Handle(new(Controller.ArticleListController))
 	mvc.New(app.Party("/menu/{id}")).Handle(new(Controller.MenuController))
 	mvc.New(app.Party("/articlemodify/{id}")).Handle(new(Controller.ArticleModifyController))
+	mvc.New(app.Party("/upload")).Handle(new(Controller.UploadController))
+	mvc.New(app.Party("/download")).Handle(new(Controller.DownloadController))
 	mvc.Configure(app.Party("/echo"), Controller.ConfigureMVC)
-	app.Run(iris.Addr(":80"))
+	app.Run(iris.Addr(":80"), iris.WithPostMaxMemory(32<<20))
 }
 
