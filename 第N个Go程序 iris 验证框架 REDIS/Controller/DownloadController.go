@@ -2,17 +2,15 @@ package Controller
 
 import (
 	"github.com/kataras/iris"
-	"../Download"
-	"../DAO"
-	"../Entity"
+	"../Service"
 )
-type DownloadController struct {
+type DownloadPageController struct {
 
 }
-
-func (c *DownloadController) Get(ctx iris.Context) {
-	var Filedao DAO.FileDAOInterface = new(DAO.FileDAO)
-	var FileList []Entity.File
-	FileList = Filedao.GetAll()
-	Download.Writer(FileList,ctx)
+var downloadpage = Service.DownloadPage{}
+func (c *DownloadPageController) Get(ctx iris.Context) {
+	downloadpage.Get(ctx)
+}
+func DownloadFile(ctx iris.Context) {
+	Service.DownloadFile(ctx)
 }

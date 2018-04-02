@@ -24,12 +24,10 @@ func main() {
 	app.Get("/login",func (ctx iris.Context) {ctx.View("userlogin.html")})
 	app.Get("/error",func (ctx iris.Context) {ctx.View("error.html")})
 	app.Get("/register",func(ctx iris.Context) {ctx.View("register.html")})
-	app.Get("/File/{Name}", func(ctx iris.Context) {
-		file := "./Files/"+ctx.Params().Get("Name")
-		ctx.SendFile(file, ctx.Params().Get("Name"))
-	})
+	app.Get("/File/{Name}",Controller.DownloadFile)
 	app.OnErrorCode(iris.StatusNotFound, func(ctx iris.Context){ctx.View("404.html")})
 	app.OnErrorCode(500, func(ctx iris.Context){ctx.View("500.html")})
+	app.OnErrorCode(403, func(ctx iris.Context){ctx.View("403.html")})
 	app.Post("/AdminLoginAjax",Controller.AdminLoginAjax)
 	app.Post("/Register",Controller.Register)
 	app.Post("/delete",Controller.Delete)
@@ -51,7 +49,7 @@ func main() {
 	mvc.New(app.Party("/menu/{id}")).Handle(new(Controller.MenuController))
 	mvc.New(app.Party("/articlemodify/{id}")).Handle(new(Controller.ArticleModifyController))
 	mvc.New(app.Party("/upload")).Handle(new(Controller.UploadController))
-	mvc.New(app.Party("/download")).Handle(new(Controller.DownloadController))
+	mvc.New(app.Party("/download")).Handle(new(Controller.DownloadPageController))
 	mvc.Configure(app.Party("/echo"), Controller.ConfigureMVC)
 	app.Run(iris.Addr(":80"), iris.WithPostMaxMemory(32<<20))
 }
