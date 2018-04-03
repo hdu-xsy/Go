@@ -84,12 +84,12 @@ func Funcname(ctx iris.Context) {
 }
 ```
 ### 图片
-- IRIS方法
+- IRIS方法  
 ```
 app.StaticWeb("/static","./static") //前者为访问目录 后者为文件目录
 
 ```
-- Go方法
+- Go方法  
 ```
 <img  src=\"/static/IMG.jpg\">
 http.HandleFunc("/static/", func(w http.ResponseWriter, r *http.Request) {
