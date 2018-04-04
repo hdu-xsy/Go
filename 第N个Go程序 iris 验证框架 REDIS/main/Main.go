@@ -37,6 +37,7 @@ func main() {
 	app.Post("/artinsert",Controller.ArticleInsertController)
 	app.Post("/articleModify",Controller.ArticlemodifyController)
 	app.Post("/upload",Controller.Uploads)
+	mvc.New(app.Party("/Classify/{Classify}")).Handle(new(Controller.ClassifyController))
 	mvc.New(app.Party("/articleinsert")).Handle(new(Controller.ArticInsertController))
 	mvc.New(app.Party("/backend")).Handle(new(Controller.AdminLoginController))
 	mvc.New(app.Party("/adminlogout")).Handle(new(Controller.AdminLogout))

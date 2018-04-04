@@ -38,6 +38,8 @@ type ArticleDAOInterface interface {
 	OrderByTime() []Entity.Article
 	FindAllA() []Entity.Article
 	Update(article Entity.Article) (int64,error)
+	Count() map[string]int64
+	FindByClassify(classify string) []Entity.Article
 }
 type MenuDAOInterface interface {
 	Get(menu Entity.Menu) (bool,error,Entity.Menu)

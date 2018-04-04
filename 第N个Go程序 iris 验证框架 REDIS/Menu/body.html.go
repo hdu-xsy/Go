@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"github.com/kataras/iris"
 )
-func MenuWriter(entity Entity.Entity,ctx iris.Context,w io.Writer) (int, error){
+func MenuWriter(m map[string]int64,entity Entity.Entity,ctx iris.Context,w io.Writer) (int, error){
 	_buffer := hero.GetBuffer()
 	defer hero.PutBuffer(_buffer)
 	_buffer.WriteString(`<!DOCTYPE html>
@@ -120,16 +120,15 @@ func MenuWriter(entity Entity.Entity,ctx iris.Context,w io.Writer) (int, error){
     </div>
 	<div class="col-md-3 col-lg-3 hidden-sm hidden-xs">
 		<h3>分类</h3>
-		<ul class="list-group">
-		  <li class="list-group-item">
-			<span class="badge">14</span>
-			施工中
-		  </li>
-		  <li class="list-group-item">
-			<span class="badge">14</span>
-			施工中
-		  </li>
-		</ul>
+		<ul class="list-group">`)
+		for k,v := range m {
+		  _buffer.WriteString(`<li class="list-group-item">
+			<span class="badge">`+strconv.FormatInt(v,10)+`
+			</span>
+			<a href="/Classify/`+k+`">`+k+`</a>
+		  </li>`)
+		}
+		_buffer.WriteString(`</ul>
 	</div>
     <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
 </div>
