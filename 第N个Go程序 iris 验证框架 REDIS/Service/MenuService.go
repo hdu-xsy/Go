@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"../Entity"
 	"../Menu"
+	"../Classify"
 )
 
 type MenuService struct {
@@ -23,10 +24,22 @@ func (s *MenuService)Get(ctx iris.Context) {
 type ClassifySercice struct {
 
 }
+func (s *ClassifySercice) BeginRequest(ctx iris.Context) {
+	c := ctx.Params().Get("Classify")
+	var articleList []Entity.Article
+	articleList = articledao.GetClassify()
+	for _,v := range articleList {
+		if v.Classify == c {
+			return
+		}
+	}
+	ctx.Redirect("/404")
+}
+func (s *ClassifySercice) EndRequest(ctx iris.Context) {}
 func (s *ClassifySercice) Get(ctx iris.Context) {
 	c := ctx.Params().Get("Classify")
 	var al []Entity.Article
 	al = articledao.FindByClassify(c)
 	m := articledao.Count()
-	Menu.MenuWriter(m,Entity.Entity{ArticleList:al},ctx,ctx)
+	Classify.MenuWriter(m,Entity.Entity{ArticleList:al},ctx,ctx)
 }

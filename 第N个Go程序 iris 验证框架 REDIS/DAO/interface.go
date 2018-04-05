@@ -40,6 +40,7 @@ type ArticleDAOInterface interface {
 	Update(article Entity.Article) (int64,error)
 	Count() map[string]int64
 	FindByClassify(classify string) []Entity.Article
+	GetClassify() []Entity.Article
 }
 type MenuDAOInterface interface {
 	Get(menu Entity.Menu) (bool,error,Entity.Menu)

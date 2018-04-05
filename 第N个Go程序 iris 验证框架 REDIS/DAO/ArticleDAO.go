@@ -35,6 +35,11 @@ func (d *Article)Update(article Entity.Article) (int64,error) {
 	i,err := orm.Id(article.Id).Update(&article)
 	return i,err
 }
+func (d *Article)GetClassify() []Entity.Article {
+	var articleList []Entity.Article
+	orm.GroupBy("classify").Find(&articleList)
+	return articleList
+}
 func (d *Article)Count() map[string]int64 {
 	var articleList []Entity.Article
 	var article Entity.Article
