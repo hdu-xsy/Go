@@ -41,7 +41,7 @@ func UserListToWriter(userList []Entity.UserData, w io.Writer) (int, error){
 			<div class="col-md-3 col-lg-3 col-sm-4 col-xs-4">
 				<ul class="nav nav-pills nav-stacked">
 				  <li role="presentation" class="active"><a href="/backend">修改用户</a></li>
-				  <li role="presentation"><a href="/articlemodify">修改文章</a></li>
+				  <li role="presentation"><a href="/articlemodifylist/1">修改文章</a></li>
 				  <li role="presentation"><a href="/articleinsert">增加文章</a></li>
 				  <li role="presentation"><a href="/upload">上传文件</a></li>
 				</ul>
@@ -150,8 +150,9 @@ func ArticleListToWriter(articleList []Entity.Article,w io.Writer) (int, error){
 			<div class="col-md-3 col-lg-3 col-sm-4 col-xs-4">
 				<ul class="nav nav-pills nav-stacked">
 				  <li role="presentation"><a href="/backend">修改用户</a></li>
-				  <li role="presentation" class="active"><a href="/articlemodify">修改文章</a></li>
+				  <li role="presentation" class="active"><a href="/articlemodifylist/1">修改文章</a></li>
 				  <li role="presentation"><a href="/articleinsert">增加文章</a></li>
+				  <li role="presentation"><a href="/upload">上传文件</a></li>
 				</ul>
 			</div>
 			<div class="col-md-5 col-lg-5 col-sm-6 col-xs-6">
