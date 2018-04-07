@@ -51,7 +51,7 @@ func (s *ArticleModify)Get(ctx iris.Context) {
 	} else {
 		max = len(article)/20 + 1
 	}
-	if page>max {
+	if page>max || page == 0 {
 		ctx.Redirect("/404")
 		return
 	}
@@ -65,7 +65,7 @@ func (s *ArticleModify)Get(ctx iris.Context) {
 		_,_,menu := menudao.Get(Entity.Menu{Id:id})
 		article[i].Menu = menu.Name
 	}
-	userlist.ArticleListToWriter(article[(page-1)*20:suc],ctx)
+	userlist.ArticleListToWriter(article[(page-1)*20:suc],page,max,ctx)
 }
 func (s *ArticleModify)Update(ctx iris.Context) {
 	id,_ := strconv.ParseInt(ctx.Params().Get("id"),10,64)
