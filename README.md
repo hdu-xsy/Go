@@ -849,6 +849,43 @@ func main() {
 }
 ```
 ### Redis
+- iris自带的redis
+`不过感觉不是很好用`
+```
+// replace with your running redis' server settings:
+db := redis.New(service.Config{
+	Network:     service.DefaultRedisNetwork,
+	Addr:        service.DefaultRedisAddr,
+	Password:    "",
+	Database:    "",
+	MaxIdle:     0,
+	MaxActive:   0,
+	IdleTimeout: service.DefaultRedisIdleTimeout,
+	Prefix:      ""}) // optionally configure the bridge between your redis server
+
+// close connection when control+C/cmd+C
+iris.RegisterOnInterrupt(func() {
+	db.Close()
+})
+sess := sessions.New(sessions.Config{Cookie: "sessionscookieid", Expires: 45 * time.Minute})
+//
+// IMPORTANT:
+//
+sess.UseDatabase(db)
+//set
+s.Set("key", value)
+// get a specific key, as string, if no found returns just an empty string
+name := sess.Start(ctx).GetString("key")
+// delete a specific key
+sess.Start(ctx).Delete("bbb")
+// removes all entries
+sess.Start(ctx).Clear()
+//destroy, removes the entire session data and cookie
+sess.Destroy(ctx)
+//update
+sess.ShiftExpiration(ctx)
+
+```
 ### API Doc
 ```
 import (
