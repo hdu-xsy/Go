@@ -1,0 +1,14 @@
+<%: func UserListToWriter(userList []Entity.UserData, w io.Writer) (int, error)%>
+
+<%~ "index.html" %>
+
+<%@ list { %>
+    <table class="table table-bordered">
+        <tr>
+            <td>编号</td><td>帐号</td><td>密码</td>
+        </tr>
+    <% for _, user := range userList { %>
+            <%+ "user.html" %>
+    <% } %>
+    </table>
+<% } %>
