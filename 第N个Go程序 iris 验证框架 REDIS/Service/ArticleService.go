@@ -16,12 +16,14 @@ type ArticleService struct {
 func (s *ArticleService)Get(ctx iris.Context) {
 	id,_ := strconv.ParseInt(ctx.Params().Get("id"),10,64)
 	_,_,article := articledao.Get(Entity.Article{Id:id})
-	_,_,prearticle := articledao.Get(Entity.Article{Id:id-1})
+	_,_,pre := articledao.Get(Entity.Article{Id:id-1})
+	_,_,suc := articledao.Get(Entity.Article{Id:id+1})
 	mid,_ := strconv.ParseInt(article.Menu,10,64)
 	_,_,menu := menudao.Get(Entity.Menu{Id:mid})
 	_,_,user := userdatadao.Get(Entity.UserData{Id:article.User})
 	comment := commentdao.FindAll(ctx.Params().Get("id"))
-	Article.ContextWriter(article,prearticle,user.Username,menu,comment,ctx,ctx)
+	entity := Entity.Entity{Article:article,UserData:user,Menu:menu,CommentList:comment}
+	Article.ContextWriter(entity,pre,suc,ctx,ctx)
 }
 type ArticleInsertService struct {
 
@@ -42,12 +44,28 @@ type ArticleModify struct {
 
 func (s *ArticleModify)Get(ctx iris.Context) {
 	article := articledao.FindAllA()
+	var suc,max int
+	page,_ := strconv.Atoi(ctx.Params().Get("page"))
+	if len(article)/20 == 0 {
+		max = len(article)/20
+	} else {
+		max = len(article)/20 + 1
+	}
+	if page>max || page == 0 {
+		ctx.Redirect("/404")
+		return
+	}
+	if page * 20 >= len(article) {
+		suc = len(article)
+	} else {
+		suc = page * 20
+	}
 	for i,a := range article {
 		id,_ := strconv.ParseInt(a.Menu,10,64)
 		_,_,menu := menudao.Get(Entity.Menu{Id:id})
 		article[i].Menu = menu.Name
 	}
-	userlist.ArticleListToWriter(article,ctx)
+	userlist.ArticleListToWriter(article[(page-1)*20:suc],page,max,ctx)
 }
 func (s *ArticleModify)Update(ctx iris.Context) {
 	id,_ := strconv.ParseInt(ctx.Params().Get("id"),10,64)

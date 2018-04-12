@@ -41,8 +41,9 @@ func UserListToWriter(userList []Entity.UserData, w io.Writer) (int, error){
 			<div class="col-md-3 col-lg-3 col-sm-4 col-xs-4">
 				<ul class="nav nav-pills nav-stacked">
 				  <li role="presentation" class="active"><a href="/backend">修改用户</a></li>
-				  <li role="presentation"><a href="/articlemodify">修改文章</a></li>
+				  <li role="presentation"><a href="/articlemodifylist/1">修改文章</a></li>
 				  <li role="presentation"><a href="/articleinsert">增加文章</a></li>
+				  <li role="presentation"><a href="/upload">上传文件</a></li>
 				</ul>
 			</div>
 			<div class="col-md-5 col-lg-5 col-sm-6 col-xs-6">
@@ -118,7 +119,7 @@ func UserListToWriter(userList []Entity.UserData, w io.Writer) (int, error){
 	return w.Write(_buffer.Bytes())
 
 }
-func ArticleListToWriter(articleList []Entity.Article,w io.Writer) (int, error){
+func ArticleListToWriter(articleList []Entity.Article,page int,len int,w io.Writer) (int, error){
 	_buffer := hero.GetBuffer()
 	defer hero.PutBuffer(_buffer)
 	_buffer.WriteString(`<!DOCTYPE html>
@@ -149,8 +150,9 @@ func ArticleListToWriter(articleList []Entity.Article,w io.Writer) (int, error){
 			<div class="col-md-3 col-lg-3 col-sm-4 col-xs-4">
 				<ul class="nav nav-pills nav-stacked">
 				  <li role="presentation"><a href="/backend">修改用户</a></li>
-				  <li role="presentation" class="active"><a href="/articlemodify">修改文章</a></li>
+				  <li role="presentation" class="active"><a href="/articlemodifylist/1">修改文章</a></li>
 				  <li role="presentation"><a href="/articleinsert">增加文章</a></li>
+				  <li role="presentation"><a href="/upload">上传文件</a></li>
 				</ul>
 			</div>
 			<div class="col-md-5 col-lg-5 col-sm-6 col-xs-6">
@@ -177,24 +179,37 @@ func ArticleListToWriter(articleList []Entity.Article,w io.Writer) (int, error){
 					</td>
 				</tr>
 				</table>`)
+	var pages [5]string
+	for k := range pages {
+		if len >5 {
+			pages[k] = strconv.Itoa(page+k)
+		} else {
+			pages[k] = strconv.Itoa(k+1)
+		}
+	}
+	var class [5]string
+	for k := range class {
+		if page == k+1 || page >5 {
+			class[k] = "active"
+		}
+		if (k + 1) > len {
+			class[k] = "disabled"
+		}
+	}
 	_buffer.WriteString(`
-			<nav aria-label="Page navigation">
+			<nav aria-label="...">
 			  <ul class="pagination">
-				<li>
-				  <a href="#" aria-label="Previous">
-					<span aria-hidden="true">&laquo;</span>
-				  </a>
-				</li>
-				<li><a href="#">1</a></li>
-				<li><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li><a href="#">4</a></li>
-				<li><a href="#">5</a></li>
-				<li>
-				  <a href="#" aria-label="Next">
-					<span aria-hidden="true">&raquo;</span>
-				  </a>
-				</li>
+				<li class=`)
+	if page == 1 {_buffer.WriteString("disabled")}
+	_buffer.WriteString(`><a href="/articlemodifylist/`+strconv.Itoa(page-1)+`" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+				<li class=`+class[0]+`><a href="/articlemodifylist/`+pages[0]+`">1 <span class="sr-only">(current)</span></a></li>
+				<li class=`+class[1]+`><a href="/articlemodifylist/`+pages[1]+`">2 <span class="sr-only">(current)</span></a></li>
+				<li class=`+class[2]+`><a href="/articlemodifylist/`+pages[2]+`">3 <span class="sr-only">(current)</span></a></li>
+				<li class=`+class[3]+`><a href="/articlemodifylist/`+pages[3]+`">4 <span class="sr-only">(current)</span></a></li>
+				<li class=`+class[4]+`><a href="/articlemodifylist/`+pages[4]+`">5 <span class="sr-only">(current)</span></a></li>
+				<li class=`)
+	if page == len {_buffer.WriteString("disabled")}
+	_buffer.WriteString(`><a href="/articlemodifylist/`+strconv.Itoa(page+1)+`" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
 			  </ul>
 			</nav>
 		</div>

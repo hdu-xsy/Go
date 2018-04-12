@@ -14,3 +14,13 @@ func (c *MenuController) EndRequest(ctx iris.Context) {}
 func (c *MenuController) Get(ctx iris.Context) {
 	menuservice.Get(ctx)
 }
+type ClassifyController struct {
+}
+var classifyservice = Service.ClassifySercice{}
+func (c *ClassifyController) BeginRequest(ctx iris.Context) {
+	classifyservice.BeginRequest(ctx)
+}
+func (c *ClassifyController) EndRequest(ctx iris.Context) {}
+func (c *ClassifyController) Get(ctx iris.Context) {
+	classifyservice.Get(ctx)
+}

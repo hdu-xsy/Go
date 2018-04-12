@@ -79,10 +79,21 @@ func UserIndexWriter(ctx iris.Context,w io.Writer) (int, error){
     </div>
 </nav>
 `)
-
+//<div style="margin-top:15%;margin-left:20%;margin-right:20%">
+	//<button  class="btn btn-default" name="btn" id="btn" onclick="javascript:window.location.href='/chatform';">聊天室</button>
+// </div>
 	_buffer.WriteString(`
-<div style="margin-top:15%;margin-left:20%;margin-right:20%">
-    <button  class="btn btn-default" name="btn" id="btn" onclick="javascript:window.location.href='/chatform';">聊天室</button>
+<div class="row">
+	<div class="col-md-2 col-lg-2 hidden-sm hidden-xs"></div>
+	<div class="col-md-8 col-lg-8 col-sm-12 col-xs-12">
+		<ul class="nav nav-pills">
+	  		<li role="presentation" class="active"><a href="#">主页</a></li>
+	  		<li role="presentation"><a href="/chatform">聊天室</a></li>
+	  		<li role="presentation"><a href="#">上传照片</a></li>
+			<li role="presentation"><a href="#">修改信息</a></li>
+</ul>
+	</div>
+	<div class="col-md-2 col-lg-2 hidden-sm hidden-xs"></div>
 </div>
 </body>
 </html>`)
