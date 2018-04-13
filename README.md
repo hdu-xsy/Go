@@ -84,12 +84,12 @@ func Funcname(ctx iris.Context) {
 }
 ```
 ### 图片
-- IRIS方法
+- IRIS方法  
 ```
 app.StaticWeb("/static","./static") //前者为访问目录 后者为文件目录
 
 ```
-- Go方法
+- Go方法  
 ```
 <img  src=\"/static/IMG.jpg\">
 http.HandleFunc("/static/", func(w http.ResponseWriter, r *http.Request) {
@@ -778,7 +778,7 @@ func Test_Name(t *testing.T) {
 }
 ```
 3. go test -v Path
-- 压力测试
+- 压力测试（基准测试）
 > 压力测试用来检测函数(方法）的性能，和编写单元功能测试的方法类似
 首字母不能是小写字母func BenchmarkXXX(b *testing.B) { ... }
 需要带上参数 -test.bench语法: - test.bench="test_name_regex" ,例如 go test -test.bench=".*"
@@ -796,8 +796,9 @@ func Benchmark_TimeConsumingFunction(b *testing.B) {
     // [..]
 }
 ```
-- 基准测试
 - 样本测试
+> 以Example开头  
+函数体末尾添加注释比较输出内容是否与预期相符,第一行注释以Output:开头
 - iris测试
 ```
 func TestNewApp(t *testing.T) {
@@ -812,7 +813,80 @@ func TestNewApp(t *testing.T) {
 }
 `go test -v`
 ```
+### file-logger
+```
+// get a filename based on the date, file logs works that way the most times
+// but these are just a sugar.
+func todayFilename() string {
+	today := time.Now().Format("Jan 02 2006")
+	return today + ".txt"
+}
+
+func newLogFile() *os.File {
+	filename := todayFilename()
+	// open an output file, this will append to the today's file if server restarted.
+	f, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		panic(err)
+	}
+
+	return f
+}
+
+func main() {
+	f := newLogFile()
+	defer f.Close()
+	// attach the file as logger, remember, iris' app logger is just an io.Writer.
+	app.Logger().SetOutput(newLogFile())
+	app.Get("/", func(ctx iris.Context) {
+		// for the sake of simplicity, in order see the logs at the ./_today_.txt
+		ctx.Application().Logger().Info("Request path: " + ctx.Path())
+	})
+	if err := app.Run(iris.Addr(":8080"), iris.WithoutBanner); err != nil {
+		if err != iris.ErrServerClosed {
+			app.Logger().Warn("Shutdown with error: " + err.Error())
+		}
+	}
+}
+```
 ### Redis
+- iris自带的redis
+`不过感觉不是很好用`
+```
+// replace with your running redis' server settings:
+db := redis.New(service.Config{
+	Network:     service.DefaultRedisNetwork,
+	Addr:        service.DefaultRedisAddr,
+	Password:    "",
+	Database:    "",
+	MaxIdle:     0,
+	MaxActive:   0,
+	IdleTimeout: service.DefaultRedisIdleTimeout,
+	Prefix:      ""}) // optionally configure the bridge between your redis server
+
+// close connection when control+C/cmd+C
+iris.RegisterOnInterrupt(func() {
+	db.Close()
+})
+sess := sessions.New(sessions.Config{Cookie: "sessionscookieid", Expires: 45 * time.Minute})
+//
+// IMPORTANT:
+//
+sess.UseDatabase(db)
+//set
+s.Set("key", value)
+// get a specific key, as string, if no found returns just an empty string
+name := sess.Start(ctx).GetString("key")
+// delete a specific key
+sess.Start(ctx).Delete("bbb")
+// removes all entries
+sess.Start(ctx).Clear()
+//destroy, removes the entire session data and cookie
+sess.Destroy(ctx)
+//update
+sess.ShiftExpiration(ctx)
+
+```
 ### API Doc
 ```
 import (
@@ -830,6 +904,67 @@ yaag.Init(&yaag.Config{ // <- IMPORTANT, init the middleware.
 	BaseUrls: map[string]string{"Production": "", "Staging": ""},
 })
 app.Use(irisyaag.New()) // <- IMPORTANT, register the middleware.
+```
+### i18n
+```
+ini文件中为: hi = 您好，%s
+
+func newApp() *iris.Application {
+	app := iris.New()
+	globalLocale := i18n.New(i18n.Config{
+		Default:      "en-US",
+		URLParameter: "lang",
+		Languages: map[string]string{
+			"en-US": "./locales/locale_en-US.ini",
+			"el-GR": "./locales/locale_el-GR.ini",
+			"zh-CN": "./locales/locale_zh-CN.ini"}})
+	app.Use(globalLocale)
+	app.Get("/", func(ctx iris.Context) {
+		// it tries to find the language by:
+		// ctx.Values().GetString("language")
+		// if that was empty then
+		// it tries to find from the URLParameter setted on the configuration
+		// if not found then
+		// it tries to find the language by the "language" cookie
+		// if didn't found then it it set to the Default setted on the configuration
+
+		// hi is the key, 'iris' is the %s on the .ini file
+		// the second parameter is optional
+
+		// hi := ctx.Translate("hi", "iris")
+		// or:
+		hi := i18n.Translate(ctx, "hi", "iris")
+
+		language := ctx.Values().GetString(ctx.Application().ConfigurationReadOnly().GetTranslateLanguageContextKey())
+		// return is form of 'en-US'
+
+		// The first succeed language found saved at the cookie with name ("language"),
+		//  you can change that by changing the value of the:  iris.TranslateLanguageContextKey
+		ctx.Writef("From the language %s translated output: %s", language, hi)
+	})
+	return app
+}
+
+func main() {
+	app := newApp()
+	app.Run(iris.Addr(":8080"))
+}
+
+```
+### PPROF
+`pprof是golang程序一个性能分析的工具，可以查看堆栈、cpu信息等。`
+```
+func main() {
+	app := iris.New()
+
+	app.Get("/", func(ctx iris.Context) {
+		ctx.HTML("<h1> Please click <a href='/debug/pprof'>here</a>")
+	})
+
+	app.Any("/debug/pprof/{action:path}", pprof.New())
+	//                              ___________
+	app.Run(iris.Addr(":8080"))
+}
 ```
 ### GO-BINDATA
 ```
