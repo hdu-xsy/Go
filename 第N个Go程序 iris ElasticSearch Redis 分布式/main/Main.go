@@ -15,7 +15,7 @@ func main() {
 		DocPath:  "./apidoc/apidoc.html",
 		BaseUrls: map[string]string{"Production": "", "Staging": ""},
 	})
-	app.Use(irisyaag.New()) // <- IMPORTANT, register the middleware.*/
+	//app.Use(irisyaag.New()) // <- IMPORTANT, register the middleware.*/
 	app.RegisterView(iris.HTML("html",".html").Reload(true))
 	app.StaticWeb("/js", "./js") // serve our custom javascript code
 	app.StaticWeb("/Picture","./Picture")
@@ -52,6 +52,6 @@ func main() {
 	mvc.New(app.Party("/upload")).Handle(new(Controller.UploadController))
 	mvc.New(app.Party("/download")).Handle(new(Controller.DownloadPageController))
 	mvc.Configure(app.Party("/echo"), Controller.ConfigureMVC)
-	app.Run(iris.Addr(":80"), iris.WithPostMaxMemory(32<<20))
+	app.Run(iris.Addr(":80"))//, iris.WithPostMaxMemory(32<<20))
 }
 

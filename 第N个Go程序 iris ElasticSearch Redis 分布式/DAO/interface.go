@@ -53,4 +53,5 @@ type CommentDAOInterface interface{
 type FileDAOInterface interface {
 	GetAll() []Entity.File
 	Insert(file Entity.File) (int64,error)
+	GetName(id int64) string
 }

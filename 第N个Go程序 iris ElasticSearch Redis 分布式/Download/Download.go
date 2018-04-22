@@ -4,6 +4,7 @@ import (
 	"github.com/shiyanhui/hero"
 	"io"
 	"../Entity"
+	"strconv"
 )
 func Writer(FileList []Entity.File,w io.Writer) (int, error){
 	_buffer := hero.GetBuffer()
@@ -36,7 +37,7 @@ func Writer(FileList []Entity.File,w io.Writer) (int, error){
 	_buffer.WriteString(`<div class="list-group">`)
 			for _,f := range FileList {
 				_buffer.WriteString(`<a href="/File/`)
-				hero.EscapeHTML(f.Name,_buffer)
+				hero.EscapeHTML(strconv.FormatInt(f.Id,10),_buffer)
 				_buffer.WriteString(`" class="list-group-item">
 `)
 				hero.EscapeHTML(f.Name, _buffer)

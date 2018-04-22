@@ -121,7 +121,7 @@ _buffer.WriteString(`
 				<h3 class="panel-title">公告</h3>
 			</div>
 			<div class="panel-body">
-				欢迎帮忙找BUG,资料下载:(暂时在存在BUG 还在修复)<a href="http://112.74.97.185/download" target="_blank">下载地址</a>
+				欢迎帮忙找BUG,资料下载:(暂时在存在BUG 还在修复)<a href="http://112.74.97.185/download" target="_blank">下载地址</a><a href="https://github.com/hdu-xsy" target="_blank">github</a>
 			</div>
 		</div>
     </div>

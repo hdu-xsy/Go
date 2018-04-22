@@ -85,6 +85,6 @@ func (s *Articlemodify)Update(ctx iris.Context) {
 	timenow := time.Now()
 	article := Entity.Article{Id:id,User:1,Time:timenow,Title:title,Menu:menu,Classify:classify,Content:content}
 	articledao.Update(article)
-	ctx.Redirect("/articlemodify")
+	ctx.Redirect("/articlemodifylist/1")
 	return
 }

@@ -14,4 +14,8 @@ func (d *File) Insert(file Entity.File) (int64,error) {
 	i,err :=orm.Insert(&file)
 	return i,err
 }
-
+func (d *File) GetName(id int64) string {
+	var file Entity.File
+	orm.Id(id).Get(&file)
+	return file.Name
+}
