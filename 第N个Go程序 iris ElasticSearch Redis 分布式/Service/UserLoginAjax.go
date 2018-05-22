@@ -4,8 +4,10 @@ import (
 	"github.com/kataras/iris"
 	"../Entity"
 	"time"
+	"../UserIndex"
 )
 
+// 用户登录验证
 type UserLoginAjax struct {
 
 }
@@ -32,6 +34,8 @@ func (s *UserLoginAjax)Get(ctx iris.Context) int64{
 	}
 	return uid
 }
+
+// 用户主页验证
  type UserLogin struct {
 
  }
@@ -52,6 +56,12 @@ func (s *UserLoginAjax)Get(ctx iris.Context) int64{
 	 }
  }
 
+ func (s *UserLogin)Get(ctx iris.Context) {
+ 	menulist := menudao.GetAll()
+ 	entity := Entity.Entity{MenuList:menulist}
+ 	UserIndex.UserIndexWriter(ctx,ctx,entity)
+ }
+ //聊天页面验证
  type ChatForm struct {
 
  }

@@ -50,16 +50,11 @@ func MenuWriter(m map[string]int64,entity Entity.Entity,ctx iris.Context,w io.Wr
             <a class="navbar-brand" href="/">Web开发学习笔记</a>
         </div>
         <div class="collapse navbar-collapse bs-js-navbar-scrollspy">
-            <ul class="nav navbar-nav">
-                <li><a href="/menu/1">网站更新日志</a></li>
-                <li><a href="/menu/2">GO语言学习</a></li>
-                <li><a href="/menu/3">Python语言学习</a></li>
-                <li><a href="/menu/4">Java学习</a></li>
-                <li><a href="/menu/5">JS学习</a></li>
-                <li><a href="/menu/6">PHP学习</a></li>
-                <li><a href="/menu/7">日记/感想</a></li>
-                <li><a href="/menu/8">后端知识学习</a></li>
-                <li><a href="/menu/9">计算机基础</a></li>
+            <ul class="nav navbar-nav">`)
+	for i,m := range entity.MenuList {
+		_buffer.WriteString(`<li><a href="/menu/`+strconv.Itoa(i+1)+`">`+m.Name+`</a></li>`)
+	}
+	_buffer.WriteString(`
             </ul>
             <form class="navbar-form navbar-left">
                 <div class="form-group">

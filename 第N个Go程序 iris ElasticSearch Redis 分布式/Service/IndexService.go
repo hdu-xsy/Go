@@ -6,6 +6,7 @@ import (
 	"../Entity"
 )
 
+//首页
 type IndexService struct {
 
 }
@@ -13,6 +14,8 @@ type IndexService struct {
 func (s *IndexService)Get(ctx iris.Context) {
 	articleList := articledao.OrderByTime()
 	comment := commentdao.OrderByTime()
-	entity := Entity.Entity{ArticleList:articleList,CommentList:comment}
-	index.ListWriter(entity,ctx,ctx)
+	menulist := menudao.GetAll()
+	articlelen := len(articledao.FindAllA())
+	entity := Entity.Entity{ArticleList:articleList,CommentList:comment,MenuList:menulist}
+	index.ListWriter(entity,ctx,ctx,articlelen)
 }

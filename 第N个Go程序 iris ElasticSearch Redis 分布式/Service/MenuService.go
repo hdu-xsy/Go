@@ -8,6 +8,8 @@ import (
 	"../Classify"
 )
 
+
+//栏目页面
 type MenuService struct {
 
 }
@@ -16,11 +18,14 @@ func (s *MenuService)Get(ctx iris.Context) {
 	id,_ := strconv.ParseInt(ctx.Params().Get("id"),10,64)
 	_,_,themenu := menudao.Get(Entity.Menu{Id:id})
 	articlelist := articledao.FindAll(strconv.FormatInt(id,10))
-	entity := Entity.Entity{ArticleList:articlelist,Menu:themenu}
+	menulist := menudao.GetAll()
+	entity := Entity.Entity{ArticleList:articlelist,Menu:themenu,MenuList:menulist}
 	m := articledao.Count()
 	Menu.MenuWriter(m,entity,ctx,ctx)
 }
 
+
+//分类页面
 type ClassifySercice struct {
 
 }
@@ -41,5 +46,6 @@ func (s *ClassifySercice) Get(ctx iris.Context) {
 	var al []Entity.Article
 	al = articledao.FindByClassify(c)
 	m := articledao.Count()
-	Classify.MenuWriter(m,Entity.Entity{ArticleList:al},ctx,ctx)
+	menulist := menudao.GetAll()
+	Classify.MenuWriter(m,Entity.Entity{ArticleList:al,MenuList:menulist},ctx,ctx)
 }

@@ -9,12 +9,19 @@ import(
 	"strconv"
 	"time"
 )
+
+//文章页面
 type ArticleService struct {
 
 }
 
 func (s *ArticleService)Get(ctx iris.Context) {
 	id,_ := strconv.ParseInt(ctx.Params().Get("id"),10,64)
+	articleall := articledao.FindAllA()
+	if int(id) > len(articleall) {
+		ctx.Redirect("/404")
+		return
+	}
 	_,_,article := articledao.Get(Entity.Article{Id:id})
 	_,_,pre := articledao.Get(Entity.Article{Id:id-1})
 	_,_,suc := articledao.Get(Entity.Article{Id:id+1})
@@ -22,9 +29,12 @@ func (s *ArticleService)Get(ctx iris.Context) {
 	_,_,menu := menudao.Get(Entity.Menu{Id:mid})
 	_,_,user := userdatadao.Get(Entity.UserData{Id:article.User})
 	comment := commentdao.FindAll(ctx.Params().Get("id"))
-	entity := Entity.Entity{Article:article,UserData:user,Menu:menu,CommentList:comment}
+	menulist := menudao.GetAll()
+	entity := Entity.Entity{Article:article,UserData:user,Menu:menu,CommentList:comment,MenuList:menulist}
 	Article.ContextWriter(entity,pre,suc,ctx,ctx)
 }
+
+//插入文章
 type ArticleInsertService struct {
 
 }
@@ -38,6 +48,7 @@ func (s *ArticleInsertService)Get(ctx iris.Context) {
 	return
 }
 
+//文章修改列表
 type ArticleModify struct {
 
 }
@@ -73,6 +84,7 @@ func (s *ArticleModify)Update(ctx iris.Context) {
 	articleModify.ArticleToWriter(article,ctx)
 }
 
+//文章修改
 type Articlemodify struct {
 
 }

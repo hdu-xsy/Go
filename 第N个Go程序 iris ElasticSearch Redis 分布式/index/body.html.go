@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"github.com/kataras/iris"
 )
-func ListWriter(entity Entity.Entity, ctx iris.Context,w io.Writer) (int, error){
+func ListWriter(entity Entity.Entity, ctx iris.Context,w io.Writer,alen int) (int, error){
 	_buffer := hero.GetBuffer()
 	defer hero.PutBuffer(_buffer)
 	_buffer.WriteString(`<!DOCTYPE html>
@@ -50,16 +50,11 @@ func ListWriter(entity Entity.Entity, ctx iris.Context,w io.Writer) (int, error)
             <a class="navbar-brand" href="/">Web开发学习笔记</a>
         </div>
         <div class="collapse navbar-collapse bs-js-navbar-scrollspy">
-            <ul class="nav navbar-nav">
-                <li><a href="/menu/1">网站更新日志</a></li>
-                <li><a href="/menu/2">GO语言学习</a></li>
-                <li><a href="/menu/3">Python语言学习</a></li>
-                <li><a href="/menu/4">Java学习</a></li>
-                <li><a href="/menu/5">JS学习</a></li>
-                <li><a href="/menu/6">PHP学习</a></li>
-                <li><a href="/menu/7">日记/感想</a></li>
-                <li><a href="/menu/8">后端知识学习</a></li>
-                <li><a href="/menu/9">计算机基础</a></li>
+            <ul class="nav navbar-nav">`)
+	for i,m := range entity.MenuList {
+		_buffer.WriteString(`<li><a href="/menu/`+strconv.Itoa(i+1)+`">`+m.Name+`</a></li>`)
+	}
+	_buffer.WriteString(`
             </ul>
             <form class="navbar-form navbar-left">
                 <div class="form-group">
@@ -83,7 +78,7 @@ _buffer.WriteString(`
     <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
     <div class="col-md-5 col-lg-5 col-sm-10 col-xs-10">
         <div>
-            <h3>最近的20篇文章</h3>
+            <h3>最近的20篇文章 (共`+strconv.Itoa(alen)+`篇文章)</h3>
             <hr/>`)
             	_buffer.WriteString(`<br/><div class="list-group">`)
 	for _, menu := range entity.ArticleList {
@@ -121,7 +116,7 @@ _buffer.WriteString(`
 				<h3 class="panel-title">公告</h3>
 			</div>
 			<div class="panel-body">
-				欢迎帮忙找BUG,资料下载:(暂时在存在BUG 还在修复)<a href="http://112.74.97.185/download" target="_blank">下载地址</a><a href="https://github.com/hdu-xsy" target="_blank">github</a>
+				欢迎帮忙找BUG,资料下载:(暂时在存在BUG 还在修复(无法下载过大文件))<a href="http://112.74.97.185/download" target="_blank">下载地址</a><a href="https://github.com/hdu-xsy" target="_blank">github</a>
 			</div>
 		</div>
     </div>

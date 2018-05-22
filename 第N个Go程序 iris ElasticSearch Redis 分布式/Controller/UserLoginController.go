@@ -5,7 +5,6 @@ import (
 	"github.com/kataras/iris/mvc"
 	"../Entity"
 	"../Service"
-	"../UserIndex"
 )
 
 //用户登录验证
@@ -28,6 +27,7 @@ func (c *UserLoginController) Get() mvc.View {
 		},
 	}
 }
+
 type UserIndexController struct {
 
 }
@@ -36,5 +36,5 @@ func (c *UserIndexController) BeginRequest(ctx iris.Context) {
 }
 func (c *UserIndexController) EndRequest(ctx iris.Context) {}
 func (c *UserIndexController) Get(ctx iris.Context) {
-	UserIndex.UserIndexWriter(ctx,ctx)
+	userloginservice.Get(ctx)
 }

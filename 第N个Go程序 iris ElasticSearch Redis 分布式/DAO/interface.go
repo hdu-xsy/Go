@@ -44,6 +44,7 @@ type ArticleDAOInterface interface {
 }
 type MenuDAOInterface interface {
 	Get(menu Entity.Menu) (bool,error,Entity.Menu)
+	GetAll() []Entity.Menu
 }
 type CommentDAOInterface interface{
 	FindAll(article string) []Entity.Comment
