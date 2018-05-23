@@ -52,7 +52,7 @@ func ListWriter(entity Entity.Entity, ctx iris.Context,w io.Writer,alen int) (in
         <div class="collapse navbar-collapse bs-js-navbar-scrollspy">
             <ul class="nav navbar-nav">`)
 	for i,m := range entity.MenuList {
-		_buffer.WriteString(`<li><a href="/menu/`+strconv.Itoa(i+1)+`">`+m.Name+`</a></li>`)
+		_buffer.WriteString(`<li><a href="/menu/`+strconv.Itoa(i+1)+`/1">`+m.Name+`</a></li>`)
 	}
 	_buffer.WriteString(`
             </ul>

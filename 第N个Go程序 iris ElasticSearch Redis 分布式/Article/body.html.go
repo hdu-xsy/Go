@@ -79,7 +79,7 @@ func ContextWriter(entity Entity.Entity,pre Entity.Article,suc Entity.Article,ct
 			  <li><a href="/">主页</a></li>
 			  <li><a href="/menu/`)
 	_buffer.WriteString(strconv.FormatInt(entity.Menu.Id,10))
-	_buffer.WriteString(`">`)
+	_buffer.WriteString(`/1">`)
 	_buffer.WriteString(entity.Menu.Name)
 	_buffer.WriteString(`</a></li>
 			  <li class="active">`)

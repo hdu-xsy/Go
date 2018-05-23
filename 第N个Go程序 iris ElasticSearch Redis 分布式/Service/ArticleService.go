@@ -57,7 +57,7 @@ func (s *ArticleModify)Get(ctx iris.Context) {
 	article := articledao.FindAllA()
 	var suc,max int
 	page,_ := strconv.Atoi(ctx.Params().Get("page"))
-	if len(article)/20 == 0 {
+	if len(article)%20 == 0 {
 		max = len(article)/20
 	} else {
 		max = len(article)/20 + 1

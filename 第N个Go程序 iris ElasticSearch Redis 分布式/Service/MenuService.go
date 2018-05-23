@@ -19,9 +19,31 @@ func (s *MenuService)Get(ctx iris.Context) {
 	_,_,themenu := menudao.Get(Entity.Menu{Id:id})
 	articlelist := articledao.FindAll(strconv.FormatInt(id,10))
 	menulist := menudao.GetAll()
-	entity := Entity.Entity{ArticleList:articlelist,Menu:themenu,MenuList:menulist}
 	m := articledao.Count()
-	Menu.MenuWriter(m,entity,ctx,ctx)
+	var suc,max int
+	page64,_ := strconv.ParseInt(ctx.Params().Get("page"),10,64)
+	page := int(page64)
+	if len(articlelist)%20 == 0 {
+		max = len(articlelist)/20
+	} else {
+		max = len(articlelist)/20 + 1
+	}
+	if page>max || page == 0 {
+		ctx.Redirect("/404")
+		return
+	}
+	if page * 20 >= len(articlelist) {
+		suc = len(articlelist)
+	} else {
+		suc = page * 20
+	}
+	for i,a := range articlelist {
+		id,_ := strconv.ParseInt(a.Menu,10,64)
+		_,_,menu := menudao.Get(Entity.Menu{Id:id})
+		articlelist[i].Menu = menu.Name
+	}
+	entity := Entity.Entity{ArticleList:articlelist[(page-1)*20:suc],Menu:themenu,MenuList:menulist}
+	Menu.MenuWriter(id,m,entity,page,max,ctx,ctx)
 }
 
 

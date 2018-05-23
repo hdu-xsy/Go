@@ -49,7 +49,7 @@ func MenuWriter(m map[string]int64,entity Entity.Entity,ctx iris.Context,w io.Wr
         <div class="collapse navbar-collapse bs-js-navbar-scrollspy">
             <ul class="nav navbar-nav">`)
 	for i,m := range entity.MenuList {
-		_buffer.WriteString(`<li><a href="/menu/`+strconv.Itoa(i+1)+`">`+m.Name+`</a></li>`)
+		_buffer.WriteString(`<li><a href="/menu/`+strconv.Itoa(i+1)+`/1">`+m.Name+`</a></li>`)
 	}
 	_buffer.WriteString(`
             </ul>
@@ -130,5 +130,4 @@ func MenuWriter(m map[string]int64,entity Entity.Entity,ctx iris.Context,w io.Wr
 </body>
 </html>`)
 	return w.Write(_buffer.Bytes())
-
 }
