@@ -10,7 +10,7 @@ import (
 	"../Entity"
 	"strconv"
 )
-func ArticleToWriter(article Entity.Article,w io.Writer) (int, error){
+func ArticleToWriter(menulist []Entity.Menu,article Entity.Article,w io.Writer) (int, error){
 	_buffer := hero.GetBuffer()
 	defer hero.PutBuffer(_buffer)
 	_buffer.WriteString(`<!DOCTYPE html>
@@ -41,7 +41,7 @@ func ArticleToWriter(article Entity.Article,w io.Writer) (int, error){
 		<div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
 		<div class="col-md-3 col-lg-3 col-sm-4 col-xs-4">
 				<ul class="nav nav-pills nav-stacked">
-				  <li role="presentation"><a href="/backend">修改用户</a></li>
+				  <li role="presentation"><a href="/backend/1">修改用户</a></li>
 				  <li role="presentation" class="active"><a href="/articlemodifylist/1">修改文章</a></li>
 				  <li role="presentation"><a href="/articleinsert">增加文章</a></li>
 				  <li role="presentation"><a href="/upload">上传文件</a></li>
@@ -59,36 +59,14 @@ func ArticleToWriter(article Entity.Article,w io.Writer) (int, error){
 	_buffer.WriteString(article.Classify)
 	_buffer.WriteString(`"></input>
         		</div>
-        		<select name="Menu" id="Menu" class="form-control">
-					<option value="1"`)
+        		<select name="Menu" id="Menu" class="form-control">`)
 	menu,_ := strconv.Atoi(article.Menu)
-	if menu == 1 {_buffer.WriteString(` selected = "selected"`)}
-	_buffer.WriteString(`>网站更新日志</option>
-					<option value="2"`)
-	if menu == 2 {_buffer.WriteString(` selected = "selected"`)}
-	_buffer.WriteString(`>GO语言学习</option>
-					<option value="3"`)
-	if menu == 3 {_buffer.WriteString(` selected = "selected"`)}
-	_buffer.WriteString(`>Python语言学习</option>
-					<option value="4"`)
-	if menu == 4 {_buffer.WriteString(` selected = "selected"`)}
-	_buffer.WriteString(`>Java学习</option>
-					<option value="5"`)
-	if menu == 5 {_buffer.WriteString(` selected = "selected"`)}
-	_buffer.WriteString(`>JS学习</option>
-					<option value="6"`)
-	if menu == 6 {_buffer.WriteString(` selected = "selected"`)}
-	_buffer.WriteString(`>PHP学习</option>
-					<option value="7"`)
-	if menu == 7 {_buffer.WriteString(` selected = "selected"`)}
-	_buffer.WriteString(`>日记/感想</option>
-					<option value="8"`)
-	if menu == 8 {_buffer.WriteString(` selected = "selected"`)}
-	_buffer.WriteString(`>后端知识学习</option>
-					<option value="9"`)
-	if menu == 9 {_buffer.WriteString(` selected = "selected"`)}
-	_buffer.WriteString(`>计算机基础</option>
-        		</select>
+	for i,v := range menulist {
+		_buffer.WriteString(`<option value="`+strconv.Itoa(i+1)+`"`)
+		if menu == i+1 {_buffer.WriteString(` selected = "selected"`)}
+		_buffer.WriteString(`>`+v.Name+`</option>`)
+	}
+	_buffer.WriteString(`</select>
         		<textarea class="form-control" rows="20" name="Content" id="Content">`)
 	_buffer.WriteString(string(article.Content))
 	_buffer.WriteString(`

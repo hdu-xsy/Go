@@ -123,15 +123,15 @@ func MenuWriter(id int64,m map[string]int64,entity Entity.Entity,page int,alen i
 			  <ul class="pagination">
 				<li class=`)
 	if page == 1 {_buffer.WriteString("disabled")}
-	_buffer.WriteString(`><a href="/menu/`+strconv.FormatInt(id,10)+strconv.Itoa(page-1)+`" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-				<li class=`+class[0]+`><a href="/menu/`+strconv.FormatInt(id,10)+pages[0]+`">1 <span class="sr-only">(current)</span></a></li>
-				<li class=`+class[1]+`><a href="/menu/`+strconv.FormatInt(id,10)+pages[1]+`">2 <span class="sr-only">(current)</span></a></li>
-				<li class=`+class[2]+`><a href="/menu/`+strconv.FormatInt(id,10)+pages[2]+`">3 <span class="sr-only">(current)</span></a></li>
-				<li class=`+class[3]+`><a href="/menu/`+strconv.FormatInt(id,10)+pages[3]+`">4 <span class="sr-only">(current)</span></a></li>
-				<li class=`+class[4]+`><a href="/menu/`+strconv.FormatInt(id,10)+pages[4]+`">5 <span class="sr-only">(current)</span></a></li>
+	_buffer.WriteString(`><a href="/menu/`+strconv.FormatInt(id,10)+`/`+strconv.Itoa(page-1)+`" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+				<li class=`+class[0]+`><a href="/menu/`+strconv.FormatInt(id,10)+`/`+pages[0]+`">1 <span class="sr-only">(current)</span></a></li>
+				<li class=`+class[1]+`><a href="/menu/`+strconv.FormatInt(id,10)+`/`+pages[1]+`">2 <span class="sr-only">(current)</span></a></li>
+				<li class=`+class[2]+`><a href="/menu/`+strconv.FormatInt(id,10)+`/`+pages[2]+`">3 <span class="sr-only">(current)</span></a></li>
+				<li class=`+class[3]+`><a href="/menu/`+strconv.FormatInt(id,10)+`/`+pages[3]+`">4 <span class="sr-only">(current)</span></a></li>
+				<li class=`+class[4]+`><a href="/menu/`+strconv.FormatInt(id,10)+`/`+pages[4]+`">5 <span class="sr-only">(current)</span></a></li>
 				<li class=`)
 	if page == alen {_buffer.WriteString("disabled")}
-	_buffer.WriteString(`><a href="/menu/`+strconv.FormatInt(id,10)+strconv.Itoa(page+1)+`" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+	_buffer.WriteString(`><a href="/menu/`+strconv.FormatInt(id,10)+`/`+strconv.Itoa(page+1)+`" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
 			  </ul>
 			</nav>
     </div>
@@ -142,7 +142,7 @@ func MenuWriter(id int64,m map[string]int64,entity Entity.Entity,page int,alen i
 		  _buffer.WriteString(`<li class="list-group-item">
 			<span class="badge">`+strconv.FormatInt(v,10)+`
 			</span>
-			<a href="/Classify/`+k+`">`+k+`</a>
+			<a href="/Classify/`+k+`/1">`+k+`</a>
 		  </li>`)
 		}
 		_buffer.WriteString(`</ul>

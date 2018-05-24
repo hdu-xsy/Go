@@ -33,7 +33,7 @@ func Writer(w io.Writer) (int, error){
 		<div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
 		<div class="col-md-3 col-lg-3 col-sm-4 col-xs-4">
 			<ul class="nav nav-pills nav-stacked">
-			  <li role="presentation"><a href="/backend">修改用户</a></li>
+			  <li role="presentation"><a href="/backend/1">修改用户</a></li>
 			  <li role="presentation"><a href="/articlemodifylist/1">修改文章</a></li>
 			  <li role="presentation"><a href="/articleinsert">增加文章</a></li>
 			  <li role="presentation" class="active"><a href="#">上传文件</a></li>

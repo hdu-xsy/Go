@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"../Entity"
 )
-func UserListToWriter(userList []Entity.UserData, w io.Writer) (int, error){
+func UserListToWriter(page int,alen int,userList []Entity.UserData, w io.Writer) (int, error){
 	_buffer := hero.GetBuffer()
 	defer hero.PutBuffer(_buffer)
 	_buffer.WriteString(`<!DOCTYPE html>
@@ -89,24 +89,37 @@ func UserListToWriter(userList []Entity.UserData, w io.Writer) (int, error){
 				<button type="submit" class="btn btn-default" id="Delete" name="Delete" onclick="mvalidate(0)">Delete</button>
 				<button type="submit" class="btn btn-default" id="Modify" name="Modify" onclick="mvalidate(1)">Modify</button>
      			</form>`)
-				_buffer.WriteString(`
-			<nav aria-label="Page navigation">
+	var pages [5]string
+	for k := range pages {
+		if alen >5 {
+			pages[k] = strconv.Itoa(page+k)
+		} else {
+			pages[k] = strconv.Itoa(k+1)
+		}
+	}
+	var class [5]string
+	for k := range class {
+		if page == k+1 || page >5 {
+			class[k] = "active"
+		}
+		if (k + 1) > alen {
+			class[k] = "disabled"
+		}
+	}
+	_buffer.WriteString(`
+			<nav aria-label="...">
 			  <ul class="pagination">
-				<li>
-				  <a href="#" aria-label="Previous">
-					<span aria-hidden="true">&laquo;</span>
-				  </a>
-				</li>
-				<li><a href="#">1</a></li>
-				<li><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li><a href="#">4</a></li>
-				<li><a href="#">5</a></li>
-				<li>
-				  <a href="#" aria-label="Next">
-					<span aria-hidden="true">&raquo;</span>
-				  </a>
-				</li>
+				<li class=`)
+	if page == 1 {_buffer.WriteString("disabled")}
+	_buffer.WriteString(`><a href="/backend/`+strconv.Itoa(page-1)+`" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+				<li class=`+class[0]+`><a href="/backend/`+pages[0]+`">1 <span class="sr-only">(current)</span></a></li>
+				<li class=`+class[1]+`><a href="/backend/`+pages[1]+`">2 <span class="sr-only">(current)</span></a></li>
+				<li class=`+class[2]+`><a href="/backend/`+pages[2]+`">3 <span class="sr-only">(current)</span></a></li>
+				<li class=`+class[3]+`><a href="/backend/`+pages[3]+`">4 <span class="sr-only">(current)</span></a></li>
+				<li class=`+class[4]+`><a href="/backend/`+pages[4]+`">5 <span class="sr-only">(current)</span></a></li>
+				<li class=`)
+	if page == alen {_buffer.WriteString("disabled")}
+	_buffer.WriteString(`><a href="/backend/`+strconv.Itoa(page+1)+`" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
 			  </ul>
 			</nav>
 		</div>

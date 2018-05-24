@@ -81,7 +81,8 @@ func (s *ArticleModify)Get(ctx iris.Context) {
 func (s *ArticleModify)Update(ctx iris.Context) {
 	id,_ := strconv.ParseInt(ctx.Params().Get("id"),10,64)
 	_,_,article := articledao.Get(Entity.Article{Id:id})
-	articleModify.ArticleToWriter(article,ctx)
+	menulist := menudao.GetAll()
+	articleModify.ArticleToWriter(menulist,article,ctx)
 }
 
 //文章修改

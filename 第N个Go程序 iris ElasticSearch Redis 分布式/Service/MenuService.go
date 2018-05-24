@@ -69,5 +69,26 @@ func (s *ClassifySercice) Get(ctx iris.Context) {
 	al = articledao.FindByClassify(c)
 	m := articledao.Count()
 	menulist := menudao.GetAll()
-	Classify.MenuWriter(m,Entity.Entity{ArticleList:al,MenuList:menulist},ctx,ctx)
+	var suc,max int
+	page,_ := strconv.Atoi(ctx.Params().Get("page"))
+	if len(al)%20 == 0 {
+		max = len(al)/20
+	} else {
+		max = len(al)/20 + 1
+	}
+	if page>max || page == 0 {
+		ctx.Redirect("/404")
+		return
+	}
+	if page * 20 >= len(al) {
+		suc = len(al)
+	} else {
+		suc = page * 20
+	}
+	for i,a := range al {
+		id,_ := strconv.ParseInt(a.Menu,10,64)
+		_,_,menu := menudao.Get(Entity.Menu{Id:id})
+		al[i].Menu = menu.Name
+	}
+	Classify.MenuWriter(c,page,max,m,Entity.Entity{ArticleList:al[(page-1)*20:suc],MenuList:menulist},ctx,ctx)
 }
