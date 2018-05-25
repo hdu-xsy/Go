@@ -7,7 +7,7 @@ $(function() {
         };
         $.post("/AdminLoginAjax",params,function (data) {
             if (data == " ") {
-                $(location).attr('href', '/backend');
+                $(location).attr('href', '/backend/1');
             } else {
                 $("#text").html(data)
             }
