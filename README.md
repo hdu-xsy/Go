@@ -887,6 +887,138 @@ sess.Destroy(ctx)
 sess.ShiftExpiration(ctx)
 
 ```
+- Redigo
+`比IRIS自带的好用多了`  
+    - 读写
+```
+c, err := redis.Dial("tcp", "127.0.0.1:6379")//, options)  
+if err != nil {  
+	fmt.Println(err)  
+	return  
+}  
+defer c.Close()  
+//执行命令使用的Do函数，和直接执行redis-cli命令差不多  
+v, err := c.Do("SET", "test", "redisgo")  
+if err != nil {  
+	fmt.Println(err)  
+	return  
+}  
+fmt.Println(v)  
+v, err = redis.String(c.Do("GET", "test"))  
+if err != nil {  
+	fmt.Println(err)  
+	return  
+}  
+fmt.Println(v)  
+```  
+    - 设置过期
+```
+_, err = c.Do("SET", "mykey", "superWang", "EX", "5")
+```  
+    - 是否存在Key
+```
+is_key_exit, err := redis.Bool(c.Do("EXISTS", "mykey1"))
+```  
+    - 删除键
+```
+_, err = c.Do("DEL", "mykey")
+```
+    - 列表操作
+```
+    _, err = c.Do("lpush", "runoobkey", "redis")
+    if err != nil {
+        fmt.Println("redis set failed:", err)
+    }
+
+    _, err = c.Do("lpush", "runoobkey", "mongodb")
+    if err != nil {
+        fmt.Println("redis set failed:", err)
+    }
+    _, err = c.Do("lpush", "runoobkey", "mysql")
+    if err != nil {
+        fmt.Println("redis set failed:", err)
+    }
+
+    values, _ := redis.Values(c.Do("lrange", "runoobkey", "0", "100"))
+
+    for _, v := range values {
+        fmt.Println(string(v.([]byte)))
+    }
+```  
+    - 管道
+```
+c.Send("SET", "foo", "bar")
+c.Send("GET", "foo")
+c.Flush()
+c.Receive() // reply from SET
+v, err = c.Receive() // reply from GET
+```
+    - 连接池
+```
+连接池的结构
+type Pool struct {
+    //Dial 是创建链接的方法
+    Dial func() (Conn, error)
+
+    //TestOnBorrow 是一个测试链接可用性的方法
+    TestOnBorrow func(c Conn, t time.Time) error
+
+    // 最大的空闲连接数，表示即使没有redis连接时依然可以保持N个空闲的连接，而不被清除，随时处于待命状态
+    MaxIdle int
+
+    // 最大的激活连接数，表示同时最多有N个连接 ，为0事表示没有限制
+    MaxActive int
+
+    //最大的空闲连接等待时间，超过此时间后，空闲连接将被关闭
+    IdleTimeout time.Duration
+
+    // 当链接数达到最大后是否阻塞，如果不的话，达到最大后返回错误
+    Wait bool
+
+}
+```
+```
+使用连接池
+//声明一些全局变量
+var (
+    pool          *redis.Pool
+    redisServer   = flag.String("redisServer", ":6379", "")
+    redisPassword = flag.String("redisPassword", "123456", "")
+)
+//初始化一个pool
+func newPool(server, password string) *redis.Pool {
+    return &redis.Pool{
+        MaxIdle:     3,
+        MaxActive:   5,
+        IdleTimeout: 240 * time.Second,
+        Dial: func() (redis.Conn, error) {
+            c, err := redis.Dial("tcp", server)
+            if err != nil {
+                return nil, err
+            }
+            if _, err := c.Do("AUTH", password); err != nil {
+                c.Close()
+                return nil, err
+            }
+            return c, err
+        },
+        TestOnBorrow: func(c redis.Conn, t time.Time) error {
+            if time.Since(t) < time.Minute {
+                return nil
+            }
+            _, err := c.Do("PING")
+            return err
+        },
+    }
+}
+
+func main() {
+    flag.Parse()
+    pool = newPool(*redisServer, *redisPassword)
+    conn := pool.Get()
+    defer conn.Close()
+}
+```
 ### API Doc
 ```
 import (
