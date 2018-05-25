@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>index</title>
+    <!-- Bootstrap -->
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <style type="text/css">
+        body{ font-family: Microsoft YaHei,'宋体' , Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;}
+    </style>
+    <script src="https://cdn.bootcss.com/markdown.js/0.6.0-beta1/markdown.min.js"></script>
+</head>
+<body>
+<nav id="navbar-example" class="navbar navbar-default navbar-static" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button class="navbar-toggle" type="button" data-toggle="collapse"
+                    data-target=".bs-js-navbar-scrollspy">
+                <span class="sr-only">切换导航</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Web开发学习笔记</a>
+        </div>
+        <div class="collapse navbar-collapse bs-js-navbar-scrollspy">
+            <ul class="nav navbar-nav">
+                {{/* var menuList []Entity.Menu //所有栏目 */}}
+                {{range $i,$m := .menuList}}
+                    {{/* var Id int64 //Menu.Id */}}
+                    {{/* var Name string //Menu.Name */}}
+                    <li><a href="/menu/{{.Id}}/1">{{.Name}}</a></li>
+                {{end}}
+            </ul>
+            <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search" value="golang是最好的语言">
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/adminlogin">后台</a></li>
+                {{/* var auth string //已登录为true 未登录为false */}}
+                {{if eq .auth "false"}}
+                    <li><a href="/register">注册</a></li>
+                    <li><a href="/login">登录</a></li>
+                {{else}}
+                    {{/* var username string //用户名 */}}
+                    <li><a href="/user">欢迎你&nbsp;:&nbsp;{{.username}}&nbsp;&nbsp;&nbsp;更多</a></li>
+                {{end}}
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="row">
+    <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
+    <div class="col-md-5 col-lg-5 col-sm-10 col-xs-10">
+        <div>
+            {{/* var articlesum int //文章总数 */}}
+            <h3>最近的20篇文章 (共{{.articlesum}}篇文章)</h3>
+            <hr/>
+            <br/><div class="list-group">
+            {{/* var articleList []Entity.Article //文章列表 */}}
+            {{range $i,$v := .articleList}}
+                {{/* var Id int //Menu.Id */}}
+                {{/* var Time Time //Menu.Time.Format("2006-01-02 15:04:05") */}}
+                {{/* var Title string //Menu.Title */}}
+                <a href="/article/{{.Id}}" class="list-group-item">{{.Time}} : {{.Title}}</a>
+            {{end}}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-lg-3 hidden-sm hidden-xs">
+        <div><h3>最近留言</h3>
+            <div class="list-group">
+                {{/* var commentList []Entity.Comment //评论列表 */}}
+                {{range $i,$v := .commentList}}
+                {{/* var Article int //Comment.Article*/}}
+                <a href="/article/{{.Article}}" class="list-group-item">
+                    {{/* var Content int //Comment.Content */}}
+                    {{/* var Time Time //Comment.Time.Format("2006-01-02 15:04:05") */}}
+                    {{.Time}} : {{.Content}}
+                {{end}}
+                </a>
+            </div>
+        </div><hr/>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">公告</h3>
+            </div>
+            <div class="panel-body">
+                欢迎帮忙找BUG,资料下载:(暂时在存在BUG 还在修复(无法下载过大文件))<a href="http://112.74.97.185/download" target="_blank">下载地址</a><a href="https://github.com/hdu-xsy" target="_blank">github</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
+</div>
+</body>
+</html>
