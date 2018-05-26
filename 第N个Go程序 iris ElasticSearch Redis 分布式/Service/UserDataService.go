@@ -32,7 +32,7 @@ func (s *Delete) Get(ctx iris.Context) {
 	password := ctx.PostValue("Password")
 	user := Entity.UserData{Id:id,Username:username,Password:password}
 	userdatadao.Delete(user)
-	ctx.Redirect("/backend")
+	ctx.Redirect("/backend/1")
 }
 
 type Modity struct {
@@ -45,5 +45,5 @@ func (s *Modity) Get(ctx iris.Context)  {
 	password := ctx.PostValue("Password")
 	user := Entity.UserData{Id:id,Username:username,Password:password}
 	userdatadao.Motify(user)
-	ctx.Redirect("/backend")
+	ctx.Redirect("/backend/1")
 }

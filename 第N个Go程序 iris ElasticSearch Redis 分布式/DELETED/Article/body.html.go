@@ -3,10 +3,10 @@ package Article
 import (
 	"github.com/shiyanhui/hero"
 	"io"
-	"../Entity"
+	"../../Entity"
 	"strconv"
 	"github.com/kataras/iris"
-	"../DAO"
+	"../../DAO"
 )
 func ContextWriter(entity Entity.Entity,pre Entity.Article,suc Entity.Article,ctx iris.Context, w io.Writer) (int, error){
 	_buffer := hero.GetBuffer()

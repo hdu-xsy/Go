@@ -6,35 +6,37 @@ import (
 	"../Entity"
 )
 
-var articleservice = Service.ArticleService{}
+var articlePageService = Service.ArticlePageService{}
 type ArticleController struct {
 
 }
-func (c *ArticleController) BeginRequest(ctx iris.Context) {}
+func (c *ArticleController) BeginRequest(ctx iris.Context) {
+	articlePageService.BeginRequest(ctx)
+}
 func (c *ArticleController) EndRequest(ctx iris.Context) {}
 func (c *ArticleController) Get(ctx iris.Context) {
-	articleservice.Get(ctx)
+	articlePageService.Get(ctx)
 }
 
-var articlinsert = Service.ArticleInsertService{}
+var articlInsertService = Service.ArticleInsertService{}
 
 func ArticleInsertController(ctx iris.Context) {
-	articlinsert.Get(ctx)
+	articlInsertService.Get(ctx)
 }
 
-type ArticleListController struct {
+type ArticleModifyListController struct {
 
 }
-var articleService = Service.ArticleModify{}
-func (c *ArticleListController) BeginRequest(ctx iris.Context) {
+var articleModifyListService = Service.ArticleModifyListPage{}
+func (c *ArticleModifyListController) BeginRequest(ctx iris.Context) {
 	if auth, _ := Entity.Sess.Start(ctx).GetBoolean("authenticated"); !auth {
 		ctx.Redirect("/adminlogin")
 		return
 	}
 }
-func (c *ArticleListController) EndRequest(ctx iris.Context) {}
-func (c *ArticleListController) Get(ctx iris.Context) {
-	articleService.Get(ctx)
+func (c *ArticleModifyListController) EndRequest(ctx iris.Context) {}
+func (c *ArticleModifyListController) Get(ctx iris.Context) {
+	articleModifyListService.Get(ctx)
 }
 
 type ArticInsertController struct{
@@ -50,6 +52,7 @@ func (c *ArticInsertController) Get(ctx iris.Context) {
 	ctx.View("articleinsert.html")
 }
 
+var articleModifyPageService = Service.ArticleModifyPage{}
 type ArticleModifyController struct{
 }
 func (c *ArticleModifyController) BeginRequest(ctx iris.Context) {
@@ -60,10 +63,11 @@ func (c *ArticleModifyController) BeginRequest(ctx iris.Context) {
 }
 func (c *ArticleModifyController) EndRequest(ctx iris.Context) {}
 func (c *ArticleModifyController) Get(ctx iris.Context) {
-	articleService.Update(ctx)
+	articleModifyPageService.Update(ctx)
 }
-var articlemodify = Service.Articlemodify{}
+
+var articleModify = Service.ArticleModify{}
 func ArticlemodifyController(ctx iris.Context) {
-	articlemodify.Update(ctx)
+	articleModify.Update(ctx)
 }
 

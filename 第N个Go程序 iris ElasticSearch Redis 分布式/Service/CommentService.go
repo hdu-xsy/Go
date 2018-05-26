@@ -6,10 +6,10 @@ import (
 	"strconv"
 	"time"
 )
-type Comment struct {
+type CommentService struct {
 
 }
-func (s *Comment)Get(ctx iris.Context) {
+func (s *CommentService)Get(ctx iris.Context) {
 	if auth, _ := Entity.Sess.Start(ctx).GetBoolean("userauthenticated"); !auth {
 		ctx.WriteString("请先登录")
 	}else {

@@ -5,11 +5,11 @@ import (
 	"github.com/kataras/iris"
 	"strconv"
 )
-type AdminLogin struct {
+type UserModifyPage struct {
 
 }
 
-func (s *AdminLogin)Get(ctx iris.Context) {
+func (s *UserModifyPage)Get(ctx iris.Context) {
 	userList := userdatadao.FindAll()
 	var suc,max int
 	page,_ := strconv.Atoi(ctx.Params().Get("page"))

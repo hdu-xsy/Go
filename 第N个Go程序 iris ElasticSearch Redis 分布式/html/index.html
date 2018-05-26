@@ -72,7 +72,7 @@
             {{/* var articleList []Entity.Article //文章列表 */}}
             {{range $i,$v := .articleList}}
                 {{/* var Id int //Menu.Id */}}
-                {{/* var Time Time //Menu.Time.Format("2006-01-02 15:04:05") */}}
+                {{/* var Time string //Menu.Time.Format("2006-01-02 15:04:05") */}}
                 {{/* var Title string //Menu.Title */}}
                 <a href="/article/{{.Id}}" class="list-group-item">{{.Time}} : {{.Title}}</a>
             {{end}}
@@ -87,7 +87,7 @@
                 {{/* var Article int //Comment.Article*/}}
                 <a href="/article/{{.Article}}" class="list-group-item">
                     {{/* var Content int //Comment.Content */}}
-                    {{/* var Time Time //Comment.Time.Format("2006-01-02 15:04:05") */}}
+                    {{/* var Time string //Comment.Time.Format("2006-01-02 15:04:05") */}}
                     {{.Time}} : {{.Content}}
                 {{end}}
                 </a>

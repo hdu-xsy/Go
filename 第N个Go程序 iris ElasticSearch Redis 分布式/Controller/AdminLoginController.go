@@ -6,7 +6,7 @@ import(
 	"../Entity"
 )
 
-var AdminLoginService = Service.AdminLogin{}
+var AdminLoginService = Service.UserModifyPage{}
 type AdminLoginController struct {
 }
 func (c *AdminLoginController) BeginRequest(ctx iris.Context) {
