@@ -3,7 +3,7 @@ package Download
 import (
 	"github.com/shiyanhui/hero"
 	"io"
-	"../Entity"
+	"../../Entity"
 	"strconv"
 )
 func Writer(FileList []Entity.File,w io.Writer) (int, error){

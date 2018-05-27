@@ -2,10 +2,9 @@ package Service
 
 import (
 	"github.com/kataras/iris"
-	"strconv"
 	"../Entity"
-	"../Menu"
 	"../Classify"
+	"strconv"
 )
 
 
@@ -13,16 +12,35 @@ import (
 type MenuService struct {
 
 }
-
+type Nav struct {
+	Class	string
+	Page	int
+	Num		int
+	Id		int64
+}
 func (s *MenuService)Get(ctx iris.Context) {
-	id,_ := strconv.ParseInt(ctx.Params().Get("id"),10,64)
-	_,_,themenu := menudao.Get(Entity.Menu{Id:id})
-	articlelist := articledao.FindAll(strconv.FormatInt(id,10))
+	var auth string
+	if userauth, _ := Entity.Sess.Start(ctx).GetBoolean("userauthenticated"); !userauth { auth = "false" } else { auth = "true" }
+	username := Entity.Sess.Start(ctx).GetString("Username")
+	ctx.ViewData("username",username)
+
 	menulist := menudao.GetAll()
+
+	id,_ := strconv.ParseInt(ctx.Params().Get("id"),10,64)
+	_,_,menu := menudao.Get(Entity.Menu{Id:id})
+
+	articlelist := articledao.FindAll(strconv.FormatInt(id,10))
+
 	m := articledao.Count()
 	var suc,max int
 	page64,_ := strconv.ParseInt(ctx.Params().Get("page"),10,64)
 	page := int(page64)
+	var c1,c2 string
+	if page == 1 {
+		c1 = "disabled"
+	}else if page == max {
+		c2 = "disabled"
+	}
 	if len(articlelist)%20 == 0 {
 		max = len(articlelist)/20
 	} else {
@@ -42,8 +60,41 @@ func (s *MenuService)Get(ctx iris.Context) {
 		_,_,menu := menudao.Get(Entity.Menu{Id:id})
 		articlelist[i].Menu = menu.Name
 	}
-	entity := Entity.Entity{ArticleList:articlelist[(page-1)*20:suc],Menu:themenu,MenuList:menulist}
-	Menu.MenuWriter(id,m,entity,page,max,ctx,ctx)
+
+	nav := make([]Nav,5)
+	for k := range nav {
+		if max >5 {
+			nav[k].Page = page + k
+		} else {
+			nav[k].Page = k + 1
+		}
+		flag := 0
+		if (page == k+1 || page > 5) && flag == 0 {
+			nav[k].Class = "active"
+			flag = 1
+		}
+		if k+1 > max {
+			nav[k].Class = "disabled"
+		}
+		nav[k].Id = id
+		nav[k].Num = k+1
+	}
+
+	ctx.ViewData("menuList",menulist)
+	ctx.ViewData("auth",auth)
+	ctx.ViewData("username",username)
+	ctx.ViewData("menuName",menu.Name)
+	ctx.ViewData("articleSum",len(articlelist))
+	ctx.ViewData("articleList",articlelist[(page-1)*20:suc])
+	ctx.ViewData("page",page)
+	ctx.ViewData("id",id)
+	ctx.ViewData("c1",c1)
+	ctx.ViewData("c2",c2)
+	ctx.ViewData("pagedec",page-1)
+	ctx.ViewData("pageplus",page+1)
+	ctx.ViewData("nav",nav)
+	ctx.ViewData("classify",m)
+	ctx.View("menu.html")
 }
 
 
@@ -90,5 +141,6 @@ func (s *ClassifySercice) Get(ctx iris.Context) {
 		_,_,menu := menudao.Get(Entity.Menu{Id:id})
 		al[i].Menu = menu.Name
 	}
+
 	Classify.MenuWriter(c,page,max,m,Entity.Entity{ArticleList:al[(page-1)*20:suc],MenuList:menulist},ctx,ctx)
 }
