@@ -8,7 +8,7 @@ import (
 	"github.com/shiyanhui/hero"
 	"io"
 	"strconv"
-	"../Entity"
+	"../../Entity"
 )
 func UserListToWriter(page int,alen int,userList []Entity.UserData, w io.Writer) (int, error){
 	_buffer := hero.GetBuffer()

@@ -47,6 +47,8 @@ func showonlineuser() string{
 	var olu []Entity.OnlineUser
 	orm.Find(&olu)
 	var mesg string
+	mesg = "在线用户<br>用户名 登陆时间<br>"
+
 	for _,k := range olu {
 		mesg = mesg + k.Username + "   " + k.Logintime.Format("2006-01-02 15:04:05")+"<br>"
 	}

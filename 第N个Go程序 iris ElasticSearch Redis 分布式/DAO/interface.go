@@ -7,13 +7,14 @@ import(
 )
 var app = iris.New()
 var orm = Util.Getorm(*app)
-var err1 = Util.GetUserData(*app)
-var err2 = Util.GetAdminUser(*app)
-var err3 = Util.GetOnlineUser(*app)
-var err4 = Util.GetArticle(*app)
-var err5 = Util.GetMenu(*app)
-var err6 = Util.GetComment(*app)
-var err7 = Util.GetFile(*app)
+var UserDataErr = Util.GetUserData(*app)
+var AdminUserErr = Util.GetAdminUser(*app)
+var OnlineUserErr = Util.GetOnlineUser(*app)
+var ArticleErr = Util.GetArticle(*app)
+var MenuErr = Util.GetMenu(*app)
+var CommentErr = Util.GetComment(*app)
+var FileErr = Util.GetFile(*app)
+
 type UserDataDAOInterface interface {
 	FindAll() []Entity.UserData
 	Get(userdata Entity.UserData) (bool,error,Entity.UserData)
@@ -55,4 +56,8 @@ type FileDAOInterface interface {
 	GetAll() []Entity.File
 	Insert(file Entity.File) (int64,error)
 	GetName(id int64) string
+}
+type RedisDAOInterface interface {
+	Set(key string,value string) interface{}
+	Get(key string) string
 }

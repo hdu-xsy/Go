@@ -3,7 +3,6 @@ package Service
 import (
 	"github.com/kataras/iris"
 	"../Entity"
-	"../Classify"
 	"strconv"
 )
 
@@ -19,6 +18,7 @@ type Nav struct {
 	Id		int64
 }
 func (s *MenuService)Get(ctx iris.Context) {
+	h1 := redisdao.Get("h1")
 	var auth string
 	if userauth, _ := Entity.Sess.Start(ctx).GetBoolean("userauthenticated"); !userauth { auth = "false" } else { auth = "true" }
 	username := Entity.Sess.Start(ctx).GetString("Username")
@@ -80,6 +80,7 @@ func (s *MenuService)Get(ctx iris.Context) {
 		nav[k].Num = k+1
 	}
 
+	ctx.ViewData("h1",h1)
 	ctx.ViewData("menuList",menulist)
 	ctx.ViewData("auth",auth)
 	ctx.ViewData("username",username)
@@ -115,32 +116,76 @@ func (s *ClassifySercice) BeginRequest(ctx iris.Context) {
 }
 func (s *ClassifySercice) EndRequest(ctx iris.Context) {}
 func (s *ClassifySercice) Get(ctx iris.Context) {
-	c := ctx.Params().Get("Classify")
-	var al []Entity.Article
-	al = articledao.FindByClassify(c)
-	m := articledao.Count()
+	h1 := redisdao.Get("h1")
+	var auth string
+	if userauth, _ := Entity.Sess.Start(ctx).GetBoolean("userauthenticated"); !userauth { auth = "false" } else { auth = "true" }
+	username := Entity.Sess.Start(ctx).GetString("Username")
+
 	menulist := menudao.GetAll()
+
+	classify := ctx.Params().Get("Classify")
+	var articleList []Entity.Article
+	articleList = articledao.FindByClassify(classify)
+
+	m := articledao.Count()
 	var suc,max int
 	page,_ := strconv.Atoi(ctx.Params().Get("page"))
-	if len(al)%20 == 0 {
-		max = len(al)/20
+	var c1,c2 string
+	if page == 1 {
+		c1 = "disabled"
+	}else if page == max {
+		c2 = "disabled"
+	}
+	if len(articleList)%20 == 0 {
+		max = len(articleList)/20
 	} else {
-		max = len(al)/20 + 1
+		max = len(articleList)/20 + 1
 	}
 	if page>max || page == 0 {
 		ctx.Redirect("/404")
 		return
 	}
-	if page * 20 >= len(al) {
-		suc = len(al)
+	if page * 20 >= len(articleList) {
+		suc = len(articleList)
 	} else {
 		suc = page * 20
 	}
-	for i,a := range al {
+	for i,a := range articleList {
 		id,_ := strconv.ParseInt(a.Menu,10,64)
 		_,_,menu := menudao.Get(Entity.Menu{Id:id})
-		al[i].Menu = menu.Name
+		articleList[i].Menu = menu.Name
 	}
 
-	Classify.MenuWriter(c,page,max,m,Entity.Entity{ArticleList:al[(page-1)*20:suc],MenuList:menulist},ctx,ctx)
+	nav := make([]Nav,5)
+	for k := range nav {
+		if max >5 {
+			nav[k].Page = page + k
+		} else {
+			nav[k].Page = k + 1
+		}
+		flag := 0
+		if (page == k+1 || page > 5) && flag == 0 {
+			nav[k].Class = "active"
+			flag = 1
+		}
+		if k+1 > max {
+			nav[k].Class = "disabled"
+		}
+		nav[k].Num = k+1
+	}
+
+	ctx.ViewData("h1",h1)
+	ctx.ViewData("menuList",menulist)
+	ctx.ViewData("auth",auth)
+	ctx.ViewData("username",username)
+	ctx.ViewData("classify",classify)
+	ctx.ViewData("articleSum",len(articleList))
+	ctx.ViewData("articleList",articleList[(page-1)*20:suc])
+	ctx.ViewData("nav",nav)
+	ctx.ViewData("c1",c1)
+	ctx.ViewData("pagedec",page-1)
+	ctx.ViewData("c2",c2)
+	ctx.ViewData("pageplus",page+1)
+	ctx.ViewData("classifyList",m)
+	ctx.View("classify.html")
 }

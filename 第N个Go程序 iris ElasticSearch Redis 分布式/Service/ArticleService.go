@@ -2,7 +2,7 @@ package Service
 
 import(
 	"github.com/kataras/iris"
-	"../userlist"
+	"../DELETED/userlist"
 	"../Entity"
 	"strconv"
 	"time"
@@ -36,6 +36,7 @@ func (s *ArticlePageService)BeginRequest(ctx iris.Context) {
 	}
 }
 func (s *ArticlePageService)Get(ctx iris.Context) {
+	h1 := redisdao.Get("h1")
 	var auth string
 	if userauth, _ := Entity.Sess.Start(ctx).GetBoolean("userauthenticated"); !userauth { auth = "false" } else { auth = "true" }
 	username := Entity.Sess.Start(ctx).GetString("Username")
@@ -77,6 +78,7 @@ func (s *ArticlePageService)Get(ctx iris.Context) {
 		commentList[i].Floor = v.Floor
 	}
 
+	ctx.ViewData("h1",h1)
 	ctx.ViewData("menuList",menulist)
 	ctx.ViewData("auth",auth)
 	ctx.ViewData("username",username)

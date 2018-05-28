@@ -3,7 +3,7 @@ package Classify
 import (
 "github.com/shiyanhui/hero"
 "io"
-"../Entity"
+"../../Entity"
 "strconv"
 "github.com/kataras/iris"
 )

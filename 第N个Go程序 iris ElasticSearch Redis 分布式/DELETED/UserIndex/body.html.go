@@ -6,7 +6,7 @@ package UserIndex
 import (
 	"github.com/shiyanhui/hero"
 	"io"
-	"../Entity"
+	"../../Entity"
 	"github.com/kataras/iris"
 	"strconv"
 )

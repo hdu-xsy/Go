@@ -37,8 +37,8 @@
             <ul class="nav navbar-nav">
                 {{/* var menuList []Entity.Menu //所有栏目 */}}
                 {{range $i,$m := .menuList}}
-                    {{/* var Id int64 //Menu.Id */}}
-                    {{/* var Name string //Menu.Name */}}
+                {{/* var Id int64 //Menu.Id */}}
+                {{/* var Name string //Menu.Name */}}
                     <li><a href="/menu/{{.Id}}/1">{{.Name}}</a></li>
                 {{end}}
             </ul>
@@ -50,58 +50,65 @@
             </form>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/adminlogin">后台</a></li>
-                {{/* var auth string //已登录为true 未登录为false */}}
-                {{if eq .auth "false"}}
-                    <li><a href="/register">注册</a></li>
-                    <li><a href="/login">登录</a></li>
-                {{else}}
+                    {{/* var auth string //已登录为true 未登录为false */}}
+                    {{if eq .auth "false"}}
+                        <li><a href="/register">注册</a></li>
+                        <li><a href="/login">登录</a></li>
+                    {{else}}
                     {{/* var username string //用户名 */}}
-                    <li><a href="/user">欢迎你&nbsp;:&nbsp;{{.username}}&nbsp;&nbsp;&nbsp;更多</a></li>
-                {{end}}
+                        <li><a href="/user">欢迎你&nbsp;:&nbsp;{{.username}}&nbsp;&nbsp;&nbsp;更多</a></li>
+                    {{end}}
             </ul>
         </div>
     </div>
 </nav>
-<div class="row">
+<div class="cow">
     <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
     <div class="col-md-5 col-lg-5 col-sm-10 col-xs-10">
         <div>
-            {{/* var articlesum int //文章总数 */}}
-            <h3>最近的20篇文章 (共{{.articlesum}}篇文章)</h3>
-            <hr/>
+            <ol class="breadcrumb">
+                <li><a href="/">主页</a></li>
+                <li class="active">分类</li>
+            </ol>
+            {{/* var classify string //分类 */}}
+            {{/* var articleSum int //len(article)*/}}
+            <h3>分类:{{.classify}}&nbsp;(共&nbsp;{{.articleSum}}&nbsp;篇文章)</h3>
             <br/><div class="list-group">
-            {{/* var articleList []Entity.Article //文章列表 */}}
+            {{/* var articleList []Entity.Article */}}
             {{range $i,$v := .articleList}}
-                {{/* var Id int //Menu.Id */}}
-                {{/* var Time string //Menu.Time.Format("2006-01-02 15:04:05") */}}
-                {{/* var Title string //Menu.Title */}}
-                <a href="/article/{{.Id}}" class="list-group-item">{{.Time}} : {{.Title}}</a>
+            {{/* var Id int64 //Article.Id */}}
+            {{/* var Title string //Article.Title */}}
+                <a href="/article/{{.Id}}" class="list-group-item">{{.Title}}</a>
             {{end}}
-            </div>
         </div>
+        </div>
+        <nav aria-label="...">
+            <ul class="pagination">
+                <li class="{{.c1}}">
+                {{/* var pagedec int //page-1 */}}
+                <a href="/Classify/{{.classify}}/{{.pagedec}}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                {{/* var nav type struct {Class,Id,Page,Num}*/}}
+                {{range $i,$v := .nav}}
+                    <li class="{{.Class}}"><a href="/Classify/{{$.classify}}/{{.Page}}">{{.Num}}&nbsp;<span class="sr-only">(current)</span></a></li>
+                {{end}}
+                <li class="{{.c2}}">
+                {{/* var pageplus int //page+1 */}}
+                <a href="/Classify/{{.classify}}/{{.pageplus}}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+            </ul>
+        </nav>
     </div>
     <div class="col-md-3 col-lg-3 hidden-sm hidden-xs">
-        <div><h3>最近留言</h3>
-            <div class="list-group">
-                {{/* var commentList []Entity.Comment //评论列表 */}}
-                {{range $i,$v := .commentList}}
-                {{/* var Article int //Comment.Article*/}}
-                <a href="/article/{{.Article}}" class="list-group-item">
-                    {{/* var Content int //Comment.Content */}}
-                    {{/* var Time string //Comment.Time.Format("2006-01-02 15:04:05") */}}
-                    {{.Time}} : {{.Content}}
-                {{end}}
-                </a>
-            </div>
-        </div><hr/>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">公告</h3>
-            </div>
-            <div class="panel-body">
-                欢迎帮忙找BUG,资料下载:(暂时在存在BUG 还在修复(无法下载过大文件))<a href="http://112.74.97.185/download" target="_blank">下载地址</a><a href="https://github.com/hdu-xsy" target="_blank">github</a>
-            </div>
-        </div>
+        <h3>分类</h3>
+        <ul class="list-group">
+        {{/* var classify map[string]int */}}
+        {{range $i,$v := .classifyList}}
+            <li class="list-group-item">
+			<span class="badge">{{$v}}
+            </span>
+                <a href="/Classify/{{$i}}/1">{{$i}}</a>
+            </li>
+        {{end}}
+        </ul>
     </div>
     <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
 </div>
