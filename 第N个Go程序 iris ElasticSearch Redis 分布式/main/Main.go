@@ -46,7 +46,7 @@ func main() {
 	mvc.New(app.Party("/")).Handle(new(Controller.IndexController))
 	mvc.New(app.Party("/user")).Handle(new(Controller.UserIndexController))
 	mvc.New(app.Party("/article/{id}")).Handle(new(Controller.ArticleController))
-	mvc.New(app.Party("/articlemodifylist/{page}")).Handle(new(Controller.ArticleListController))
+	mvc.New(app.Party("/articlemodifylist/{page}")).Handle(new(Controller.ArticleModifyListController))
 	mvc.New(app.Party("/menu/{id}/{page}")).Handle(new(Controller.MenuController))
 	mvc.New(app.Party("/articlemodify/{id}")).Handle(new(Controller.ArticleModifyController))
 	mvc.New(app.Party("/upload")).Handle(new(Controller.UploadController))

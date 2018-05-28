@@ -2,36 +2,96 @@ package Service
 
 import(
 	"github.com/kataras/iris"
-	"../Article"
-	"../userlist"
+	"../DELETED/userlist"
 	"../Entity"
-	"../ArticleModify"
 	"strconv"
 	"time"
+	"html/template"
 )
 
 //文章页面
-type ArticleService struct {
+type ArticlePageService struct {
 
 }
-
-func (s *ArticleService)Get(ctx iris.Context) {
-	id,_ := strconv.ParseInt(ctx.Params().Get("id"),10,64)
+type ArticleArticle struct {
+	Title		string
+	Classify	string
+	Id			int64
+	Time		string
+	Content		template.HTML
+	Writer		string
+}
+type ArticleComment struct {
+	Content		template.HTML
+	Time		string
+	Username	string
+	Floor		int64
+}
+func (s *ArticlePageService)BeginRequest(ctx iris.Context) {
 	articleall := articledao.FindAllA()
+	id,_ := strconv.ParseInt(ctx.Params().Get("id"),10,64)
 	if int(id) > len(articleall) {
 		ctx.Redirect("/404")
 		return
 	}
+}
+func (s *ArticlePageService)Get(ctx iris.Context) {
+	h1 := redisdao.Get("h1")
+	var auth string
+	if userauth, _ := Entity.Sess.Start(ctx).GetBoolean("userauthenticated"); !userauth { auth = "false" } else { auth = "true" }
+	username := Entity.Sess.Start(ctx).GetString("Username")
+	ctx.ViewData("username",username)
+
+	id,_ := strconv.ParseInt(ctx.Params().Get("id"),10,64)
 	_,_,article := articledao.Get(Entity.Article{Id:id})
+	_,_,user := userdatadao.Get(Entity.UserData{Id:article.User})
+	var articleList [1]ArticleArticle
+	articleList[0] = ArticleArticle{
+		Title:article.Title,
+		Classify:article.Classify,
+		Id:article.Id,
+		Time:article.Time.Format("2006-01-02 15:04:05"),
+		Content:template.HTML(article.Content),
+		Writer:user.Username,
+	}
+
 	_,_,pre := articledao.Get(Entity.Article{Id:id-1})
 	_,_,suc := articledao.Get(Entity.Article{Id:id+1})
+	preId := pre.Id
+	preTitle := pre.Title
+	sucId := suc.Id
+	sucTitle := suc.Title
+
 	mid,_ := strconv.ParseInt(article.Menu,10,64)
 	_,_,menu := menudao.Get(Entity.Menu{Id:mid})
-	_,_,user := userdatadao.Get(Entity.UserData{Id:article.User})
-	comment := commentdao.FindAll(ctx.Params().Get("id"))
+	var menuList [1]Entity.Menu
+	menuList[0] = menu
 	menulist := menudao.GetAll()
-	entity := Entity.Entity{Article:article,UserData:user,Menu:menu,CommentList:comment,MenuList:menulist}
-	Article.ContextWriter(entity,pre,suc,ctx,ctx)
+
+	comment := commentdao.FindAll(ctx.Params().Get("id"))
+	commentList := make([]ArticleComment,len(comment))
+	for i,v := range comment {
+		_,_,commentuser := userdatadao.Get(Entity.UserData{Id:v.User})
+		commentList[i].Content = template.HTML(v.Content)
+		commentList[i].Username = commentuser.Username
+		commentList[i].Time = v.Time.Format("2006-01-02 15:04:05")
+		commentList[i].Floor = v.Floor
+	}
+
+	ctx.ViewData("h1",h1)
+	ctx.ViewData("menuList",menulist)
+	ctx.ViewData("auth",auth)
+	ctx.ViewData("username",username)
+	ctx.ViewData("menu",menuList)
+	ctx.ViewData("article",articleList)
+	ctx.ViewData("preId",preId)
+	ctx.ViewData("preTitle",preTitle)
+	ctx.ViewData("sucId",sucId)
+	ctx.ViewData("sucTitle",sucTitle)
+	ctx.ViewData("commentSum",len(comment))
+	ctx.ViewData("commentList",commentList)
+	ctx.ViewData("commentSumPlus",len(comment)+1)
+	ctx.View("article.html")
 }
 
 //插入文章
@@ -49,11 +109,11 @@ func (s *ArticleInsertService)Get(ctx iris.Context) {
 }
 
 //文章修改列表
-type ArticleModify struct {
+type ArticleModifyListPage struct {
 
 }
 
-func (s *ArticleModify)Get(ctx iris.Context) {
+func (s *ArticleModifyListPage)Get(ctx iris.Context) {
 	article := articledao.FindAllA()
 	var suc,max int
 	page,_ := strconv.Atoi(ctx.Params().Get("page"))
@@ -78,18 +138,33 @@ func (s *ArticleModify)Get(ctx iris.Context) {
 	}
 	userlist.ArticleListToWriter(article[(page-1)*20:suc],page,max,ctx)
 }
-func (s *ArticleModify)Update(ctx iris.Context) {
+
+//文章修改页面
+type ArticleModifyPage struct {
+
+}
+func (s *ArticleModifyPage)Update(ctx iris.Context) {
 	id,_ := strconv.ParseInt(ctx.Params().Get("id"),10,64)
 	_,_,article := articledao.Get(Entity.Article{Id:id})
+	var articleList [1]Entity.Article
+	articleList[0].Content = article.Content
+	articleList[0].Title = article.Title
+	articleList[0].Id = article.Id
+	articleList[0].Classify = article.Classify
 	menulist := menudao.GetAll()
-	articleModify.ArticleToWriter(menulist,article,ctx)
+	menu,_ := strconv.Atoi(article.Menu)
+	//articleModify.ArticleToWriter(menulist,article,ctx)
+	ctx.ViewData("menuList",menulist)
+	ctx.ViewData("menu",menu-1)
+	ctx.ViewData("article",articleList)
+	ctx.View("articlemodify.html")
 }
 
 //文章修改
-type Articlemodify struct {
+type ArticleModify struct {
 
 }
-func (s *Articlemodify)Update(ctx iris.Context) {
+func (s *ArticleModify)Update(ctx iris.Context) {
 	id,_ := strconv.ParseInt(ctx.PostValue("Id"),10,64)
 	title := ctx.PostValue("Title")
 	menu := ctx.PostValue("Menu")

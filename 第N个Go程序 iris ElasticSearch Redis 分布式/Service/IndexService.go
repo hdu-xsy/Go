@@ -20,6 +20,7 @@ type IndexComment struct {
 	Time 	string
 }
 func (s *IndexService)Get(ctx iris.Context) {
+	h1 := redisdao.Get("h1")
 	articlelist := articledao.OrderByTime()
 	n := len(articlelist)
 	articleList := make([]IndexArticle,n)
@@ -44,6 +45,7 @@ func (s *IndexService)Get(ctx iris.Context) {
 	var auth string
 	if userauth, _ := Entity.Sess.Start(ctx).GetBoolean("userauthenticated"); !userauth { auth = "false" } else { auth = "true" }
 	username := Entity.Sess.Start(ctx).GetString("Username")
+	ctx.ViewData("h1",h1)
 	ctx.ViewData("menuList",menulist)
 	ctx.ViewData("auth",auth)
 	ctx.ViewData("username",username)

@@ -3,7 +3,6 @@ package Service
 import (
 	"github.com/kataras/iris"
 	"../Entity"
-	"../Download"
 	"strconv"
 )
 type DownloadPage struct {
@@ -13,7 +12,8 @@ func (c *DownloadPage) Get(ctx iris.Context) {
 
 	var FileList []Entity.File
 	FileList = filedao.GetAll()
-	Download.Writer(FileList,ctx)
+	ctx.ViewData("fileList",FileList)
+	ctx.View("download.html")
 }
 func DownloadFile(ctx iris.Context) {
 	name := ctx.Params().Get("Name")

@@ -4,7 +4,6 @@ import (
 	"github.com/kataras/iris"
 	"../Entity"
 	"time"
-	"../UserIndex"
 )
 
 // 用户登录验证
@@ -57,9 +56,16 @@ func (s *UserLoginAjax)Get(ctx iris.Context) int64{
  }
 
  func (s *UserLogin)Get(ctx iris.Context) {
- 	menulist := menudao.GetAll()
- 	entity := Entity.Entity{MenuList:menulist}
- 	UserIndex.UserIndexWriter(ctx,ctx,entity)
+	 h1 := redisdao.Get("h1")
+	 var auth string
+	 if userauth, _ := Entity.Sess.Start(ctx).GetBoolean("userauthenticated"); !userauth { auth = "false" } else { auth = "true" }
+	 username := Entity.Sess.Start(ctx).GetString("Username")
+	 menulist := menudao.GetAll()
+	 ctx.ViewData("h1",h1)
+	 ctx.ViewData("menuList",menulist)
+	 ctx.ViewData("auth",auth)
+	 ctx.ViewData("username",username)
+	 ctx.View("userindex.html")
  }
  //聊天页面验证
  type ChatForm struct {
