@@ -10,7 +10,7 @@ type Redis struct {
 }
 
 func (d *Redis) Dail() redis.Conn{
-	c, err := redis.Dial("tcp", "127.0.0.1:6379")//, options)
+	c, err := redis.Dial("tcp", "172.17.0.2:6379")//, options)
 	if err != nil {
 		fmt.Println(err)
 	}

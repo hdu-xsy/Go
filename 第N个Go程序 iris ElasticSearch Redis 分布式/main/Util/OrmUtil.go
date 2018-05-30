@@ -31,7 +31,7 @@ func GetUserData(app iris.Application) error{
 	return err
 }
 func Getorm(app iris.Application) *xorm.Engine {
-	orm,err := xorm.NewEngine("mysql", "root:Xsydx886.@/Goweb?charset=utf8")
+	orm,err := xorm.NewEngine("mysql", "root:Xsydx886.@tcp(172.17.0.3:3306)/Goweb?charset=utf8")
 	if err != nil {
 		app.Logger().Fatalf("orm failed to initialized: %v", err)
 	}
