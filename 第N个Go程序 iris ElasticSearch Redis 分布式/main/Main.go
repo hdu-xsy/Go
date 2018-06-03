@@ -20,6 +20,7 @@ func main() {
 	app.StaticWeb("/js", "./js") // serve our custom javascript code
 	app.StaticWeb("/Picture","./Picture")
 	app.Get("/adminlogin",func (ctx iris.Context) {ctx.View("adminlogin.html")})
+	app.Get("/search",func (ctx iris.Context) {ctx.View("search.html")})
 	app.Get("/404",func (ctx iris.Context) {ctx.View("404.html")})
 	app.Get("/login",func (ctx iris.Context) {ctx.View("userlogin.html")})
 	app.Get("/error",func (ctx iris.Context) {ctx.View("error.html")})

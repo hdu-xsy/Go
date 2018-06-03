@@ -28,7 +28,7 @@ docker rmi ID
 ------------mysql----------------
 8 mkdir /usr/docker/mysql
 9 cd /usr/docker/mysql
-10 docker run --name mymysql -p 3307:3307 -e MYSQL_ROOT_PASSWORD=Xsydx886. -d mysql
+10 docker run --name mymysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=Xsydx886. -d mysql
 11 上一步MYSQL_ROOT_PASSWORD后为Mysql密码 若修改 则须打开工程的main/UtilOrmUtil.go Getorm函数的NewEngine方法内root:后改为该密码
 12 docker inspect -f '{{.Name}} - {{.NetworkSettings.IPAddress }}' $(docker ps -aq)
 13 找到mymysql的ip地址 打开工程的main/UtilOrmUtil.go Getorm函数的NewEngine方法内ip改为该ip 端口不变
@@ -55,11 +55,10 @@ docker rmi ID
 30 exit
 
 ---------elasticsearch-------------
-31 docker run -p 9200:9200 --name myes -e "http.host=0.0.0.0" -e "transport.host=127.0.0.1" -d 
-32 docker.elastic.co/elasticsearch/elasticsearch:5.0.2
+31 docker run --name myes -p 9200:9200 -p 9300:9300 -d elasticsearch
 
 ------kibana(es可视化管理工具 可不装)--------------
-docker run --name mykibana -e ELASTICSEARCH_URL=http://172.17.0.2:9200 -p 5601:5601 -d kibana
+32 docker run --name mykibana --link=myes:elasticsearch -p 5601:5601 -d kibana
 
 ---------------golang--------------
 33 进入工程的main目录

@@ -65,43 +65,7 @@
 <div class="row">
     <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
     <div class="col-md-5 col-lg-5 col-sm-10 col-xs-10">
-        <div>
-            {{/* var articlesum int //文章总数 */}}
-            <h3>最近的20篇文章 (共{{.articlesum}}篇文章)</h3>
-            <hr/>
-            <br/><div class="list-group">
-            {{/* var articleList []Entity.Article //文章列表 */}}
-            {{range $i,$v := .articleList}}
-                {{/* var Id int //Menu.Id */}}
-                {{/* var Time string //Menu.Time.Format("2006-01-02 15:04:05") */}}
-                {{/* var Title string //Menu.Title */}}
-                <a href="/article/{{.Id}}" class="list-group-item">{{.Time}} : {{.Title}}</a>
-            {{end}}
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-lg-3 hidden-sm hidden-xs">
-        <div><h3>最近留言</h3>
-            <div class="list-group">
-                {{/* var commentList []Entity.Comment //评论列表 */}}
-                {{range $i,$v := .commentList}}
-                {{/* var Article int //Comment.Article*/}}
-                <a href="/article/{{.Article}}" class="list-group-item">
-                    {{/* var Content int //Comment.Content */}}
-                    {{/* var Time string //Comment.Time.Format("2006-01-02 15:04:05") */}}
-                    {{.Time}} : {{.Content}}
-                {{end}}
-                </a>
-            </div>
-        </div><hr/>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">公告</h3>
-            </div>
-            <div class="panel-body">
-                {{.ac}}
-            </div>
-        </div>
+        用es实现短语搜索和全文搜索，主要功能是根据文章内容或者个人简介搜索文章或者用户，正在编写
     </div>
     <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
 </div>
