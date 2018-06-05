@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>index</title>
     <!-- Bootstrap -->
-    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
@@ -15,7 +14,6 @@
     <style type="text/css">
         body{ font-family: Microsoft YaHei,'宋体' , Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;}
     </style>
-    <script src="https://cdn.bootcss.com/markdown.js/0.6.0-beta1/markdown.min.js"></script>
 </head>
 
 <body>
@@ -32,12 +30,14 @@
     </div>
     <div class="col-md-5 col-lg-5 col-sm-6 col-xs-6">
         <h2 class="text-center">插入文章</h2>
-        <form method="post" name="form" id="form">
+        <form method="post" name="form" id="form" action="/artinsert">
+            <div class="form-group">
+                <label for="Classify">分类</label>
+                <input type="text" class="form-control" id="Classify" name="Classify"/>
+            </div>
             <div class="form-group">
                 <label for="Title">标题</label>
-                <input type="text" class="form-control" id="Title" name="Title">
-                <label for="Classify">分类</label>
-                <input type="text" class="form-control" id="Classify" name="Classify">
+                <input type="text" class="form-control" id="Title" name="Title"/>
             </div>
             <select name="Menu" id="Menu" class="form-control">
                 {{range $k,$v := .menuList}}
@@ -45,11 +45,12 @@
                 {{end}}
             </select>
             <textarea class="form-control" rows="20" name="Content" id="Content"></textarea>
+            <button type="submit" class="btn btn-default" name="btn" id="btn" onclick="return validate()">确认</button>
         </form>
-        <button class="btn btn-default" name="btn" id="btn" onclick="return validate()">确认</button>
     </div>
     <div class="col-md-2 col-lg-2 col-sm-1 col-xs-1"></div>
 </div>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script type="text/javascript" src="../js/ArticleInsert.js"></script>
 </body>
 </html>

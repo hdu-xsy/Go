@@ -99,13 +99,18 @@ type ArticleInsertService struct {
 
 }
 func (s *ArticleInsertService)Get(ctx iris.Context) {
-	article := Entity.Article{}
-	checkError(ctx.ReadForm(&article))
-	article.User=1
-	article.Time=time.Now()
+	classify := ctx.PostValue("Classify")
+	title := ctx.PostValue("Title")
+	menu := ctx.PostValue("Menu")
+	content := ctx.PostValue("Content")
+	article := Entity.Article{User:1,Time:time.Now(),Classify:classify,Title:title,Menu:menu,Content:content}
+	//checkError(ctx.ReadForm(&article))
+	app.Logger().Println(article)
+	//article.Classify=ctx.PostValue("Classify")
+	//app.Logger().Println("Classify:"+article.Classify)
 	articledao.Insert(article)
-	ctx.WriteString(" ")
-	return
+	ctx.Redirect("/backend/1")
+	//ctx.WriteString(" ")
 }
 
 //文章修改列表
