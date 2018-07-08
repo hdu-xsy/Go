@@ -4,7 +4,7 @@ import (
 	"github.com/kataras/iris"
 	_"github.com/go-sql-driver/mysql"
 	"github.com/kataras/iris/mvc"
-	"../Controller"
+	"./Controller"
 )
 
 func main() {
@@ -20,6 +20,7 @@ func main() {
 	app.StaticWeb("/js", "./js") // serve our custom javascript code
 	app.StaticWeb("/Picture","./Picture")
 	app.Get("/adminlogin",func (ctx iris.Context) {ctx.View("adminlogin.html")})
+	app.Get("/search",func (ctx iris.Context) {ctx.View("search.html")})
 	app.Get("/404",func (ctx iris.Context) {ctx.View("404.html")})
 	app.Get("/login",func (ctx iris.Context) {ctx.View("userlogin.html")})
 	app.Get("/error",func (ctx iris.Context) {ctx.View("error.html")})
@@ -36,6 +37,11 @@ func main() {
 	app.Post("/Comment",Controller.CommentController)
 	app.Post("/artinsert",Controller.ArticleInsertController)
 	app.Post("/articleModify",Controller.ArticlemodifyController)
+	app.Post("/acmodify",Controller.ACModifyController)
+	app.Post("/h1modify",Controller.H1ModifyController)
+	app.Post("/menuinsert",Controller.MenuInsertController)
+	app.Post("/menudelete",Controller.MenuDeleteController)
+	app.Post("/menumodify",Controller.MenuModifyController)
 	app.Post("/upload",Controller.Uploads)
 	mvc.New(app.Party("/Classify/{Classify}/{page}")).Handle(new(Controller.ClassifyController))
 	mvc.New(app.Party("/articleinsert")).Handle(new(Controller.ArticInsertController))
@@ -49,6 +55,7 @@ func main() {
 	mvc.New(app.Party("/articlemodifylist/{page}")).Handle(new(Controller.ArticleModifyListController))
 	mvc.New(app.Party("/menu/{id}/{page}")).Handle(new(Controller.MenuController))
 	mvc.New(app.Party("/articlemodify/{id}")).Handle(new(Controller.ArticleModifyController))
+	mvc.New(app.Party("/menumodify")).Handle(new(Controller.MenuModifyPageController))
 	mvc.New(app.Party("/upload")).Handle(new(Controller.UploadController))
 	mvc.New(app.Party("/download")).Handle(new(Controller.DownloadPageController))
 	mvc.Configure(app.Party("/echo"), Controller.ConfigureMVC)
